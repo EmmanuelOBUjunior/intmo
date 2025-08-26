@@ -29,7 +29,11 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	const playPause = vscode.commands.registerCommand("intmo.playPause",async()=>{
-
+		try {
+		
+		} catch (error) {
+			vscode.window.showErrorMessage("Error toggling play/pause");	
+		}
 	});
 	
 }
