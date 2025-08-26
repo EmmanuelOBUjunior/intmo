@@ -11,6 +11,17 @@ export async function authenticateSpotify(
   context: vscode.ExtensionContext
 ): Promise<SpotifyWebApi> {
   const spotifyApi = await handleVSCodeCallback(context);
+
+  //Check for existing tokens
+  const accessToken = await context.secrets.get("spotifyAccessToken");
+  const refreshToken = await context.secrets.get("spotifyRefreshToken");
+
+  //If we have both tokens, try to use them
+  if(accessToken && refreshToken){
+    console.log("Found existing tokens, using them to authenticate...");
+  }
+
+  console.log("Starting authentication process....");
   console.log("Using Redirect URI:", spotifyApi.getRedirectURI());
 
   const scopes = [
