@@ -33,6 +33,15 @@ export async function authenticateSpotify(context: vscode.ExtensionContext):Prom
         throw new Error("No authorization code found in callback URL");
     }
 
+    const data = await spotifyApi.authorizationCodeGrant(code);
+
+    //Store tokens in VS Code's secure storage
+    await context.secrets.store('spotifyAccessToken', data.body.access_token);
+    await context.secrets.store('spotifyRefreshToken', data.body.refresh_token);
+
+    spotifyApi.setAccessToken(data.body.access_token);
+    spotifyApi.setRefreshToken(data.body.refresh_token);
+
     //Spin up a small local server to catch the callback
     // const server = http.createServer(async(req,res)=>{
     //     if(req.url?.startsWith('/callback')){
@@ -56,7 +65,7 @@ export async function authenticateSpotify(context: vscode.ExtensionContext):Prom
     // server.listen(8888);
     vscode.window.showInformationMessage("🗝️ Logging into Spotify...");
 
-    await vscode.env.openExternal(vscode.Uri.parse(authorizeUrl));
+    // await vscode.env.openExternal(vscode.Uri.parse(authorizeUrl));
 
     return spotifyApi;
 }

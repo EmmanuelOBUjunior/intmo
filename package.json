@@ -20,6 +20,12 @@
         "command": "intmo.playPause",
         "title": "Spotify: Play/Pause"
       }
+    ],
+    "authentication": [
+      {
+        "id": "spotify",
+        "label": "Sign in with Spotify"
+      }
     ]
   },
   "scripts": {
