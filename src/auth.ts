@@ -66,6 +66,5 @@ export async function authenticateSpotify(context: vscode.ExtensionContext):Prom
     vscode.window.showInformationMessage("🗝️ Logging into Spotify...");
 
     // await vscode.env.openExternal(vscode.Uri.parse(authorizeUrl));
-
     return spotifyApi;
 }
