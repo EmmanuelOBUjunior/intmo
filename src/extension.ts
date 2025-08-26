@@ -88,7 +88,7 @@ export async function activate(context: vscode.ExtensionContext) {
         const track = await spotifyApi?.getMyCurrentPlayingTrack();
         if (track?.body && track.body.item) {
           vscode.window.showInformationMessage(
-            `🎶 Now playing: ${track.body.item.name} - ${track.body.item.href}`
+            `🎶 Now playing: ${track.body.item.name} - ${track.body.currently_playing_type}`
           );
         } else {
           vscode.window.showInformationMessage(
@@ -104,6 +104,7 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  //Command: Play/Pause Toggle
   const playPause = vscode.commands.registerCommand(
     "intmo.playPause",
     async () => {
