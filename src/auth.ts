@@ -32,8 +32,6 @@ export async function authenticateSpotify(
         console.log("Raw callback URI received:", uri.toString());
 
         try {
-          
-
           console.log("URI Components: ", {
             scheme: uri.scheme,
             authority: uri.authority,
@@ -59,27 +57,49 @@ export async function authenticateSpotify(
           }
 
           // Decode the URI components properly
-            const decodedQuery = decodeURIComponent(uri.query);
-            console.log("Decoded query:", decodedQuery);
+          const decodedQuery = decodeURIComponent(uri.query);
+          console.log("Decoded query:", decodedQuery);
+
+          // Try different ways to parse the query
+          let code: string | null = null;
+
+          // Method 1: Try splitting by & and =
+          const queryParts = decodedQuery.split("&");
+          for (const part of queryParts) {
+            if (part.startsWith("code")) {
+              code = part.split("code")[1].replace(/^[=\s]+/, "");
+              break;
+            }
+          }
+
+          if (code) {
+            console.log("Found code using split method");
+            resolve(uri.toString());
+            disposable.dispose();
+            return;
+          }
+
+          console.error("No code found in callback URL");
+      reject(new Error("No authorization code found in callback URL"));
 
           // Create params from fixed query
-          const params = new URLSearchParams(fixedQuery);
+        //   const params = new URLSearchParams(fixedQuery);
 
-          const code = params.get("code");
-          const returnedState = params.get("state");
+          //   const code = params.get("code");
+        //   const returnedState = params.get("state");
 
-          console.log("Parsed parameters:", {
-            code: code ? `${code.substring(0, 5)}...` : "none",
-            state: returnedState,
-            expectedState: state,
-            matches: returnedState === state,
-          });
-          if (code && returnedState === state) {
-            resolve(uri.with({ query: fixedQuery }).toString());
-          } else {
-            reject(new Error("Invalid callback parameters"));
-          }
-          disposable.dispose();
+        //   console.log("Parsed parameters:", {
+        //     code: code ? `${code.substring(0, 5)}...` : "none",
+        //     state: returnedState,
+        //     expectedState: state,
+        //     matches: returnedState === state,
+        //   });
+        //   if (code && returnedState === state) {
+        //     resolve(uri.with({ query: fixedQuery }).toString());
+        //   } else {
+        //     reject(new Error("Invalid callback parameters"));
+        //   }
+        //   disposable.dispose();
         } catch (error) {
           console.error("Error processing callback URI:", error);
           reject(error);
