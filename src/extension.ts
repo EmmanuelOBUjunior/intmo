@@ -102,6 +102,9 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   }
 
+  updateStatusBar();
+  setInterval(updateStatusBar, 15000); //Update every 15 seconds
+
   //Command: Show Now Playing
   const nowPlaying = vscode.commands.registerCommand(
     "intmo.nowPlaying",
