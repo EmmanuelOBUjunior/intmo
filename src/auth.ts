@@ -2,6 +2,7 @@
 import SpotifyWebApi from "spotify-web-api-node";
 import * as vscode from "vscode";
 import * as http from "http";
+import { open } from "fs";
 
 
 export async function authenticateSpotify(context: vscode.ExtensionContext):Promise<SpotifyWebApi | null>{
@@ -32,5 +33,9 @@ export async function authenticateSpotify(context: vscode.ExtensionContext):Prom
             }
         }
     });
+
+    server.listen(8888);
+    vscode.window.showInformationMessage("🗝️ Logging into Spotify...");
+    await open(authorizeUrl)
     return spotifyApi;
 }
