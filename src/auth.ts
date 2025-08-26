@@ -14,55 +14,22 @@ export async function authenticateSpotify(
     "user-read-currently-playing",
   ];
 
+  // Generate a random state parameter
   const state = Math.random().toString(36).substring(7);
   const authorizeUrl = spotifyApi.createAuthorizeURL(scopes, state);
 
-  const callbackPromise = new Promise<string>((resolve, reject) => {
+  // Create a promise that will resolve when we get the callback
+  const callbackPromise = new Promise<string>((resolve) => {
     const disposable = vscode.window.registerUriHandler({
-      handleUri(uri: vscode.Uri): void {
-        console.log("Raw callback URI:", uri.toString());
-
-        try {
-          // Decode the URI components properly
-          const decodedQuery = decodeURIComponent(uri.query);
-          console.log("Decoded query:", decodedQuery);
-
-          // Fix the query string format if needed
-          const fixedQuery = decodedQuery
-            .replace(/%20/g, " ")
-            .replace(/%3D/g, "=")
-            .replace(/%26/g, "&");
-
-          // Create params from fixed query
-          const params = new URLSearchParams(fixedQuery);
-
-          const code = params.get("code");
-          const returnedState = params.get("state");
-
-          console.log("Parsed parameters:", {
-            code: code ? `${code.substring(0, 5)}...` : "none",
-            state: returnedState,
-            expectedState: state,
-            matches: returnedState === state,
-          });
-
-          if (code && returnedState === state) {
-            resolve(uri.with({ query: fixedQuery }).toString());
-          } else {
-            reject(new Error("Invalid callback parameters"));
-          }
-          disposable.dispose();
-        } catch (error) {
-          console.error("Error parsing callback URI:", error);
-          reject(error);
-        }
+      handleUri(uri: vscode.Uri) {
+        disposable.dispose(); // Clean up the handler
+        resolve(uri.toString());
       },
     });
 
-    // Cleanup after timeout
+    // Clean up if authentication is cancelled
     setTimeout(() => {
       disposable.dispose();
-      reject(new Error("Authentication timed out"));
     }, 300000); // 5 minute timeout
   });
 
@@ -75,14 +42,20 @@ export async function authenticateSpotify(
   await vscode.env.openExternal(vscode.Uri.parse(authorizeUrl));
 
   try {
+    // Wait for the callback URL
     const callbackUrl = await callbackPromise;
-    console.log("Received callback URL:", callbackUrl);
-
     const url = new URL(callbackUrl);
-    const code = url.searchParams.get("code");
 
+    // Extract code from URL
+    const code = url.searchParams.get("code");
     if (!code) {
       throw new Error("No authorization code found in callback URL");
+    }
+
+    // Validate state parameter
+    const returnedState = url.searchParams.get("state");
+    if (returnedState !== state) {
+      throw new Error("State mismatch. Please try again.");
     }
 
     const data = await spotifyApi.authorizationCodeGrant(code);
