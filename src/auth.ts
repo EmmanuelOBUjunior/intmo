@@ -25,7 +25,7 @@ export async function authenticateSpotify(context: vscode.ExtensionContext):Prom
     });
 
     if(!result){
-        
+        throw new Error("Authentication cancelled");
     }
 
     //Spin up a small local server to catch the callback
