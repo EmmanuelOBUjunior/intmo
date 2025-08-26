@@ -20,28 +20,40 @@ export async function authenticateSpotify(
   const callbackPromise = new Promise<string>((resolve, reject) => {
     const disposable = vscode.window.registerUriHandler({
       handleUri(uri: vscode.Uri): void {
-        console.log("Received callback URI:", uri.toString());
-        
-        // Check if this is our callback URI
-        if (uri.path === '/callback') {
-          const params = new URLSearchParams(uri.query);
-          const code = params.get('code');
-          const returnedState = params.get('state');
-
-          if (code && returnedState === state) {
-            resolve(uri.toString());
-          } else {
-            reject(new Error('Invalid callback parameters'));
-          }
-          disposable.dispose();
-        }
-      }
+        console.log("Received callback URI:", {
+          fullUri: uri.toString(),
+          scheme: uri.scheme,
+          authority: uri.authority,
+          path: uri.path,
+          query: uri.query,
+          params: new URLSearchParams(uri.query),
+        });
+      },
     });
+    // const disposable = vscode.window.registerUriHandler({
+    //   handleUri(uri: vscode.Uri): void {
+    //     console.log("Received callback URI:", uri.toString());
+
+    //     // Check if this is our callback URI
+    //     if (uri.path === '/callback') {
+    //       const params = new URLSearchParams(uri.query);
+    //       const code = params.get('code');
+    //       const returnedState = params.get('state');
+
+    //       if (code && returnedState === state) {
+    //         resolve(uri.toString());
+    //       } else {
+    //         reject(new Error('Invalid callback parameters'));
+    //       }
+    //       disposable.dispose();
+    //     }
+    //   }
+    // });
 
     // Cleanup after timeout
     setTimeout(() => {
       disposable.dispose();
-      reject(new Error('Authentication timed out'));
+      reject(new Error("Authentication timed out"));
     }, 300000); // 5 minute timeout
   });
 
@@ -59,7 +71,7 @@ export async function authenticateSpotify(
 
     const url = new URL(callbackUrl);
     const code = url.searchParams.get("code");
-    
+
     if (!code) {
       throw new Error("No authorization code found in callback URL");
     }
