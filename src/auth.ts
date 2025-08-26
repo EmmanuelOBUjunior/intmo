@@ -80,26 +80,26 @@ export async function authenticateSpotify(
           }
 
           console.error("No code found in callback URL");
-      reject(new Error("No authorization code found in callback URL"));
+          reject(new Error("No authorization code found in callback URL"));
 
           // Create params from fixed query
-        //   const params = new URLSearchParams(fixedQuery);
+          //   const params = new URLSearchParams(fixedQuery);
 
           //   const code = params.get("code");
-        //   const returnedState = params.get("state");
+          //   const returnedState = params.get("state");
 
-        //   console.log("Parsed parameters:", {
-        //     code: code ? `${code.substring(0, 5)}...` : "none",
-        //     state: returnedState,
-        //     expectedState: state,
-        //     matches: returnedState === state,
-        //   });
-        //   if (code && returnedState === state) {
-        //     resolve(uri.with({ query: fixedQuery }).toString());
-        //   } else {
-        //     reject(new Error("Invalid callback parameters"));
-        //   }
-        //   disposable.dispose();
+          //   console.log("Parsed parameters:", {
+          //     code: code ? `${code.substring(0, 5)}...` : "none",
+          //     state: returnedState,
+          //     expectedState: state,
+          //     matches: returnedState === state,
+          //   });
+          //   if (code && returnedState === state) {
+          //     resolve(uri.with({ query: fixedQuery }).toString());
+          //   } else {
+          //     reject(new Error("Invalid callback parameters"));
+          //   }
+          //   disposable.dispose();
         } catch (error) {
           console.error("Error processing callback URI:", error);
           reject(error);
