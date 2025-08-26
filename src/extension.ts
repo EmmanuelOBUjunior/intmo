@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import SpotifyWebApi from "spotify-web-api-node";
-import { authenticateSpotify } from "./auth";
+import { authenticateSpotify, withTokenRefresh } from "./auth";
 
 let spotifyApi: SpotifyWebApi | null = null;
 
@@ -85,7 +85,10 @@ export async function activate(context: vscode.ExtensionContext) {
           throw new Error("Spotify API not initialized");
         }
         console.log("Fetching current playing track...");
-        const track = await spotifyApi?.getMyCurrentPlayingTrack();
+        const track = await withTokenRefresh(context, spotifyApi, () => 
+      spotifyApi!.getMyCurrentPlayingTrack()
+    );
+        // const track = await spotifyApi?.getMyCurrentPlayingTrack();
         if (track?.body && track.body.item) {
           vscode.window.showInformationMessage(
             `🎶 Now playing: ${track.body.item.name} - ${track.body.currently_playing_type}`
