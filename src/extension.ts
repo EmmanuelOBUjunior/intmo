@@ -65,7 +65,7 @@ export async function activate(context: vscode.ExtensionContext) {
           vscode.window.showInformationMessage("▶️ Playback started");
         }
       } catch (error) {
-        vscode.window.showErrorMessage("⚠️ Failed to toggle playback");
+        vscode.window.showErrorMessage("⚠️ Failed to toggle playback.");
       }
     }
   );
