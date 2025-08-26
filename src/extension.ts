@@ -9,7 +9,7 @@ let spotifyApi: SpotifyWebApi | null = null;
 export async function handleVSCodeCallback(context:vscode.ExtensionContext):Promise<SpotifyWebApi>{
 	// const callbackUri = "vscode://vscode.dev/callback";
 	const callbackUri = await vscode.env.asExternalUri(
-        vscode.Uri.parse('vscode://intmo.spotify-auth/callback')
+        vscode.Uri.parse(`${vscode.env.uriScheme}://vscode.dev/callback`)
     );
 
 	const api = new SpotifyWebApi({
