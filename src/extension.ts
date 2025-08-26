@@ -10,15 +10,15 @@ export async function handleVSCodeCallback(
 ): Promise<SpotifyWebApi> {
   try {
     // Create a proper VS Code URI using the extension ID
-    const extensionId = context.extension.id; // Gets your extension ID automatically
-    const callbackUri = `${vscode.env.uriScheme}://${extensionId}/callback`;
+    // const extensionId = context.extension.id; // Gets your extension ID automatically
+    const callbackUri = `${vscode.env.uriScheme}://local-dev.intmo/callback`;
 
     const api = new SpotifyWebApi({
       clientId:
         ((await context.secrets.get("clientId")) as string) ||
         "beb08f57785a4e62822687a9913c6420",
       clientSecret:
-        ((await context.globalState.get("clientSecret")) as string) ||
+        ((await context.secrets.get("clientSecret")) as string) ||
         "73af6bf1e6674c73b36c05a2a660f5f8",
       redirectUri: callbackUri,
     });
