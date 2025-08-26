@@ -36,7 +36,8 @@
     "untrustedWorkspaces": {
       "supported": true
     },
-    "virtualWorkspaces": true
+    "virtualWorkspaces": true,
+    "uriHandler": true
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

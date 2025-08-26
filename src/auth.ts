@@ -6,8 +6,6 @@ export async function authenticateSpotify(
   context: vscode.ExtensionContext
 ): Promise<SpotifyWebApi> {
   const spotifyApi = await handleVSCodeCallback(context);
-
-  // Log the redirect URI for verification
   console.log("Using Redirect URI:", spotifyApi.getRedirectURI());
 
   const scopes = [
@@ -20,49 +18,42 @@ export async function authenticateSpotify(
   const state = Math.random().toString(36).substring(7);
   const authorizeUrl = spotifyApi.createAuthorizeURL(scopes, state);
 
-  // Show clearer instructions to the user
+  // Create a promise that will resolve when we get the callback
+  const callbackPromise = new Promise<string>((resolve) => {
+    const disposable = vscode.window.registerUriHandler({
+      handleUri(uri: vscode.Uri) {
+        disposable.dispose(); // Clean up the handler
+        resolve(uri.toString());
+      },
+    });
+
+    // Clean up if authentication is cancelled
+    setTimeout(() => {
+      disposable.dispose();
+    }, 300000); // 5 minute timeout
+  });
+
+  // Show instructions and open browser
   await vscode.window.showInformationMessage(
-    "You will be redirected to Spotify. After authorizing, copy the entire URL from your browser's address bar.",
+    "You will be redirected to Spotify. Please authorize the application.",
     "Continue"
   );
 
-  // Open in external browser instead of VS Code's built-in browser
-  const browser = await vscode.env.openExternal(vscode.Uri.parse(authorizeUrl));
-
-  if (!browser) {
-    throw new Error("Failed to open browser for authentication");
-  }
-
-  // Improved input box with clearer instructions
-  const result = await vscode.window.showInputBox({
-    prompt:
-      "After authorizing in your browser, paste the complete URL from your browser's address bar",
-    placeHolder: "https://vscode://local-dev.intmo/callback?code=...",
-    ignoreFocusOut: true,
-    validateInput: (value) => {
-      if (!value) {
-        return "Please paste the callback URL";
-      }
-      if (!value.includes("code=")) {
-        return "Invalid URL. Make sure to copy the complete URL after authorization";
-      }
-      return null;
-    },
-  });
-
-  if (!result) {
-    throw new Error("Authentication cancelled");
-  }
+  await vscode.env.openExternal(vscode.Uri.parse(authorizeUrl));
 
   try {
+    // Wait for the callback URL
+    const callbackUrl = await callbackPromise;
+    const url = new URL(callbackUrl);
+
     // Extract code from URL
-    const code = new URL(result).searchParams.get("code");
+    const code = url.searchParams.get("code");
     if (!code) {
       throw new Error("No authorization code found in callback URL");
     }
 
-    // Validate state parameter if needed
-    const returnedState = new URL(result).searchParams.get("state");
+    // Validate state parameter
+    const returnedState = url.searchParams.get("state");
     if (returnedState !== state) {
       throw new Error("State mismatch. Please try again.");
     }
