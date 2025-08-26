@@ -4,27 +4,29 @@ import { authenticateSpotify } from "./auth";
 
 let spotifyApi: SpotifyWebApi | null = null;
 
-
 //Handling VS code's authentication callback
-export async function handleVSCodeCallback(context:vscode.ExtensionContext):Promise<SpotifyWebApi>{
-	// const callbackUri = "vscode://vscode.dev/callback";
-	const callbackUri = await vscode.env.asExternalUri(
-        vscode.Uri.parse(`${vscode.env.uriScheme}://vscode.dev/callback`)
-    );
+export async function handleVSCodeCallback(
+  context: vscode.ExtensionContext
+): Promise<SpotifyWebApi> {
+  // const callbackUri = "vscode://vscode.dev/callback";
+  const callbackUri = await vscode.env.asExternalUri(
+    vscode.Uri.parse(`${vscode.env.uriScheme}://vscode.dev/callback`)
+  );
 
-	const api = new SpotifyWebApi({
+  const api = new SpotifyWebApi({
     clientId:
-      await context.secrets.get("clientId") as string ||
+      ((await context.secrets.get("clientId")) as string) ||
       "beb08f57785a4e62822687a9913c6420",
     clientSecret:
-      await context.globalState.get("clientSecret") as string ||
+      ((await context.globalState.get("clientSecret")) as string) ||
       "73af6bf1e6674c73b36c05a2a660f5f8",
-    redirectUri:
-     callbackUri.toString(),
+    redirectUri: callbackUri.toString(),
   });
-	return api;
-}
 
+  // Log the redirect URI for verification
+  console.log("Configured Redirect URI:", callbackUri);
+  return api;
+}
 
 export async function activate(context: vscode.ExtensionContext) {
   //Authenticate on activation if no tokens are stored
@@ -34,23 +36,23 @@ export async function activate(context: vscode.ExtensionContext) {
   spotifyApi = await handleVSCodeCallback(context);
 
   //Initialize Spotify API with stored tokens
-//   spotifyApi = new SpotifyWebApi({
-//     clientId:
-//       await context.secrets.get("clientId") as string ||
-//       "beb08f57785a4e62822687a9913c6420",
-//     clientSecret:
-//       await context.secrets.get("clientSecret") as string ||
-//       "73af6bf1e6674c73b36c05a2a660f5f8",
-//     redirectUri:
-//       await context.secrets.get("redirectUri") as string ||
-//       "http://192.168.0.178:8888/callback",
-//   });
+  //   spotifyApi = new SpotifyWebApi({
+  //     clientId:
+  //       await context.secrets.get("clientId") as string ||
+  //       "beb08f57785a4e62822687a9913c6420",
+  //     clientSecret:
+  //       await context.secrets.get("clientSecret") as string ||
+  //       "73af6bf1e6674c73b36c05a2a660f5f8",
+  //     redirectUri:
+  //       await context.secrets.get("redirectUri") as string ||
+  //       "http://192.168.0.178:8888/callback",
+  //   });
 
-  if(token && refresh){
-	spotifyApi.setAccessToken(token);
-	spotifyApi.setRefreshToken(refresh);
-  }else{
-	spotifyApi = await authenticateSpotify(context);
+  if (token && refresh) {
+    spotifyApi.setAccessToken(token);
+    spotifyApi.setRefreshToken(refresh);
+  } else {
+    spotifyApi = await authenticateSpotify(context);
   }
 
   console.log("Spotify API initialized", spotifyApi);
@@ -71,9 +73,10 @@ export async function activate(context: vscode.ExtensionContext) {
           );
         }
       } catch (error) {
-		console.error("Failed to initialize Spotify API", error);
-        vscode.window.showErrorMessage("⚠️ Failed to fetch Now Playing. Try logging in again.");
-
+        console.error("Failed to initialize Spotify API", error);
+        vscode.window.showErrorMessage(
+          "⚠️ Failed to fetch Now Playing. Try logging in again."
+        );
       }
     }
   );
