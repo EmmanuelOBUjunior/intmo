@@ -2,6 +2,11 @@ import * as vscode from "vscode";
 import SpotifyWebApi from "spotify-web-api-node";
 import { handleVSCodeCallback } from "./extension";
 
+interface CallbackResult {
+  code: string;
+  state: string;
+}
+
 export async function authenticateSpotify(
   context: vscode.ExtensionContext
 ): Promise<SpotifyWebApi> {
@@ -14,69 +19,58 @@ export async function authenticateSpotify(
     "user-read-currently-playing",
   ];
 
-  // Generate a random state parameter
   const state = Math.random().toString(36).substring(7);
   const authorizeUrl = spotifyApi.createAuthorizeURL(scopes, state);
 
-  // Create a promise that will resolve when we get the callback
-  const callbackPromise = new Promise<string>((resolve, reject) => {
-    // const disposable = vscode.window.registerUriHandler({
-    //   handleUri(uri: vscode.Uri) {
-    //     disposable.dispose(); // Clean up the handler
-    //     resolve(uri.toString());
-    //   },
-    // });
+  // Create a promise that will resolve with the code and state
+  const callbackPromise = new Promise<CallbackResult>((resolve, reject) => {
+    const disposable = vscode.window.registerUriHandler({
+      handleUri(uri: vscode.Uri) {
+        console.log("Raw callback URI received:", uri.toString());
 
-   const disposable = vscode.window.registerUriHandler({
-  handleUri(uri: vscode.Uri) {
-    console.log("Raw callback URI received:", uri.toString());
+        try {
+          const fullQuery = decodeURIComponent(uri.query);
+          console.log("Decoded full query:", fullQuery);
 
-    try {
-      // Get the full query string and decode it
-      const fullQuery = decodeURIComponent(uri.query);
-      console.log("Decoded full query:", fullQuery);
+          const params = new URLSearchParams(fullQuery);
+          const code = params.get('code');
+          const returnedState = params.get('state');
 
-      // The query string contains 'code=' and 'state=' directly
-      const params = new URLSearchParams(fullQuery);
-      const code = params.get('code');
-      const returnedState = params.get('state');
+          console.log("Extracted parameters:", {
+            hasCode: !!code,
+            codePreview: code ? `${code.substring(0, 10)}...` : 'none',
+            returnedState,
+            expectedState: state,
+            stateMatches: returnedState === state
+          });
 
-      console.log("Extracted parameters:", {
-        hasCode: !!code,
-        codePreview: code ? `${code.substring(0, 10)}...` : 'none',
-        returnedState,
-        expectedState: state,
-        stateMatches: returnedState === state
-      });
+          if (!code) {
+            reject(new Error("No authorization code found in callback URL"));
+            return;
+          }
 
-      if (!code) {
-        reject(new Error("No authorization code found in callback URL"));
-        return;
+          if (returnedState !== state) {
+            reject(new Error("State mismatch. Please try again."));
+            return;
+          }
+
+          // Resolve with both code and state
+          resolve({ code, state: returnedState });
+        } catch (error) {
+          console.error("Error processing callback URI:", error);
+          reject(error);
+        } finally {
+          disposable.dispose();
+        }
       }
+    });
 
-      if (returnedState !== state) {
-        reject(new Error("State mismatch. Please try again."));
-        return;
-      }
-
-      // If we have both code and matching state, resolve the promise
-      resolve(uri.toString());
-    } catch (error) {
-      console.error("Error processing callback URI:", error);
-      reject(error);
-    } finally {
-      disposable.dispose();
-    }
-  }
-});
-
-    // Clean up if authentication is cancelled
     setTimeout(() => {
       disposable.dispose();
-    }, 300000); // 5 minute timeout
+      reject(new Error("Authentication timed out"));
+    }, 300000);
   });
 
-  // Show instructions and open browser
   await vscode.window.showInformationMessage(
     "You will be redirected to Spotify. Please authorize the application.",
     "Continue"
@@ -85,25 +79,11 @@ export async function authenticateSpotify(
   await vscode.env.openExternal(vscode.Uri.parse(authorizeUrl));
 
   try {
-    // Wait for the callback URL
-    const callbackUrl = await callbackPromise;
-    const url = new URL(callbackUrl);
-
-    // Extract code from URL
-    const code = url.searchParams.get("code");
-    if (!code) {
-      throw new Error("No authorization code found in callback URL");
-    }
-
-    // Validate state parameter
-    const returnedState = url.searchParams.get("state");
-    if (returnedState !== state) {
-      throw new Error("State mismatch. Please try again.");
-    }
+    // Wait for the callback result
+    const { code } = await callbackPromise;
 
     const data = await spotifyApi.authorizationCodeGrant(code);
 
-    // Store tokens
     await context.secrets.store("spotifyAccessToken", data.body.access_token);
     await context.secrets.store("spotifyRefreshToken", data.body.refresh_token);
 
