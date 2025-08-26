@@ -32,7 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
 		try {
 		
 		} catch (error) {
-			vscode.window.showErrorMessage("Error toggling play/pause");	
+			vscode.window.showErrorMessage("Error toggling playback");	
 		}
 	});
 	
