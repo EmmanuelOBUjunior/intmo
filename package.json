@@ -14,11 +14,11 @@
   "contributes": {
     "commands": [
       {
-        "command": "intmo.helloWorld",
-        "title": "Hello World"
+        "command": "intmo.nowPlaying",
+        "title": "Spotify: Show Now Playing"
       },{
-        "command": "intmo.getApi",
-        "title": "Get Spotify API Instance"
+        "command": "intmo.playPause",
+        "title": "Spotify: Play/Pause"
       }
     ]
   },
