@@ -17,7 +17,10 @@ export function activate(context: vscode.ExtensionContext) {
 	//Command: Show Now Playing
 	const nowPlaying = vscode.commands.registerCommand("intmo.nowPlaying",async()=>{
 		try {
-			
+			const track = await spotifyApi.getMyCurrentPlayingTrack();
+			if(track.body && track.body.item){
+				vscode.window.showInformationMessage(`🎶 Now playing: ${track.body.item.name} - ${track.body.item.href}`)
+			}
 		} catch (error) {
 			vscode.window.showErrorMessage("Error fetching now playing track");
 		}
