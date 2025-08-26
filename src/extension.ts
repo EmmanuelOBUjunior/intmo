@@ -22,6 +22,13 @@ export async function activate(context: vscode.ExtensionContext) {
       "http://192.168.0.178:8888/callback",
   });
 
+  if(token && refresh){
+	spotifyApi.setAccessToken(token);
+	spotifyApi.setRefreshToken(refresh);
+  }else{
+	spotifyApi = await authenticateSpotify(context);
+  }
+
   console.log("Spotify API initialized", spotifyApi);
 
   //Command: Show Now Playing
