@@ -8,6 +8,8 @@ import { handleVSCodeCallback } from "./extension";
 export async function authenticateSpotify(context: vscode.ExtensionContext):Promise<SpotifyWebApi | null>{
     const spotifyApi = await handleVSCodeCallback(context);
 
+    console.log('Redirect URI:', spotifyApi.getRedirectURI());
+
     
     // const spotifyApi = new SpotifyWebApi({
     //     clientId: context.globalState.get('clientId') as string || 'beb08f57785a4e62822687a9913c6420',
