@@ -23,6 +23,14 @@ export async function authenticateSpotify(
     spotifyApi.setRefreshToken(refreshToken);
   }
 
+  try {
+    
+  } catch (error:any) {
+    if(error.statusCode === 401){
+      console.log("Access token expired, refreshing....");
+    }
+  }
+
   console.log("Starting authentication process....");
   console.log("Using Redirect URI:", spotifyApi.getRedirectURI());
 
