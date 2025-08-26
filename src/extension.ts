@@ -21,7 +21,7 @@ export async function handleVSCodeCallback(
     clientSecret:
       ((await context.globalState.get("clientSecret")) as string) ||
       "73af6bf1e6674c73b36c05a2a660f5f8",
-    redirectUri: callbackUri.toString(),
+    redirectUri: callbackUri,
   });
 
   // Log the redirect URI for verification
