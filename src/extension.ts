@@ -26,7 +26,11 @@ export function activate(context: vscode.ExtensionContext) {
 		} catch (error) {
 			vscode.window.showErrorMessage("Error fetching now playing track");
 		}
-	})
+	});
+
+	const playPause = vscode.commands.registerCommand("intmo.playPause",async()=>{
+
+	});
 	
 }
 
