@@ -1,3 +1,8 @@
-import SpotifyWebApi from "spotify-web-api-node";
 
-export async function authenticateSpotify():Promise<SpotifyWebApi | null>{}
+import SpotifyWebApi from "spotify-web-api-node";
+import * as vscode from "vscode";
+
+
+export async function authenticateSpotify(context: vscode.ExtensionContext):Promise<SpotifyWebApi | null>{
+    
+}
