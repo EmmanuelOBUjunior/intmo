@@ -87,6 +87,10 @@ export async function activate(context: vscode.ExtensionContext) {
       const track = await withTokenRefresh(context, spotifyApi!, ()=>{
         return spotifyApi!.getMyCurrentPlayingTrack();
       });
+      if(track?.body?.item){
+        const song = track.body.item.name;
+        const isPlaying = track.body.is_playing;
+      }
     } catch (error) {
       statusBarItem.text = "Spotify: ⚠️ Error";
       statusBarItem.show();
