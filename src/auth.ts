@@ -7,6 +7,31 @@ interface CallbackResult {
   state: string;
 }
 
+// Add this function to handle token refresh
+export async function refreshTokens(
+  spotifyApi: SpotifyWebApi,
+  context: vscode.ExtensionContext
+): Promise<boolean> {
+  try {
+    const data = await spotifyApi.refreshAccessToken();
+    spotifyApi.setAccessToken(data.body.access_token);
+    
+    // Store the new access token
+    await context.secrets.store("spotifyAccessToken", data.body.access_token);
+    
+    // If a new refresh token is provided, store it too
+    if (data.body.refresh_token) {
+      spotifyApi.setRefreshToken(data.body.refresh_token);
+      await context.secrets.store("spotifyRefreshToken", data.body.refresh_token);
+    }
+    
+    return true;
+  } catch (error) {
+    console.error("Token refresh failed:", error);
+    return false;
+  }
+}
+
 export async function authenticateSpotify(
   context: vscode.ExtensionContext
 ): Promise<SpotifyWebApi> {
@@ -28,6 +53,7 @@ export async function authenticateSpotify(
   } catch (error:any) {
     if(error.statusCode === 401){
       console.log("Access token expired, refreshing....");
+      const refreshed = await refreshTokens()
     }
   }
 
