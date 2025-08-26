@@ -19,6 +19,8 @@ export async function authenticateSpotify(
   //If we have both tokens, try to use them
   if(accessToken && refreshToken){
     console.log("Found existing tokens, using them to authenticate...");
+    spotifyApi.setAccessToken(accessToken);
+    spotifyApi.setRefreshToken(refreshToken)
   }
 
   console.log("Starting authentication process....");
