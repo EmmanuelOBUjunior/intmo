@@ -19,7 +19,7 @@ export async function authenticateSpotify(
   const authorizeUrl = spotifyApi.createAuthorizeURL(scopes, state);
 
   // Create a promise that will resolve when we get the callback
-  const callbackPromise = new Promise<string>((resolve) => {
+  const callbackPromise = new Promise<string>((resolve, reject) => {
     // const disposable = vscode.window.registerUriHandler({
     //   handleUri(uri: vscode.Uri) {
     //     disposable.dispose(); // Clean up the handler
@@ -54,8 +54,16 @@ export async function authenticateSpotify(
                 expectedState: state,
                 matches: returnedState === state
             });
+            if (code && returnedState === state) {
+                resolve(uri.with({ query: fixedQuery }).toString());
+            } else {
+                reject(new Error("Invalid callback parameters"));
+            }
+            disposable.dispose();
+
         } catch (error) {
           console.error("Error processing callback URI:", error);
+          reject(error);
         }
       },
     });
