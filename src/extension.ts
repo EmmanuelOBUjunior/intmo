@@ -14,12 +14,14 @@ export function activate(context: vscode.ExtensionContext) {
 
 	console.log("Spotify API initialized", spotifyApi);
 	
-	const disposable = vscode.commands.registerCommand('intmo.helloWorld', () => {
-		
-		vscode.window.showInformationMessage('Hello World from intmo!');
-	});
-
-	context.subscriptions.push(disposable);
+	//Command: Show Now Playing
+	const nowPlaying = vscode.commands.registerCommand("intmo.nowPlaying",async()=>{
+		try {
+			
+		} catch (error) {
+			vscode.window.showErrorMessage("Error fetching now playing track");
+		}
+	})
 	
 }
 
