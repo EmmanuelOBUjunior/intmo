@@ -20,10 +20,43 @@ export async function authenticateSpotify(
 
   // Create a promise that will resolve when we get the callback
   const callbackPromise = new Promise<string>((resolve) => {
+    // const disposable = vscode.window.registerUriHandler({
+    //   handleUri(uri: vscode.Uri) {
+    //     disposable.dispose(); // Clean up the handler
+    //     resolve(uri.toString());
+    //   },
+    // });
+
     const disposable = vscode.window.registerUriHandler({
       handleUri(uri: vscode.Uri) {
-        disposable.dispose(); // Clean up the handler
-        resolve(uri.toString());
+        console.log("Raw callback URI received:", uri.toString());
+
+        try {
+          // Decode the URI components properly
+          const decodedQuery = decodeURIComponent(uri.query);
+          console.log("Decoded query:", decodedQuery);
+
+          // Fix the query string format if needed
+            const fixedQuery = decodedQuery
+                .replace(/%20/g, ' ')
+                .replace(/%3D/g, '=')
+                .replace(/%26/g, '&');
+
+            // Create params from fixed query
+            const params = new URLSearchParams(fixedQuery);  
+            
+            const code = params.get("code");
+            const returnedState = params.get("state");
+
+            console.log("Parsed parameters:", {
+                code: code ? `${code.substring(0, 5)}...` : "none",
+                state: returnedState,
+                expectedState: state,
+                matches: returnedState === state
+            });
+        } catch (error) {
+          console.error("Error processing callback URI:", error);
+        }
       },
     });
 
