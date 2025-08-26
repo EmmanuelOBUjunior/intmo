@@ -33,37 +33,45 @@ export async function authenticateSpotify(
 
         try {
           // Decode the URI components properly
-          const decodedQuery = decodeURIComponent(uri.query);
-          console.log("Decoded query:", decodedQuery);
+          //   const decodedQuery = decodeURIComponent(uri.query);
+          //   console.log("Decoded query:", decodedQuery);
+
+          console.log("URI Components: ", {
+            scheme: uri.scheme,
+            authority: uri.authority,
+            path: uri.path,
+            query: uri.query,
+          });
 
           // Fix the query string format if needed
-            const fixedQuery = decodedQuery
-                .replace(/%20/g, ' ')
-                .replace(/%3D/g, '=')
-                .replace(/%26/g, '&');
+          // const fixedQuery = decodedQuery
+          //     .replace(/%20/g, ' ')
+          //     .replace(/%3D/g, '=')
+          //     .replace(/%26/g, '&');
 
-            // Create params from fixed query
-            const params = new URLSearchParams(fixedQuery);  
-            
-            const code = params.get("code");
-            const returnedState = params.get("state");
+          // Create params from fixed query
+          const params = new URLSearchParams(fixedQuery);
 
-            console.log("Parsed parameters:", {
-                code: code ? `${code.substring(0, 5)}...` : "none",
-                state: returnedState,
-                expectedState: state,
-                matches: returnedState === state
-            });
-            if (code && returnedState === state) {
-                resolve(uri.with({ query: fixedQuery }).toString());
-            } else {
-                reject(new Error("Invalid callback parameters"));
-            }
-            disposable.dispose();
+          const code = params.get("code");
+          const returnedState = params.get("state");
 
+          console.log("Parsed parameters:", {
+            code: code ? `${code.substring(0, 5)}...` : "none",
+            state: returnedState,
+            expectedState: state,
+            matches: returnedState === state,
+          });
+          if (code && returnedState === state) {
+            resolve(uri.with({ query: fixedQuery }).toString());
+          } else {
+            reject(new Error("Invalid callback parameters"));
+          }
+          disposable.dispose();
         } catch (error) {
           console.error("Error processing callback URI:", error);
           reject(error);
+        } finally {
+          disposable.dispose();
         }
       },
     });
