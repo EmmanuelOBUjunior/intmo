@@ -28,27 +28,29 @@ export async function authenticateSpotify(
           query: uri.query,
           params: new URLSearchParams(uri.query),
         });
+
+        // Check if this is our callback URI
+        if (uri.path === "/callback") {
+          const params = new URLSearchParams(uri.query);
+          const code = params.get("code");
+          const returnedState = params.get("state");
+
+          console.log("Extracted params:", {
+            code: code ? `${code.substring(0, 5)}...` : "none",
+            state: returnedState,
+            expectedState: state,
+            matches: returnedState === state,
+          });
+
+          if (code && returnedState === state) {
+            resolve(uri.toString());
+          } else {
+            reject(new Error("Invalid callback parameters"));
+          }
+          disposable.dispose();
+        }
       },
     });
-    // const disposable = vscode.window.registerUriHandler({
-    //   handleUri(uri: vscode.Uri): void {
-    //     console.log("Received callback URI:", uri.toString());
-
-    //     // Check if this is our callback URI
-    //     if (uri.path === '/callback') {
-    //       const params = new URLSearchParams(uri.query);
-    //       const code = params.get('code');
-    //       const returnedState = params.get('state');
-
-    //       if (code && returnedState === state) {
-    //         resolve(uri.toString());
-    //       } else {
-    //         reject(new Error('Invalid callback parameters'));
-    //       }
-    //       disposable.dispose();
-    //     }
-    //   }
-    // });
 
     // Cleanup after timeout
     setTimeout(() => {
