@@ -75,6 +75,10 @@ export async function activate(context: vscode.ExtensionContext) {
   }
 
   console.log("Spotify API initialized", spotifyApi);
+
+
+  // Create a status bar item
+  statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
   
 
   //Command: Show Now Playing
