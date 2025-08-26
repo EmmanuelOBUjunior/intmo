@@ -43,6 +43,10 @@ export async function authenticateSpotify(
             query: uri.query,
           });
 
+          // First try to get code directly from the query
+          const directParams = new URLSearchParams(uri.query);
+          const directCode = directParams.get("code");
+
           // Fix the query string format if needed
           // const fixedQuery = decodedQuery
           //     .replace(/%20/g, ' ')
