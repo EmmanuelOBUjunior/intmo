@@ -158,3 +158,24 @@ export async function authenticateSpotify(
     throw error;
   }
 }
+
+
+// Wrapper to handle token refresh on 401 errors
+export async function withTokenRefresh<T>(
+  context: vscode.ExtensionContext,
+  spotifyApi: SpotifyWebApi,
+  operation: () => Promise<T>
+): Promise<T> {
+  try {
+    return await operation();
+  } catch (error: any) {
+    if (error.statusCode === 401) {
+      const refreshed = await refreshTokens(spotifyApi, context);
+      if (refreshed) {
+        return await operation();
+      }
+      throw new Error("Token refresh failed");
+    }
+    throw error;
+  }
+}
