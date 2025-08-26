@@ -1,6 +1,7 @@
 
 import SpotifyWebApi from "spotify-web-api-node";
 import * as vscode from "vscode";
+import * as http from "http";
 
 
 export async function authenticateSpotify(context: vscode.ExtensionContext):Promise<SpotifyWebApi | null>{
@@ -11,5 +12,12 @@ export async function authenticateSpotify(context: vscode.ExtensionContext):Prom
     });
     const scopes = ['user-read-playback-state', 'user-modify-playback-state', 'user-read-currently-playing'];
     const authorizeUrl = spotifyApi.createAuthorizeURL(scopes, 'state123');
+
+    //Spin up a small local server to catch the callback
+    const server = http.createServer(async(req,res)=>{
+        if(req.url?.startsWith('/callback')){
+        
+        }
+    });
     return spotifyApi;
 }
