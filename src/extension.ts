@@ -23,23 +23,26 @@ async function handleVSCodeCallback(context:vscode.ExtensionContext):Promise<Spo
 	return api;
 }
 
+
 export async function activate(context: vscode.ExtensionContext) {
   //Authenticate on activation if no tokens are stored
   const token = await context.secrets.get("spotifyAccessToken");
   const refresh = await context.secrets.get("spotifyRefreshToken");
 
+  spotifyApi = await handleVSCodeCallback(context);
+
   //Initialize Spotify API with stored tokens
-  spotifyApi = new SpotifyWebApi({
-    clientId:
-      await context.secrets.get("clientId") as string ||
-      "beb08f57785a4e62822687a9913c6420",
-    clientSecret:
-      await context.globalState.get("clientSecret") as string ||
-      "73af6bf1e6674c73b36c05a2a660f5f8",
-    redirectUri:
-      await context.globalState.get("redirectUri") as string ||
-      "http://192.168.0.178:8888/callback",
-  });
+//   spotifyApi = new SpotifyWebApi({
+//     clientId:
+//       await context.secrets.get("clientId") as string ||
+//       "beb08f57785a4e62822687a9913c6420",
+//     clientSecret:
+//       await context.secrets.get("clientSecret") as string ||
+//       "73af6bf1e6674c73b36c05a2a660f5f8",
+//     redirectUri:
+//       await context.secrets.get("redirectUri") as string ||
+//       "http://192.168.0.178:8888/callback",
+//   });
 
   if(token && refresh){
 	spotifyApi.setAccessToken(token);
