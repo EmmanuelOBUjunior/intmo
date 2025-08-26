@@ -4,6 +4,12 @@ import { authenticateSpotify } from "./auth";
 
 let spotifyApi: SpotifyWebApi | null = null;
 
+
+//Handling VS code's authentication callback
+async function handleVSCodeCallback(context:vscode.ExtensionContext):Promise<SpotifyWebApi>{
+	return api;
+}
+
 export async function activate(context: vscode.ExtensionContext) {
   //Authenticate on activation if no tokens are stored
   const token = await context.secrets.get("spotifyAccessToken");
