@@ -36,6 +36,13 @@ export async function activate(context: vscode.ExtensionContext) {
 
   spotifyApi = await handleVSCodeCallback(context);
 
+  // Add detailed logging
+  console.log("Auth Configuration:", {
+    redirectUri: spotifyApi.getRedirectURI(),
+    hasClientId: !!spotifyApi.getClientId(),
+    hasClientSecret: !!spotifyApi.getClientSecret(),
+  });
+
   //Initialize Spotify API with stored tokens
   //   spotifyApi = new SpotifyWebApi({
   //     clientId:
