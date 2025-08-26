@@ -6,7 +6,7 @@ import { handleVSCodeCallback } from "./extension";
 
 
 export async function authenticateSpotify(context: vscode.ExtensionContext):Promise<SpotifyWebApi | null>{
-    const api = await handleVSCodeCallback(context);
+    const spotifyApi = await handleVSCodeCallback(context);
 
     
     // const spotifyApi = new SpotifyWebApi({
@@ -15,9 +15,9 @@ export async function authenticateSpotify(context: vscode.ExtensionContext):Prom
     //     redirectUri: context.globalState.get('redirectUri') as string || 'http://192.168.0.178:8888/callback'
     // });
 
-
+    
     const scopes = ['user-read-playback-state', 'user-modify-playback-state', 'user-read-currently-playing'];
-    const authorizeUrl = api.createAuthorizeURL(scopes, 'state123');
+    const authorizeUrl = spotifyApi.createAuthorizeURL(scopes, 'state123');
 
     //Spin up a small local server to catch the callback
     const server = http.createServer(async(req,res)=>{
