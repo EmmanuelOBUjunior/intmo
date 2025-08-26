@@ -17,6 +17,16 @@ export async function authenticateSpotify(context: vscode.ExtensionContext):Prom
     const server = http.createServer(async(req,res)=>{
         if(req.url?.startsWith('/callback')){
             const code = new URL(req.url, 'http://192.168.0.178:8888').searchParams.get("code");
+        
+            if(code){
+                const data = await spotifyApi.authorizationCodeGrant(code);
+                spotifyApi.setAccessToken(data.body.access_token);
+                spotifyApi.setRefreshToken(data.body.access_token);
+
+                //Persist in secrets storage
+                await context.secrets.store('spotifyAccessToken', data.body.access_token);
+                await context.secrets.store('spotifyRefreshToken', data.body.refresh_token);
+            }
         }
     });
     return spotifyApi;
