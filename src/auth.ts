@@ -16,7 +16,7 @@ export async function authenticateSpotify(context: vscode.ExtensionContext):Prom
     //Spin up a small local server to catch the callback
     const server = http.createServer(async(req,res)=>{
         if(req.url?.startsWith('/callback')){
-        
+            const code = new URL(req.url, 'http://192.168.0.178:8888').searchParams.get("code");
         }
     });
     return spotifyApi;
