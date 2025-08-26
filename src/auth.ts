@@ -32,9 +32,7 @@ export async function authenticateSpotify(
         console.log("Raw callback URI received:", uri.toString());
 
         try {
-          // Decode the URI components properly
-          //   const decodedQuery = decodeURIComponent(uri.query);
-          //   console.log("Decoded query:", decodedQuery);
+          
 
           console.log("URI Components: ", {
             scheme: uri.scheme,
@@ -59,6 +57,10 @@ export async function authenticateSpotify(
             disposable.dispose();
             return;
           }
+
+          // Decode the URI components properly
+            const decodedQuery = decodeURIComponent(uri.query);
+            console.log("Decoded query:", decodedQuery);
 
           // Create params from fixed query
           const params = new URLSearchParams(fixedQuery);
