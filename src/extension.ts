@@ -56,12 +56,12 @@ export async function activate(context: vscode.ExtensionContext) {
     "intmo.playPause",
     async () => {
       try {
-        const playback = await spotifyApi.getMyCurrentPlaybackState();
-        if (playback.body.is_playing) {
-          await spotifyApi.pause();
+        const playback = await spotifyApi?.getMyCurrentPlaybackState();
+        if (playback?.body.is_playing) {
+          await spotifyApi?.pause();
           vscode.window.showInformationMessage("⏸️ Playback paused");
         } else {
-          await spotifyApi.play();
+          await spotifyApi?.play();
           vscode.window.showInformationMessage("▶️ Playback started");
         }
       } catch (error) {
