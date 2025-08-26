@@ -53,6 +53,13 @@ export async function authenticateSpotify(
           //     .replace(/%3D/g, '=')
           //     .replace(/%26/g, '&');
 
+          if (directCode) {
+            console.log("Found code directly in query");
+            resolve(uri.toString());
+            disposable.dispose();
+            return;
+          }
+
           // Create params from fixed query
           const params = new URLSearchParams(fixedQuery);
 
