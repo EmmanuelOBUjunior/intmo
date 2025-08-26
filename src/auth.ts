@@ -27,87 +27,48 @@ export async function authenticateSpotify(
     //   },
     // });
 
-    const disposable = vscode.window.registerUriHandler({
-      handleUri(uri: vscode.Uri) {
-        console.log("Raw callback URI received:", uri.toString());
+   const disposable = vscode.window.registerUriHandler({
+  handleUri(uri: vscode.Uri) {
+    console.log("Raw callback URI received:", uri.toString());
 
-        try {
-          console.log("URI Components: ", {
-            scheme: uri.scheme,
-            authority: uri.authority,
-            path: uri.path,
-            query: uri.query,
-          });
+    try {
+      // Get the full query string and decode it
+      const fullQuery = decodeURIComponent(uri.query);
+      console.log("Decoded full query:", fullQuery);
 
-          // First try to get code directly from the query
-          const directParams = new URLSearchParams(uri.query);
-          const directCode = directParams.get("code");
+      // The query string contains 'code=' and 'state=' directly
+      const params = new URLSearchParams(fullQuery);
+      const code = params.get('code');
+      const returnedState = params.get('state');
 
-          // Fix the query string format if needed
-          // const fixedQuery = decodedQuery
-          //     .replace(/%20/g, ' ')
-          //     .replace(/%3D/g, '=')
-          //     .replace(/%26/g, '&');
+      console.log("Extracted parameters:", {
+        hasCode: !!code,
+        codePreview: code ? `${code.substring(0, 10)}...` : 'none',
+        returnedState,
+        expectedState: state,
+        stateMatches: returnedState === state
+      });
 
-          if (directCode) {
-            console.log("Found code directly in query");
-            resolve(uri.toString());
-            disposable.dispose();
-            return;
-          }
+      if (!code) {
+        reject(new Error("No authorization code found in callback URL"));
+        return;
+      }
 
-          // Decode the URI components properly
-          const decodedQuery = decodeURIComponent(uri.query);
-          console.log("Decoded query:", decodedQuery);
+      if (returnedState !== state) {
+        reject(new Error("State mismatch. Please try again."));
+        return;
+      }
 
-          // Try different ways to parse the query
-          let code: string | null = null;
-
-          // Method 1: Try splitting by & and =
-          const queryParts = decodedQuery.split("&");
-          for (const part of queryParts) {
-            if (part.startsWith("code")) {
-              code = part.split("code")[1].replace(/^[=\s]+/, "");
-              break;
-            }
-          }
-
-          if (code) {
-            console.log("Found code using split method");
-            resolve(uri.toString());
-            disposable.dispose();
-            return;
-          }
-
-          console.error("No code found in callback URL");
-          reject(new Error("No authorization code found in callback URL"));
-
-          // Create params from fixed query
-          //   const params = new URLSearchParams(fixedQuery);
-
-          //   const code = params.get("code");
-          //   const returnedState = params.get("state");
-
-          //   console.log("Parsed parameters:", {
-          //     code: code ? `${code.substring(0, 5)}...` : "none",
-          //     state: returnedState,
-          //     expectedState: state,
-          //     matches: returnedState === state,
-          //   });
-          //   if (code && returnedState === state) {
-          //     resolve(uri.with({ query: fixedQuery }).toString());
-          //   } else {
-          //     reject(new Error("Invalid callback parameters"));
-          //   }
-          //   disposable.dispose();
-        } catch (error) {
-          console.error("Error processing callback URI:", error);
-          reject(error);
-        } finally {
-          disposable.dispose();
-        }
-      },
-    });
+      // If we have both code and matching state, resolve the promise
+      resolve(uri.toString());
+    } catch (error) {
+      console.error("Error processing callback URI:", error);
+      reject(error);
+    } finally {
+      disposable.dispose();
+    }
+  }
+});
 
     // Clean up if authentication is cancelled
     setTimeout(() => {
