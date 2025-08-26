@@ -1,4 +1,8 @@
 import * as vscode from 'vscode';
+import SpotifyWebApi from 'spotify-web-api-node';
+
+
+let SpotifyApi = SpotifyWebApi;
 
 export function activate(context: vscode.ExtensionContext) {
 
