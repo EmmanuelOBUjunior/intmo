@@ -36,8 +36,8 @@ export async function activate(context: vscode.ExtensionContext) {
     "intmo.nowPlaying",
     async () => {
       try {
-        const track = await spotifyApi.getMyCurrentPlayingTrack();
-        if (track.body && track.body.item) {
+        const track = await spotifyApi?.getMyCurrentPlayingTrack();
+        if (track?.body && track.body.item) {
           vscode.window.showInformationMessage(
             `🎶 Now playing: ${track.body.item.name} - ${track.body.item.href}`
           );
@@ -47,7 +47,7 @@ export async function activate(context: vscode.ExtensionContext) {
           );
         }
       } catch (error) {
-        vscode.window.showErrorMessage("Error fetching now playing track");
+        vscode.window.showErrorMessage("⚠️ Failed to fetch Now Playing. Try logging in again.");
       }
     }
   );
