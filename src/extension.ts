@@ -173,4 +173,8 @@ export async function activate(context: vscode.ExtensionContext) {
   }
 }
 
-export function deactivate() {}
+export function deactivate() {
+  if(statusBarItem){
+    statusBarItem.dispose()
+  }
+}
