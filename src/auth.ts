@@ -54,6 +54,9 @@ export async function authenticateSpotify(
     if(error.statusCode === 401){
       console.log("Access token expired, refreshing....");
       const refreshed = await refreshTokens(spotifyApi, context);
+      if(refreshed){
+        return spotifyApi;
+      }
     }
   }
 
