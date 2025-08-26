@@ -26,6 +26,9 @@ export async function authenticateSpotify(context: vscode.ExtensionContext):Prom
                 //Persist in secrets storage
                 await context.secrets.store('spotifyAccessToken', data.body.access_token);
                 await context.secrets.store('spotifyRefreshToken', data.body.refresh_token);
+
+                res.end("✅ Authentication successful! You can close this tab.");
+                server.close();
             }
         }
     });
