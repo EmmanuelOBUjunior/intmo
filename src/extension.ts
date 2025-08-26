@@ -114,19 +114,21 @@ export async function activate(context: vscode.ExtensionContext) {
           throw new Error("Spotify API not initialized");
         }
         console.log("Fetching current playing track...");
-        const track = await withTokenRefresh(context, spotifyApi, () => 
-      spotifyApi!.getMyCurrentPlayingTrack()
-    );
+        await updateStatusBar();
+        vscode.window.showInformationMessage(statusBarItem.text);
+    //     const track = await withTokenRefresh(context, spotifyApi, () => 
+    //   spotifyApi!.getMyCurrentPlayingTrack()
+    // );
         // const track = await spotifyApi?.getMyCurrentPlayingTrack();
-        if (track?.body && track.body.item) {
-          vscode.window.showInformationMessage(
-            `🎶 Now playing: ${track.body.item.name} - ${track.body.currently_playing_type}`
-          );
-        } else {
-          vscode.window.showInformationMessage(
-            "No track is currently playing."
-          );
-        }
+        // if (track?.body && track.body.item) {
+        //   vscode.window.showInformationMessage(
+        //     `🎶 Now playing: ${track.body.item.name} - ${track.body.currently_playing_type}`
+        //   );
+        // } else {
+        //   vscode.window.showInformationMessage(
+        //     "No track is currently playing."
+        //   );
+        // }
       } catch (error) {
         console.error("Failed to initialize Spotify API", error);
         vscode.window.showErrorMessage(
