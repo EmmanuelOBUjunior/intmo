@@ -17,7 +17,9 @@ export async function authenticateSpotify(context: vscode.ExtensionContext):Prom
 
     
     const scopes = ['user-read-playback-state', 'user-modify-playback-state', 'user-read-currently-playing'];
+
     const authorizeUrl = spotifyApi.createAuthorizeURL(scopes, 'state123');
+    
 
     //Handle the callback through VS code's authentication API
     const result = await vscode.window.showInputBox({
@@ -65,6 +67,5 @@ export async function authenticateSpotify(context: vscode.ExtensionContext):Prom
     // server.listen(8888);
     vscode.window.showInformationMessage("🗝️ Logging into Spotify...");
 
-    // await vscode.env.openExternal(vscode.Uri.parse(authorizeUrl));
     return spotifyApi;
 }
