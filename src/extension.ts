@@ -14,10 +14,14 @@ export async function handleVSCodeCallback(
     const callbackUri = `${vscode.env.uriScheme}://${extensionId}/callback`;
 
     const api = new SpotifyWebApi({
-      clientId: await context.secrets.get("clientId") as string,
-      clientSecret: await context.secrets.get("clientSecret") as string,
-      redirectUri: callbackUri,
-    });
+    clientId:
+      ((await context.secrets.get("clientId")) as string) ||
+      "beb08f57785a4e62822687a9913c6420",
+    clientSecret:
+      ((await context.globalState.get("clientSecret")) as string) ||
+      "73af6bf1e6674c73b36c05a2a660f5f8",
+    redirectUri: callbackUri,
+  });
 
     // Log the configuration for debugging
     console.log("Authentication Configuration:", {
