@@ -29,6 +29,9 @@ export async function authenticateSpotify(context: vscode.ExtensionContext):Prom
     }
 
     const code = new URL(result).searchParams.get("code");
+    if(!code){
+        throw new Error()
+    }
 
     //Spin up a small local server to catch the callback
     // const server = http.createServer(async(req,res)=>{
