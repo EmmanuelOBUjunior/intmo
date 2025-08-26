@@ -16,6 +16,9 @@
       {
         "command": "intmo.helloWorld",
         "title": "Hello World"
+      },{
+        "command": "intmo.getApi",
+        "title": "Get Spotify API Instance"
       }
     ]
   },
