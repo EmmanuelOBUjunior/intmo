@@ -15,16 +15,19 @@ export async function refreshTokens(
   try {
     const data = await spotifyApi.refreshAccessToken();
     spotifyApi.setAccessToken(data.body.access_token);
-    
+
     // Store the new access token
     await context.secrets.store("spotifyAccessToken", data.body.access_token);
-    
+
     // If a new refresh token is provided, store it too
     if (data.body.refresh_token) {
       spotifyApi.setRefreshToken(data.body.refresh_token);
-      await context.secrets.store("spotifyRefreshToken", data.body.refresh_token);
+      await context.secrets.store(
+        "spotifyRefreshToken",
+        data.body.refresh_token
+      );
     }
-    
+
     return true;
   } catch (error) {
     console.error("Token refresh failed:", error);
@@ -42,7 +45,7 @@ export async function authenticateSpotify(
   const refreshToken = await context.secrets.get("spotifyRefreshToken");
 
   //If we have both tokens, try to use them
-  if(accessToken && refreshToken){
+  if (accessToken && refreshToken) {
     console.log("Found existing tokens, using them to authenticate...");
     spotifyApi.setAccessToken(accessToken);
     spotifyApi.setRefreshToken(refreshToken);
@@ -53,12 +56,11 @@ export async function authenticateSpotify(
     await spotifyApi.getMe();
     console.log("Successfully authenticated with existing tokens.");
     return spotifyApi;
-    
-  } catch (error:any) {
-    if(error.statusCode === 401){
+  } catch (error: any) {
+    if (error.statusCode === 401) {
       console.log("Access token expired, refreshing....");
       const refreshed = await refreshTokens(spotifyApi, context);
-      if(refreshed){
+      if (refreshed) {
         return spotifyApi;
       }
     }
@@ -87,15 +89,15 @@ export async function authenticateSpotify(
           console.log("Decoded full query:", fullQuery);
 
           const params = new URLSearchParams(fullQuery);
-          const code = params.get('code');
-          const returnedState = params.get('state');
+          const code = params.get("code");
+          const returnedState = params.get("state");
 
           console.log("Extracted parameters:", {
             hasCode: !!code,
-            codePreview: code ? `${code.substring(0, 10)}...` : 'none',
+            codePreview: code ? `${code.substring(0, 10)}...` : "none",
             returnedState,
             expectedState: state,
-            stateMatches: returnedState === state
+            stateMatches: returnedState === state,
           });
 
           if (!code) {
@@ -116,7 +118,7 @@ export async function authenticateSpotify(
         } finally {
           disposable.dispose();
         }
-      }
+      },
     });
 
     setTimeout(() => {
