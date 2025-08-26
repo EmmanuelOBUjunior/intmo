@@ -34,7 +34,8 @@
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": true
-    }
+    },
+    "virtualWorkspaces": true
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
