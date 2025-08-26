@@ -8,6 +8,7 @@ let spotifyApi: SpotifyWebApi | null = null;
 //Handling VS code's authentication callback
 export async function handleVSCodeCallback(context:vscode.ExtensionContext):Promise<SpotifyWebApi>{
 	const callbackUri = "vscode://vscode.dev/callback";
+
 	const api = new SpotifyWebApi({
     clientId:
       await context.secrets.get("clientId") as string ||
@@ -16,7 +17,7 @@ export async function handleVSCodeCallback(context:vscode.ExtensionContext):Prom
       await context.globalState.get("clientSecret") as string ||
       "73af6bf1e6674c73b36c05a2a660f5f8",
     redirectUri:
-     callbackUri.toString(),
+     callbackUri,
   });
 	return api;
 }
