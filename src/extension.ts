@@ -7,6 +7,9 @@ let spotifyApi: SpotifyWebApi | null = null;
 
 //Handling VS code's authentication callback
 async function handleVSCodeCallback(context:vscode.ExtensionContext):Promise<SpotifyWebApi>{
+	const callbackUri = await vscode.env.asExternalUri(
+		vscode.Uri.parse(`${vscode.env.uriScheme}://vscode.dev/callback`)
+	);
 	return api;
 }
 
