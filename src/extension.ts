@@ -5,7 +5,12 @@ import { authenticateSpotify } from './auth';
 
 let spotifyApi: SpotifyWebApi| null = null;
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
+
+	//Authenticate on activation if no tokens are stored
+	const token = await context.secrets.get('spotifyAccessToken');
+	const refresh = await context.secrets.get('spotifyRefreshToken');
+
 	//Initialize Spotify API with stored tokens
 	spotifyApi = new SpotifyWebApi({
 		clientId: context.globalState.get('clientId') as string || 'beb08f57785a4e62822687a9913c6420',
