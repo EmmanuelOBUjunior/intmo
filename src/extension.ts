@@ -42,6 +42,8 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.window.showErrorMessage("Error toggling playback");	
 		}
 	});
+
+	context.subscriptions.push(nowPlaying, playPause);
 	
 }
 
