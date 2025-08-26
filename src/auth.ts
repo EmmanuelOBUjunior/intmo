@@ -52,6 +52,7 @@ export async function authenticateSpotify(
     //Verify the tokens by making a test API call
     await spotifyApi.getMe();
     console.log("Successfully authenticated with existing tokens.");
+    return spotifyApi;
     
   } catch (error:any) {
     if(error.statusCode === 401){
