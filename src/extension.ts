@@ -69,7 +69,9 @@ export async function activate(context: vscode.ExtensionContext) {
           );
         }
       } catch (error) {
+		console.error("Failed to initialize Spotify API", error);
         vscode.window.showErrorMessage("⚠️ Failed to fetch Now Playing. Try logging in again.");
+
       }
     }
   );
