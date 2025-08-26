@@ -82,6 +82,15 @@ export async function activate(context: vscode.ExtensionContext) {
   statusBarItem.command = "intmo.playPause";
   context.subscriptions.push(statusBarItem);
 
+  async function updateStatusBar(){
+    try {
+      
+    } catch (error) {
+      statusBarItem.text = "Spotify: ⚠️ Error";
+      statusBarItem.show();
+    }
+  }
+
   //Command: Show Now Playing
   const nowPlaying = vscode.commands.registerCommand(
     "intmo.nowPlaying",
