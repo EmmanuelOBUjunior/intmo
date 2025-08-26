@@ -92,6 +92,9 @@ export async function activate(context: vscode.ExtensionContext) {
         const isPlaying = track.body.is_playing;
 
         statusBarItem.text = isPlaying ? `$(play) ${song}`: `$(debug-pause) ${song}`;
+      }else{
+        statusBarItem.text = "Spotify: No track playing";
+        statusBarItem.show();
       }
     } catch (error) {
       statusBarItem.text = "Spotify: ⚠️ Error";
