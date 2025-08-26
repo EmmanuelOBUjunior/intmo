@@ -38,7 +38,9 @@ export async function handleVSCodeCallback(
 }
 
 export async function activate(context: vscode.ExtensionContext) {
-  //Authenticate on activation if no tokens are stored
+
+  try {
+     //Authenticate on activation if no tokens are stored
   const token = await context.secrets.get("spotifyAccessToken");
   const refresh = await context.secrets.get("spotifyRefreshToken");
 
@@ -72,12 +74,17 @@ export async function activate(context: vscode.ExtensionContext) {
   }
 
   console.log("Spotify API initialized", spotifyApi);
+  
 
   //Command: Show Now Playing
   const nowPlaying = vscode.commands.registerCommand(
     "intmo.nowPlaying",
     async () => {
       try {
+        if(!spotifyApi){
+          throw new Error("Spotify API not initialized");
+        }
+        console.log("Fetching current playing track...");
         const track = await spotifyApi?.getMyCurrentPlayingTrack();
         if (track?.body && track.body.item) {
           vscode.window.showInformationMessage(
@@ -116,6 +123,13 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(nowPlaying, playPause);
+    
+  } catch (error:any) {
+    console.error("Extension activation error:", error);
+    vscode.window.showErrorMessage(
+      `Failed to initialize Spotify extension: ${error.message}`
+    );
+  }
 }
 
 export function deactivate() {}
