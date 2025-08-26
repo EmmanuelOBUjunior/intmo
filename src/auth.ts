@@ -20,22 +20,26 @@ export async function authenticateSpotify(
   const callbackPromise = new Promise<string>((resolve, reject) => {
     const disposable = vscode.window.registerUriHandler({
       handleUri(uri: vscode.Uri): void {
-        console.log("Received callback URI:", {
-          fullUri: uri.toString(),
-          scheme: uri.scheme,
-          authority: uri.authority,
-          path: uri.path,
-          query: uri.query,
-          params: new URLSearchParams(uri.query),
-        });
+        console.log("Raw callback URI:", uri.toString());
 
-        // Check if this is our callback URI
-        if (uri.path === "/callback") {
-          const params = new URLSearchParams(uri.query);
+        try {
+          // Decode the URI components properly
+          const decodedQuery = decodeURIComponent(uri.query);
+          console.log("Decoded query:", decodedQuery);
+
+          // Fix the query string format if needed
+          const fixedQuery = decodedQuery
+            .replace(/%20/g, " ")
+            .replace(/%3D/g, "=")
+            .replace(/%26/g, "&");
+
+          // Create params from fixed query
+          const params = new URLSearchParams(fixedQuery);
+
           const code = params.get("code");
           const returnedState = params.get("state");
 
-          console.log("Extracted params:", {
+          console.log("Parsed parameters:", {
             code: code ? `${code.substring(0, 5)}...` : "none",
             state: returnedState,
             expectedState: state,
@@ -43,11 +47,14 @@ export async function authenticateSpotify(
           });
 
           if (code && returnedState === state) {
-            resolve(uri.toString());
+            resolve(uri.with({ query: fixedQuery }).toString());
           } else {
             reject(new Error("Invalid callback parameters"));
           }
           disposable.dispose();
+        } catch (error) {
+          console.error("Error parsing callback URI:", error);
+          reject(error);
         }
       },
     });
