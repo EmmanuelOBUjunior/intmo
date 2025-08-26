@@ -80,7 +80,7 @@ export async function activate(context: vscode.ExtensionContext) {
   // Create a status bar item
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
   statusBarItem.command = "intmo.playPause";
-  
+  context.subscriptions.push(statusBarItem);
 
   //Command: Show Now Playing
   const nowPlaying = vscode.commands.registerCommand(
