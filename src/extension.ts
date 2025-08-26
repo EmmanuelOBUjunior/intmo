@@ -30,7 +30,14 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const playPause = vscode.commands.registerCommand("intmo.playPause",async()=>{
 		try {
-		
+			const playback = await spotifyApi.getMyCurrentPlaybackState();
+			if(playback.body.is_playing){
+				await spotifyApi.pause();
+				vscode.window.showInformationMessage("⏸️ Playback paused");
+			}else{
+				await spotifyApi.play();
+				vscode.window.showInformationMessage("▶️ Playback started");
+			}
 		} catch (error) {
 			vscode.window.showErrorMessage("Error toggling playback");	
 		}
