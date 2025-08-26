@@ -19,7 +19,9 @@ export function activate(context: vscode.ExtensionContext) {
 		try {
 			const track = await spotifyApi.getMyCurrentPlayingTrack();
 			if(track.body && track.body.item){
-				vscode.window.showInformationMessage(`🎶 Now playing: ${track.body.item.name} - ${track.body.item.href}`)
+				vscode.window.showInformationMessage(`🎶 Now playing: ${track.body.item.name} - ${track.body.item.href}`);
+			}else{
+				vscode.window.showInformationMessage("No track is currently playing.");
 			}
 		} catch (error) {
 			vscode.window.showErrorMessage("Error fetching now playing track");
