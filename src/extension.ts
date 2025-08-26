@@ -3,7 +3,7 @@ import SpotifyWebApi from 'spotify-web-api-node';
 import { authenticateSpotify } from './auth';
 
 
-let spotifyApi: SpotifyWebApi;
+let spotifyApi: SpotifyWebApi| null = null;
 
 export function activate(context: vscode.ExtensionContext) {
 	//Initialize Spotify API with stored tokens
