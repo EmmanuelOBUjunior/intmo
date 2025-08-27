@@ -223,6 +223,7 @@ export async function activate(context: vscode.ExtensionContext) {
       try {
         await spotifyApi?.skipToPrevious();
         vscode.window.showInformationMessage("⏮️ Went back to previous track");
+        updateStatusBar();
       } catch (error) {
         vscode.window.showErrorMessage("⚠️ Failed to go to previous track");
       }
