@@ -3,7 +3,7 @@ import SpotifyWebApi from "spotify-web-api-node";
 import { authenticateSpotify, withTokenRefresh } from "./auth";
 
 let spotifyApi: SpotifyWebApi | null = null;
-// let statusBarItem: vscode.StatusBarItem;
+let statusBarItem: vscode.StatusBarItem;
 let statusBarPlayPause: vscode.StatusBarItem;
 let statusBarNext: vscode.StatusBarItem;
 let statusBarPrevious: vscode.StatusBarItem;
@@ -79,15 +79,15 @@ export async function activate(context: vscode.ExtensionContext) {
     console.log("Spotify API initialized", spotifyApi);
 
     // Status bar items
-    // statusBarItem = vscode.window.createStatusBarItem(
-    //   vscode.StatusBarAlignment.Left,
-    //   100
-    // );
+    statusBarItem = vscode.window.createStatusBarItem(
+      vscode.StatusBarAlignment.Left,
+      100
+    );
     // statusBarItem.command = "intmo.playPause";
     // Add an initial loading state
-    // statusBarItem.text = "$(loading~spin) Connecting to Spotify...";
+    statusBarItem.text = "$(loading~spin) Connecting to Spotify...";
     // Make sure to show the status bar item immediately
-    // statusBarItem.show();
+    statusBarItem.show();
     statusBarPrevious = vscode.window.createStatusBarItem(
       vscode.StatusBarAlignment.Left,
       102
@@ -236,6 +236,7 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
+  statusBarItem.dispose();
   statusBarNext?.dispose();
   statusBarPrevious?.dispose();
   statusBarPlayPause?.dispose();
