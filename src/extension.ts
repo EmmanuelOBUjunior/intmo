@@ -122,6 +122,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
     async function updateStatusBar() {
       try {
+        if(statusBarItem){
+          statusBarItem.dispose();
+        }
         const track = await withTokenRefresh(context, spotifyApi!, () => {
           return spotifyApi!.getMyCurrentPlayingTrack();
         });
@@ -236,7 +239,6 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
-  statusBarItem.dispose();
   statusBarNext?.dispose();
   statusBarPrevious?.dispose();
   statusBarPlayPause?.dispose();
