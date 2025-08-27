@@ -226,7 +226,7 @@ export async function activate(context: vscode.ExtensionContext) {
     });
 
 
-    context.subscriptions.push(nowPlaying, playPause);
+    context.subscriptions.push(nowPlaying, playPause, nextTrack, previousTrack);
   } catch (error: any) {
     console.error("Extension activation error:", error);
     vscode.window.showErrorMessage(
