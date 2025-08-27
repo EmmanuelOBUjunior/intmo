@@ -205,15 +205,19 @@ export async function activate(context: vscode.ExtensionContext) {
       }
     );
 
+    //Command: Skip to Next Track
     const nextTrack = vscode.commands.registerCommand('intmo.nextTrack', async()=>{
       try {
         await spotifyApi?.skipToNext();
         vscode.window.showInformationMessage("⏭️ Skipped to next track");
         updateStatusBar();
       } catch (error) {
-        vscode.window.showErrorMessage("⚠️ Failed to skip track.")
+        vscode.window.showErrorMessage("⚠️ Failed to skip track.");
       }
     });
+
+    const previousTrack = vscode.commands.
+
 
     context.subscriptions.push(nowPlaying, playPause);
   } catch (error: any) {
