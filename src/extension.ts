@@ -3,7 +3,7 @@ import SpotifyWebApi from "spotify-web-api-node";
 import { authenticateSpotify, withTokenRefresh } from "./auth";
 
 let spotifyApi: SpotifyWebApi | null = null;
-let statusBarItem: vscode.StatusBarItem;
+// let statusBarItem: vscode.StatusBarItem;
 let statusBarPlayPause:vscode.StatusBarItem;
 let statusBarNext:vscode.StatusBarItem;
 let statusBarPrevious:vscode.StatusBarItem;
@@ -80,16 +80,33 @@ export async function activate(context: vscode.ExtensionContext) {
     console.log("Spotify API initialized", spotifyApi);
 
     // Status bar items
-    statusBarItem = vscode.window.createStatusBarItem(
-      vscode.StatusBarAlignment.Left,
-      100
-    );
-    statusBarItem.command = "intmo.playPause";
+    // statusBarItem = vscode.window.createStatusBarItem(
+    //   vscode.StatusBarAlignment.Left,
+    //   100
+    // );
+    // statusBarItem.command = "intmo.playPause";
     // Add an initial loading state
-    statusBarItem.text = "$(loading~spin) Connecting to Spotify...";
+    // statusBarItem.text = "$(loading~spin) Connecting to Spotify...";
     // Make sure to show the status bar item immediately
-    statusBarItem.show();
-    context.subscriptions.push(statusBarItem);
+    // statusBarItem.show();
+    statusBarPrevious = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 102);
+    statusBarPrevious.text = "$(chevron-left)";
+    statusBarPrevious.tooltip = "Previous Track";
+    statusBarPrevious.command = "intmo.previousTrack";
+    statusBarPrevious.show();
+
+    statusBarPlayPause = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 102);
+    statusBarPlayPause.text = "$(play)";
+    statusBarPlayPause.tooltip = "Play/Pause";
+    statusBarPlayPause.command = "intmo.playPause";
+    statusBarPlayPause.show();
+
+    statusBarNext = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 102);
+    statusBarNext.text = "$(chevron-right)";
+    statusBarNext.tooltip = "Next Track";
+    statusBarNext.command = "intmo.nextTrack";
+    statusBarNext.show();
+    context.subscriptions.push(statusBarNext,statusBarPlayPause,statusBarPrevious);
 
     async function updateStatusBar() {
       try {
@@ -100,16 +117,19 @@ export async function activate(context: vscode.ExtensionContext) {
           const song = track.body.item.name;
           const isPlaying = track.body.is_playing;
 
-          statusBarItem.text = isPlaying
+          statusBarPlayPause.text = isPlaying
             ? `$(play) ${song}`
             : `$(debug-pause) ${song}`;
         } else {
-          statusBarItem.text = "Spotify: No track playing";
-          statusBarItem.show();
+          statusBarPlayPause.text = "$(circle-slash)";
+          statusBarPlayPause.show();
         }
       } catch (error) {
-        statusBarItem.text = "Spotify: ⚠️ Error";
-        statusBarItem.show();
+        statusBarPlayPause.text = "$(alert)";
+      statusBarPlayPause.tooltip = "Spotify: Error fetching playback";
+      statusBarPrevious.show();
+      statusBarPlayPause.show();
+      statusBarNext.show();
       }
     }
 
