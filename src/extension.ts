@@ -4,9 +4,9 @@ import { authenticateSpotify, withTokenRefresh } from "./auth";
 
 let spotifyApi: SpotifyWebApi | null = null;
 let statusBarItem: vscode.StatusBarItem;
-let statusBarPlayPause:vscode.StatusBarItem
-let statusBarNext:vscode.StatusBarItem
-let statusBarPrevious:vscode.StatusBarItem
+let statusBarPlayPause:vscode.StatusBarItem;
+let statusBarNext:vscode.StatusBarItem;
+let statusBarPrevious:vscode.StatusBarItem;
 
 
 //Handling VS code's authentication callback
@@ -79,7 +79,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     console.log("Spotify API initialized", spotifyApi);
 
-    // Create a status bar item
+    // Status bar items
     statusBarItem = vscode.window.createStatusBarItem(
       vscode.StatusBarAlignment.Left,
       100
