@@ -218,7 +218,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
     const previousTrack = vscode.commands.registerCommand('intmo.previousTrack', async()=>{
       try {
-        
+        await spotifyApi?.skipToPrevious();
+        vscode.window.showInformationMessage("⏮️ Went back to previous track");
       } catch (error) {
         vscode.window.showErrorMessage("⚠️ Failed to go to previous track");
       }
