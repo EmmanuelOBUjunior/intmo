@@ -216,7 +216,13 @@ export async function activate(context: vscode.ExtensionContext) {
       }
     });
 
-    const previousTrack = vscode.commands.
+    const previousTrack = vscode.commands.registerCommand('intmo.previousTrack', async()=>{
+      try {
+        
+      } catch (error) {
+        vscode.window.showErrorMessage("⚠️ Failed to go to previous track");
+      }
+    });
 
 
     context.subscriptions.push(nowPlaying, playPause);
