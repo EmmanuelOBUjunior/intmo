@@ -5,6 +5,7 @@ import { authenticateSpotify, withTokenRefresh } from "./auth";
 let spotifyApi: SpotifyWebApi | null = null;
 let statusBarItem: vscode.StatusBarItem;
 
+
 //Handling VS code's authentication callback
 export async function handleVSCodeCallback(
   context: vscode.ExtensionContext
