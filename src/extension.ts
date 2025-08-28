@@ -67,7 +67,13 @@ async function searchSpotify(){
     }
 
     if(data?.body.artists?.items){
-      data.body.artists.items.forEach(a=>{});
+      data.body.artists.items.forEach(a=>{
+        items.push({
+          label: `👤 ${a.name}`,
+          description: `Artist`,
+          uri: a.uri
+        });
+      });
     }
 
   } catch (error) {
