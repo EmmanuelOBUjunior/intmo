@@ -339,7 +339,9 @@ export async function activate(context: vscode.ExtensionContext) {
       }
     );
 
-    context.subscriptions.push(nowPlaying, playPause, nextTrack, previousTrack);
+    const searchOnSpotify = vscode.commands.registerCommand("intmo.searchSpotify", searchSpotify);
+
+    context.subscriptions.push(nowPlaying, playPause, nextTrack, previousTrack, searchOnSpotify);
   } catch (error: any) {
     console.error("Extension activation error:", error);
     vscode.window.showErrorMessage(
