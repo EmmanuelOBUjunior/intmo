@@ -76,6 +76,16 @@ async function searchSpotify(){
       });
     }
 
+    if (data.body.playlists?.items) {
+            data.body.playlists.items.forEach(p => {
+                items.push({
+                    label: `📂 ${p.name}`,
+                    description: 'Playlist',
+                    uri: p.uri!
+                });
+            });
+        }
+
   } catch (error) {
     vscode.window.showErrorMessage("Search failed");
     console.error(error);
