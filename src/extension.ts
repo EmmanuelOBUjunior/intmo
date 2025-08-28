@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import SpotifyWebApi from "spotify-web-api-node";
 import { authenticateSpotify, withTokenRefresh } from "./auth";
+import { MiniplayerPanel } from "./utils/utils";
 
 let spotifyApi: SpotifyWebApi | null = null;
 let statusBarItem: vscode.StatusBarItem;
@@ -369,6 +370,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
     const searchOnSpotify = vscode.commands.registerCommand("intmo.searchSpotify", searchSpotify);
 
+    const openMiniplayer = vscode.commands.registerCommand("intmo.openMiniplayer", ()=>{
+      MiniplayerPanel.createOrShow(context.extensionUri);
+    });
     context.subscriptions.push(nowPlaying, playPause, nextTrack, previousTrack, searchOnSpotify);
   } catch (error: any) {
     console.error("Extension activation error:", error);
