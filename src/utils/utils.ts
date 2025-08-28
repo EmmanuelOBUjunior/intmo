@@ -147,3 +147,10 @@ export class MiniplayerPanel{
         `;
     }
 }
+
+
+
+export async function updateTrackInfo(){
+    const state = await spotifyApi?.getMyCurrentPlayingTrack();
+    if(!state?.body || !state?.body.item) {return;}
+}
