@@ -157,12 +157,12 @@ async function searchSpotify(context: vscode.ExtensionContext) {
               spotifyApi!.play({ context_uri: pick.uri })
             );
             break;
-        }
+          }
+          vscode.window.showInformationMessage(`Now playing: ${pick.label}`);
       } catch (error) {
         console.error("Playback error: ", error);
         vscode.window.showErrorMessage(`Failed to play ${pick.label}`);
       }
-      vscode.window.showInformationMessage(`Now playing: ${pick.label}`);
     }
   } catch (error) {
     vscode.window.showErrorMessage("⚠️ Search failed");
