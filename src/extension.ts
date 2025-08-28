@@ -170,6 +170,7 @@ async function searchSpotify(context: vscode.ExtensionContext) {
   }
 }
 
+
 export async function activate(context: vscode.ExtensionContext) {
   try {
     //Authenticate on activation if no tokens are stored
