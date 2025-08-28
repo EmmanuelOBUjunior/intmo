@@ -73,6 +73,9 @@ try {
       })),{placeHolder: "Select a Sporify device to use"}
     );
     if(!deviceChoice){return;}
+
+    //Transfer playpack to selected device
+    await withTokenRefresh(context, spotifyApi!, ()=> spotifyApi!.transferMyPlayback([deviceChoice.id]));
   }
 
   const query = await vscode.window.showInputBox({
