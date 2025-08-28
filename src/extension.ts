@@ -112,7 +112,7 @@ async function searchSpotify(context: vscode.ExtensionContext) {
           label: `🎵 ${t.name}`,
           description: t.artists.map((a) => a.name).join(","),
           uri: t.uri,
-          type: t.type,
+          type: t?.type,
         });
       });
     }
@@ -123,7 +123,7 @@ async function searchSpotify(context: vscode.ExtensionContext) {
           label: `👤 ${a.name}`,
           description: `Artist`,
           uri: a.uri,
-          type: a.type,
+          type: a?.type,
         });
       });
     }
@@ -134,7 +134,7 @@ async function searchSpotify(context: vscode.ExtensionContext) {
           label: `📂 ${p?.name}`,
           description: "Playlist",
           uri: p?.uri,
-          type: p.type,
+          type: p?.type,
         });
       });
     }
