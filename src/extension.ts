@@ -57,7 +57,9 @@ async function searchSpotify(){
     const items:{label:string, description:string,uri:string}[] = []; 
 
     if(data?.body.tracks?.items){
+      data.body.tracks.items.forEach(t=>{
 
+      });
     }
   } catch (error) {
     vscode.window.showErrorMessage("Search failed");
