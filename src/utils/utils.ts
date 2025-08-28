@@ -7,6 +7,12 @@ export class MiniplayerPanel{
     private readonly _extensionUri: vscode.Uri;
 
     public static createOrShow(extentionUri: vscode.Uri){
+        const column = vscode.ViewColumn.Two;
 
+        //If we already have a pane;, reveal it
+        if(MiniplayerPanel.currentPanel){
+            MiniplayerPanel.currentPanel._panel.reveal(column);
+            return;
+        }
     }
 }
