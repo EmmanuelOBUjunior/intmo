@@ -57,6 +57,11 @@ try {
       spotifyApi!.getMyDevices()
     );
 
+  if(!devices.body.devices.length){
+    vscode.window.showErrorMessage("No Spotify devices found. Please open Spotify on any device.");
+    return;
+  }
+
   const query = await vscode.window.showInputBox({
     prompt: "Search Spotify (song, artist, playlist)",
   });
