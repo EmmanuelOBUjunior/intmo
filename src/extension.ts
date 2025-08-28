@@ -116,7 +116,10 @@ export async function activate(context: vscode.ExtensionContext) {
     statusBarNext.command = "intmo.nextTrack";
     statusBarNext.show();
 
-    statusBarTrack = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+    statusBarTrack = vscode.window.createStatusBarItem(
+      vscode.StatusBarAlignment.Left,
+      100
+    );
     statusBarTrack.text = "🎵 Not Playing";
     statusBarTrack.tooltip = "Current Song";
     statusBarTrack.show();
@@ -129,11 +132,9 @@ export async function activate(context: vscode.ExtensionContext) {
       statusBarTrack
     );
 
-
-
     async function updateStatusBar() {
       try {
-        if(statusBarItem){
+        if (statusBarItem) {
           statusBarItem.dispose();
         }
         const track = await withTokenRefresh(context, spotifyApi!, () => {
@@ -144,21 +145,27 @@ export async function activate(context: vscode.ExtensionContext) {
           let song = item.name;
           let artist = "";
           if ("artists" in item && Array.isArray((item as any).artists)) {
-            artist = (item as any).artists.map((a: { name: string }) => a.name).join(", ");
+            artist = (item as any).artists
+              .map((a: { name: string }) => a.name)
+              .join(", ");
           } else if ("show" in item && item.show && item.show.name) {
             artist = item.show.name;
           }
           const isPlaying = track.body.is_playing;
 
-          statusBarPlayPause.text = isPlaying ? `$(debug-pause)` : `$(play) ${song}`;
-          statusBarPlayPause.tooltip = `${isPlaying ? "Pause": "Play"}: ${song}${artist ? " - " + artist : ""}`;
+          statusBarPlayPause.text = isPlaying
+            ? `$(debug-pause)`
+            : `$(play) ${song}`;
+          statusBarPlayPause.tooltip = `${
+            isPlaying ? "Pause" : "Play"
+          }: ${song}${artist ? " - " + artist : ""}`;
 
           statusBarTrack.text = `🎵 ${song} - ${artist}`;
           statusBarTrack.tooltip = `🎵 ${song} by ${artist}`;
         } else {
           statusBarPlayPause.text = "$(circle-slash)";
           statusBarPlayPause.text = "Nothing Playing";
-          
+
           statusBarPlayPause.text = "🎵 Not Playing";
           statusBarPlayPause.text = "Spotify idle";
         }
@@ -171,7 +178,7 @@ export async function activate(context: vscode.ExtensionContext) {
         statusBarPlayPause.tooltip = "Spotify: Error fetching playback";
 
         statusBarTrack.text = "⚠️ Error";
-      statusBarTrack.tooltip = "Could not fetch current track";
+        statusBarTrack.tooltip = "Could not fetch current track";
       }
     }
 
@@ -189,7 +196,7 @@ export async function activate(context: vscode.ExtensionContext) {
           console.log("Fetching current playing track...");
           // await updateStatusBar();
           // vscode.window.showInformationMessage(statusBarItem.text);
-              const track = await withTokenRefresh(context, spotifyApi, () =>
+          const track = await withTokenRefresh(context, spotifyApi, () =>
             spotifyApi!.getMyCurrentPlayingTrack()
           );
           // const track = await spotifyApi?.getMyCurrentPlayingTrack();
@@ -223,9 +230,11 @@ export async function activate(context: vscode.ExtensionContext) {
           if (playback?.body.is_playing) {
             await spotifyApi?.pause();
             vscode.window.showInformationMessage("⏸️ Playback paused");
+            updateStatusBar();
           } else {
             await spotifyApi?.play();
             vscode.window.showInformationMessage("▶️ Playback resumed");
+            updateStatusBar();
           }
         } catch (error) {
           vscode.window.showErrorMessage("⚠️ Failed to toggle playback.");
@@ -234,26 +243,33 @@ export async function activate(context: vscode.ExtensionContext) {
     );
 
     //Command: Skip to Next Track
-    const nextTrack = vscode.commands.registerCommand('intmo.nextTrack', async()=>{
-      try {
-        await spotifyApi?.skipToNext();
-        vscode.window.showInformationMessage("⏭️ Skipped to next track");
-        updateStatusBar();
-      } catch (error) {
-        vscode.window.showErrorMessage("⚠️ Failed to skip track.");
+    const nextTrack = vscode.commands.registerCommand(
+      "intmo.nextTrack",
+      async () => {
+        try {
+          await spotifyApi?.skipToNext();
+          vscode.window.showInformationMessage("⏭️ Skipped to next track");
+          updateStatusBar();
+        } catch (error) {
+          vscode.window.showErrorMessage("⚠️ Failed to skip track.");
+        }
       }
-    });
+    );
 
-    const previousTrack = vscode.commands.registerCommand('intmo.previousTrack', async()=>{
-      try {
-        await spotifyApi?.skipToPrevious();
-        vscode.window.showInformationMessage("⏮️ Went back to previous track");
-        updateStatusBar();
-      } catch (error) {
-        vscode.window.showErrorMessage("⚠️ Failed to go to previous track");
+    const previousTrack = vscode.commands.registerCommand(
+      "intmo.previousTrack",
+      async () => {
+        try {
+          await spotifyApi?.skipToPrevious();
+          vscode.window.showInformationMessage(
+            "⏮️ Went back to previous track"
+          );
+          updateStatusBar();
+        } catch (error) {
+          vscode.window.showErrorMessage("⚠️ Failed to go to previous track");
+        }
       }
-    });
-
+    );
 
     context.subscriptions.push(nowPlaying, playPause, nextTrack, previousTrack);
   } catch (error: any) {
