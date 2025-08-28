@@ -73,5 +73,21 @@ export class MiniplayerPanel{
                 }
             </style>
         `;
+
+        const script = `
+            <script>
+                const vscode = acquireVsCodeApi();
+
+                document.getElementById("playPause").addEventListener("click", () => {
+                    vscode.postMessage({ command: "playPause" });
+                });
+                document.getElementById("next").addEventListener("click", () => {
+                    vscode.postMessage({ command: "next" });
+                });
+                document.getElementById("prev").addEventListener("click", () => {
+                    vscode.postMessage({ command: "previous" });
+                });
+            </script>
+        `;
     }
 }
