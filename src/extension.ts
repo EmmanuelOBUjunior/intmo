@@ -284,4 +284,5 @@ export function deactivate() {
   statusBarNext?.dispose();
   statusBarPrevious?.dispose();
   statusBarPlayPause?.dispose();
+  statusBarTrack?.dispose();
 }
