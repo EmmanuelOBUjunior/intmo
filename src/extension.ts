@@ -120,6 +120,8 @@ export async function activate(context: vscode.ExtensionContext) {
       statusBarPrevious
     );
 
+    //TODO: add the status bar track
+
     async function updateStatusBar() {
       try {
         if(statusBarItem){
