@@ -50,9 +50,12 @@ function truncate(text: string, maxLength: 30): string {
 }
 
 //Search songs, artsists, playlists
-async function searchSpotify() {
+async function searchSpotify(context:vscode.ExtensionContext) {
 try {
-
+  //Check for active devices
+  const devices = await withTokenRefresh(context, spotifyApi!, () => 
+      spotifyApi!.getMyDevices()
+    );
 
   const query = await vscode.window.showInputBox({
     prompt: "Search Spotify (song, artist, playlist)",
