@@ -169,9 +169,9 @@ export async function activate(context: vscode.ExtensionContext) {
       } catch (error) {
         statusBarPlayPause.text = "$(alert)";
         statusBarPlayPause.tooltip = "Spotify: Error fetching playback";
-        statusBarPrevious.show();
-        statusBarPlayPause.show();
-        statusBarNext.show();
+
+        statusBarTrack.text = "⚠️ Error";
+      statusBarTrack.tooltip = "Could not fetch current track";
       }
     }
 
