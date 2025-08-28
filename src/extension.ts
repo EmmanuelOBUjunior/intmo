@@ -62,6 +62,19 @@ try {
     return;
   }
 
+  //If no active device, let user pick one
+  let activeDevice = devices.body.devices.find(d=>d.is_active);
+  if(!activeDevice && devices.body.devices.length > 0){
+    const deviceChoice = await vscode.window.showQuickPick(
+      devices.body.devices.map(d=>({
+        label: d.name,
+        description: d.type,
+        id: d.id
+      })),{placeHolder: "Select a Sporify device to use"}
+    );
+    if(!deviceChoice){return;}
+  }
+
   const query = await vscode.window.showInputBox({
     prompt: "Search Spotify (song, artist, playlist)",
   });
