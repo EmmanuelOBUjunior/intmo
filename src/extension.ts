@@ -7,6 +7,7 @@ let statusBarItem: vscode.StatusBarItem;
 let statusBarPlayPause: vscode.StatusBarItem;
 let statusBarNext: vscode.StatusBarItem;
 let statusBarPrevious: vscode.StatusBarItem;
+let statusBarTrack: vscode.StatusBarItem;
 
 //Handling VS code's authentication callback
 export async function handleVSCodeCallback(
