@@ -169,4 +169,8 @@ export async function updateTrackInfo(){
         artists: state.body.item.artists.map((a: any) => a.name),
         albumArt: state.body.item.album.images[0]?.url || ""
     };
+
+    if(MiniplayerPanel.currentPanel){
+        MiniplayerPanel.currentPanel.updateTrack(track);
+    }
 }
