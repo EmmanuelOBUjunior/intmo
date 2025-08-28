@@ -53,7 +53,8 @@ async function searchSpotify(){
   if(!query) {return;}
 
   try {
-    
+    const data = await spotifyApi?.search(query, ['track', 'artist', 'playlist'], {limit: 5});
+    const items:{label:string, description:string,uri:string}[] = []; 
   } catch (error) {
     vscode.window.showErrorMessage("Search failed");
     console.error(error);
