@@ -104,7 +104,7 @@ async function searchSpotify() {
       vscode.window.showInformationMessage(`Now playing: ${pick.label}`);
     }
   } catch (error) {
-    vscode.window.showErrorMessage("Search failed");
+    vscode.window.showErrorMessage("⚠️ Search failed");
     console.error(error);
   }
 }
