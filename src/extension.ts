@@ -143,9 +143,9 @@ export async function activate(context: vscode.ExtensionContext) {
           const song = track.body.item.name;
           const isPlaying = track.body.is_playing;
 
-          statusBarPlayPause.text = isPlaying
-            ? `$(play) ${song}`
-            : `$(debug-pause) ${song}`;
+          statusBarPlayPause.text = isPlaying ? `$(debug-pause)` : `$(play) ${song}`;
+
+          stau
         } else {
           statusBarPlayPause.text = "$(circle-slash)";
           statusBarPrevious.show();
