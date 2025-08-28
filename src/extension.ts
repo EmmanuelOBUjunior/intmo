@@ -87,6 +87,9 @@ async function searchSpotify(){
         }
 
     const pick = await vscode.window.showQuickPick(items, {placeHolder: "Select to play"});
+    if(pick){
+      await spotifyApi?.play({});
+    }
 
   } catch (error) {
     vscode.window.showErrorMessage("Search failed");
