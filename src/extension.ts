@@ -148,7 +148,7 @@ async function searchSpotify(context: vscode.ExtensionContext) {
         switch (pick.type) {
           case "track":
             await withTokenRefresh(context, spotifyApi!, ()=>
-              spotifyApi?.play({uris:[pick.uri]})
+              spotifyApi!.play({uris:[pick.uri]})
           );
         }
       } catch (error) {
