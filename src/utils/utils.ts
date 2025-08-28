@@ -66,6 +66,13 @@ export class MiniplayerPanel{
         this._panel.dispose();
     }
 
+    public updateTrack(track:any){
+        this._panel.webview.postMessage({
+            command: "updateTrack",
+            track
+        });
+    }
+
     private _getHtmlForWebview(webview:vscode.Webview):string{
         const style = `
             <style>
