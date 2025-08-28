@@ -1,2 +1,2 @@
-export class Miniplayer{
+export class MiniplayerPanel{
 }
