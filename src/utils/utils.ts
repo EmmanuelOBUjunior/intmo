@@ -52,6 +52,11 @@ export class MiniplayerPanel{
                         spotifyApi?.play();
                     }
                     break;
+                case "nextTrack":
+                    spotifyApi?.skipToNext();
+                    break;
+                case "previousTrack":
+                    spotifyApi?.skipToPrevious();
             }
         });
     }
