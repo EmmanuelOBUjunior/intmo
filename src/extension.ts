@@ -43,55 +43,66 @@ export async function handleVSCodeCallback(
 }
 
 //Helper function to truncate song to 30 characters
-function truncate(text:string, maxLength:30):string{
-  return text.length > maxLength ? text.substring(0, maxLength-1) + "...": text;
+function truncate(text: string, maxLength: 30): string {
+  return text.length > maxLength
+    ? text.substring(0, maxLength - 1) + "..."
+    : text;
 }
 
 //Search songs, artsists, playlists
-async function searchSpotify(){
-  const query = await vscode.window.showInputBox({prompt: "Search Spotify (song, artist, playlist)"});
-  if(!query) {return;}
+async function searchSpotify() {
+  const query = await vscode.window.showInputBox({
+    prompt: "Search Spotify (song, artist, playlist)",
+  });
+  if (!query) {
+    return;
+  }
 
   try {
-    const data = await spotifyApi?.search(query, ['track', 'artist', 'playlist'], {limit: 5});
-    const items:{label:string, description:string,uri:string}[] = []; 
+    const data = await spotifyApi?.search(
+      query,
+      ["track", "artist", "playlist"],
+      { limit: 5 }
+    );
+    const items: { label: string; description: string; uri: string }[] = [];
 
-    if(data?.body.tracks?.items){
-      data.body.tracks.items.forEach(t=>{
+    if (data?.body.tracks?.items) {
+      data.body.tracks.items.forEach((t) => {
         items.push({
           label: `🎵 ${t.name}`,
-          description: t.artists.map(a=>a.name).join(','),
-          uri: t.uri
+          description: t.artists.map((a) => a.name).join(","),
+          uri: t.uri,
         });
       });
     }
 
-    if(data?.body.artists?.items){
-      data.body.artists.items.forEach(a=>{
+    if (data?.body.artists?.items) {
+      data.body.artists.items.forEach((a) => {
         items.push({
           label: `👤 ${a.name}`,
           description: `Artist`,
-          uri: a.uri
+          uri: a.uri,
         });
       });
     }
 
     if (data?.body.playlists?.items) {
-            data.body.playlists.items.forEach(p => {
-                items.push({
-                    label: `📂 ${p.name}`,
-                    description: 'Playlist',
-                    uri: p.uri!
-                });
-            });
-        }
-
-    const pick = await vscode.window.showQuickPick(items, {placeHolder: "Select to play"});
-    if(pick){
-      await spotifyApi?.play({context_uri:pick.uri});
-      vscode.window.showInformationMessage(`Now playing: ${pick.label}`);
+      data.body.playlists.items.forEach((p) => {
+        items.push({
+          label: `📂 ${p.name}`,
+          description: "Playlist",
+          uri: p.uri!,
+        });
+      });
     }
 
+    const pick = await vscode.window.showQuickPick(items, {
+      placeHolder: "Select to play",
+    });
+    if (pick) {
+      await spotifyApi?.play({ context_uri: pick.uri });
+      vscode.window.showInformationMessage(`Now playing: ${pick.label}`);
+    }
   } catch (error) {
     vscode.window.showErrorMessage("Search failed");
     console.error(error);
@@ -201,17 +212,18 @@ export async function activate(context: vscode.ExtensionContext) {
           let song = truncate(item.name, 30);
           let artist = "";
           if ("artists" in item && Array.isArray((item as any).artists)) {
-            artist = truncate((item as any).artists
-              .map((a: { name: string }) => a.name)
-              .join(", "), 30);
+            artist = truncate(
+              (item as any).artists
+                .map((a: { name: string }) => a.name)
+                .join(", "),
+              30
+            );
           } else if ("show" in item && item.show && item.show.name) {
             artist = truncate(item.show.name, 30);
           }
           const isPlaying = track.body.is_playing;
 
-          statusBarPlayPause.text = isPlaying
-            ? `$(debug-pause)`
-            : `$(play)`;
+          statusBarPlayPause.text = isPlaying ? `$(debug-pause)` : `$(play)`;
           statusBarPlayPause.tooltip = `${
             isPlaying ? "Pause" : "Play"
           }: ${song}${artist ? " - " + artist : ""}`;
