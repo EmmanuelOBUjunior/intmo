@@ -45,6 +45,33 @@ export class MiniplayerPanel{
     }
 
     private _getHtmlForWebview(webview:vscode.Webview):string{
-        
+        const style = `
+            <style>
+                body {
+                    font-family: sans-serif;
+                    padding: 10px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+                img {
+                    border-radius: 8px;
+                    max-width: 200px;
+                }
+                .controls {
+                    margin-top: 10px;
+                    display: flex;
+                    gap: 10px;
+                }
+                button {
+                    padding: 6px 12px;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    background: #1DB954;
+                    color: white;
+                }
+            </style>
+        `;
     }
 }
