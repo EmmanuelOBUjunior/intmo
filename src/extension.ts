@@ -51,6 +51,13 @@ function truncate(text:string, maxLength:30):string{
 async function searchSpotify(){
   const query = await vscode.window.showInputBox({prompt: "Search Spotify (song, artist, playlist)"});
   if(!query) {return;}
+
+  try {
+    
+  } catch (error) {
+    vscode.window.showErrorMessage("Search failed");
+    console.error(error);
+  }
 }
 
 export async function activate(context: vscode.ExtensionContext) {
