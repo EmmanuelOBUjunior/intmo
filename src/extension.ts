@@ -154,8 +154,9 @@ async function searchSpotify(context: vscode.ExtensionContext) {
           case "artist":
           case "playlist":
             await withTokenRefresh(context, spotifyApi!, ()=>
-              await spotifyApi!.play({ context_uri: pick.uri })
+              spotifyApi!.play({ context_uri: pick.uri })
             );
+            break;
         }
       } catch (error) {
         console.error("Playback error: ", error);
