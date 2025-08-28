@@ -116,6 +116,15 @@ export class MiniplayerPanel{
                 document.getElementById("prev").addEventListener("click", () => {
                     vscode.postMessage({ command: "previousTrack" });
                 });
+
+                window.addEventListener("message", event => {
+                        const { command, track } = event.data;
+                        if (command === "updateTrack") {
+                            document.getElementById("title").textContent = track.name;
+                            document.getElementById("info").textContent = track.artists.join(", ");
+                            document.getElementById("cover").src = track.albumArt;
+                        }
+                    });
             </script>
         `;
 
