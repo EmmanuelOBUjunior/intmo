@@ -51,49 +51,60 @@ function truncate(text: string, maxLength: 30): string {
 }
 
 //Search songs, artsists, playlists
-async function searchSpotify(context:vscode.ExtensionContext) {
-try {
-  //Check for active devices
-  const devices = await withTokenRefresh(context, spotifyApi!, () => 
+async function searchSpotify(context: vscode.ExtensionContext) {
+  try {
+    //Check for active devices
+    const devices = await withTokenRefresh(context, spotifyApi!, () =>
       spotifyApi!.getMyDevices()
     );
 
-  if(!devices.body.devices.length){
-    vscode.window.showErrorMessage("No Spotify devices found. Please open Spotify on any device.");
-    return;
-  }
+    if (!devices.body.devices.length) {
+      vscode.window.showErrorMessage(
+        "No Spotify devices found. Please open Spotify on any device."
+      );
+      return;
+    }
 
-  //If no active device, let user pick one
-  let activeDevice = devices.body.devices.find(d=>d.is_active);
-  if(!activeDevice && devices.body.devices.length > 0){
-    const deviceChoice:any = await vscode.window.showQuickPick(
-      devices.body.devices.map(d=>({
-        label: d.name,
-        description: d.type,
-        id: d.id
-      })),{placeHolder: "Select a Sporify device to use"}
-    );
-    if(!deviceChoice){return;}
+    //If no active device, let user pick one
+    let activeDevice = devices.body.devices.find((d) => d.is_active);
+    if (!activeDevice && devices.body.devices.length > 0) {
+      const deviceChoice: any = await vscode.window.showQuickPick(
+        devices.body.devices.map((d) => ({
+          label: d.name,
+          description: d.type,
+          id: d.id,
+        })),
+        { placeHolder: "Select a Sporify device to use" }
+      );
+      if (!deviceChoice) {
+        return;
+      }
 
-    //Transfer playpack to selected device
-    await withTokenRefresh(context, spotifyApi!, ()=> spotifyApi!.transferMyPlayback([deviceChoice.id]));
-  }
+      //Transfer playpack to selected device
+      await withTokenRefresh(context, spotifyApi!, () =>
+        spotifyApi!.transferMyPlayback([deviceChoice.id])
+      );
+    }
 
-  const query = await vscode.window.showInputBox({
-    prompt: "Search Spotify (song, artist, playlist)",
-  });
-  if (!query) {
-    return;
-  }
+    const query = await vscode.window.showInputBox({
+      prompt: "Search Spotify (song, artist, playlist)",
+    });
+    if (!query) {
+      return;
+    }
 
-  
     const data = await spotifyApi?.search(
       query,
       ["track", "artist", "playlist"],
       { limit: 5 }
     );
     console.log("Data from search: ", data);
-    const items: { label: string; description: string; uri: string }[] = [];
+    const items: {
+      label: string;
+      description: string;
+      uri: string;
+      type: string;
+    }[] = [];
 
     if (data?.body.tracks?.items) {
       data.body.tracks.items.forEach((t) => {
@@ -101,6 +112,7 @@ try {
           label: `🎵 ${t.name}`,
           description: t.artists.map((a) => a.name).join(","),
           uri: t.uri,
+          type: t.type,
         });
       });
     }
@@ -111,6 +123,7 @@ try {
           label: `👤 ${a.name}`,
           description: `Artist`,
           uri: a.uri,
+          type: a.type,
         });
       });
     }
@@ -121,6 +134,7 @@ try {
           label: `📂 ${p?.name}`,
           description: "Playlist",
           uri: p?.uri,
+          type: p.type,
         });
       });
     }
@@ -129,6 +143,18 @@ try {
       placeHolder: "Select to play",
     });
     if (pick) {
+      //Handle different types of playbacks
+      try {
+        switch (pick.type) {
+          case "track":
+            await withTokenRefresh(context, spotifyApi!, ()=>
+              spotifyApi?.play({uris:[pick.uri]})
+          );
+        }
+      } catch (error) {
+        console.error("Playback error: ", error);
+        vscode.window.showErrorMessage(`Failed to play ${pick.label}`);
+      }
       await spotifyApi?.play({ context_uri: pick.uri });
       vscode.window.showInformationMessage(`Now playing: ${pick.label}`);
     }
@@ -368,12 +394,24 @@ export async function activate(context: vscode.ExtensionContext) {
       }
     );
 
-    const searchOnSpotify = vscode.commands.registerCommand("intmo.searchSpotify", searchSpotify);
+    const searchOnSpotify = vscode.commands.registerCommand(
+      "intmo.searchSpotify",
+      searchSpotify
+    );
 
-    const openMiniplayer = vscode.commands.registerCommand("intmo.openMiniplayer", ()=>{
-      MiniplayerPanel.createOrShow(context.extensionUri);
-    });
-    context.subscriptions.push(nowPlaying, playPause, nextTrack, previousTrack, searchOnSpotify);
+    const openMiniplayer = vscode.commands.registerCommand(
+      "intmo.openMiniplayer",
+      () => {
+        MiniplayerPanel.createOrShow(context.extensionUri);
+      }
+    );
+    context.subscriptions.push(
+      nowPlaying,
+      playPause,
+      nextTrack,
+      previousTrack,
+      searchOnSpotify
+    );
   } catch (error: any) {
     console.error("Extension activation error:", error);
     vscode.window.showErrorMessage(
