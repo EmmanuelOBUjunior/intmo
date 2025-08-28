@@ -115,13 +115,21 @@ export async function activate(context: vscode.ExtensionContext) {
     statusBarNext.tooltip = "Next Track";
     statusBarNext.command = "intmo.nextTrack";
     statusBarNext.show();
+
+    statusBarTrack = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+    statusBarTrack.text = "🎵 Not Playing";
+    statusBarTrack.tooltip = "Current Song";
+    statusBarTrack.show();
+
     context.subscriptions.push(
       statusBarNext,
       statusBarPlayPause,
-      statusBarPrevious
+      statusBarPrevious,
+      statusBarItem,
+      statusBarTrack
     );
 
-    //TODO: add the status bar track
+
 
     async function updateStatusBar() {
       try {
