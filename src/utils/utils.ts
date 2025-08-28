@@ -89,5 +89,23 @@ export class MiniplayerPanel{
                 });
             </script>
         `;
+
+        return `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head><meta charset="UTF-8">${style}</head>
+            <body>
+                <h2 id="title">🎵 Spotify Mini Player</h2>
+                <img id="cover" src="" alt="Album Art"/>
+                <div id="info"></div>
+                <div class="controls">
+                    <button id="prev">⏮️</button>
+                    <button id="playPause">⏯️</button>
+                    <button id="next">⏭️</button>
+                </div>
+                ${script}
+            </body>
+            </html>
+        `;
     }
 }
