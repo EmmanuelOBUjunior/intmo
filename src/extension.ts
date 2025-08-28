@@ -150,9 +150,9 @@ export async function activate(context: vscode.ExtensionContext) {
           let song = truncate(item.name, 30);
           let artist = "";
           if ("artists" in item && Array.isArray((item as any).artists)) {
-            artist = (item as any).artists
+            artist = truncate((item as any).artists
               .map((a: { name: string }) => a.name)
-              .join(", ");
+              .join(", "), 30);
           } else if ("show" in item && item.show && item.show.name) {
             artist = truncate(item.show.name, 30);
           }
