@@ -64,6 +64,7 @@ async function searchSpotify() {
       ["track", "artist", "playlist"],
       { limit: 5 }
     );
+    console.log("Data from search: ", data);
     const items: { label: string; description: string; uri: string }[] = [];
 
     if (data?.body.tracks?.items) {
