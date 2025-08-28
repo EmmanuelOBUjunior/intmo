@@ -25,6 +25,9 @@
       },{
         "command": "intmo.searchSpotify",
         "title": "Spotify: Search on Spotify"
+      },{
+        "command": "intmo.openMiniPlayer",
+        "title": "Spotify: Open Mini Player"
       }
     ],
     "authentication": [
