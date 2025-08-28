@@ -76,7 +76,7 @@ async function searchSpotify(){
       });
     }
 
-    if (data.body.playlists?.items) {
+    if (data?.body.playlists?.items) {
             data.body.playlists.items.forEach(p => {
                 items.push({
                     label: `📂 ${p.name}`,
@@ -85,6 +85,8 @@ async function searchSpotify(){
                 });
             });
         }
+
+    const pick = await vscode.window.showQuickPick(items, {placeHolder: "Select to play"});
 
   } catch (error) {
     vscode.window.showErrorMessage("Search failed");
