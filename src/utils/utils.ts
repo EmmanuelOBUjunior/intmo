@@ -43,4 +43,8 @@ export class MiniplayerPanel{
         MiniplayerPanel.currentPanel = undefined;
         this._panel.dispose();
     }
+
+    private _getHtmlForWebview(webview:vscode.Webview):string{
+        
+    }
 }
