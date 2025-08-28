@@ -37,6 +37,11 @@ export class MiniplayerPanel{
 
         //Handle disposal
         this._panel.onDidDispose(()=> this.dispose(), null, []);
+
+        //Listen for control actinos
+        this._panel.webview.onDidReceiveMessage(async(message)=>{
+            
+        });
     }
 
     public dispose(){
