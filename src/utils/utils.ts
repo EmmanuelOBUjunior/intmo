@@ -82,10 +82,10 @@ export class MiniplayerPanel{
                     vscode.postMessage({ command: "playPause" });
                 });
                 document.getElementById("next").addEventListener("click", () => {
-                    vscode.postMessage({ command: "next" });
+                    vscode.postMessage({ command: "nextTrack" });
                 });
                 document.getElementById("prev").addEventListener("click", () => {
-                    vscode.postMessage({ command: "previous" });
+                    vscode.postMessage({ command: "previousTrack" });
                 });
             </script>
         `;
