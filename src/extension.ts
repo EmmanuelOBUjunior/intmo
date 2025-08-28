@@ -58,9 +58,18 @@ async function searchSpotify(){
 
     if(data?.body.tracks?.items){
       data.body.tracks.items.forEach(t=>{
-
+        items.push({
+          label: `🎵 ${t.name}`,
+          description: t.artists.map(a=>a.name).join(','),
+          uri: t.uri
+        });
       });
     }
+
+    if(data?.body.artists?.items){
+      data.body.artists.items.forEach(a=>{});
+    }
+
   } catch (error) {
     vscode.window.showErrorMessage("Search failed");
     console.error(error);
