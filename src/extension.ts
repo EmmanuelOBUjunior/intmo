@@ -90,9 +90,9 @@ async function searchSpotify() {
     if (data?.body.playlists?.items) {
       data.body.playlists.items.forEach((p) => {
         items.push({
-          label: `📂 ${p.name}`,
+          label: `📂 ${p?.name}`,
           description: "Playlist",
-          uri: p.uri!,
+          uri: p?.uri,
         });
       });
     }
