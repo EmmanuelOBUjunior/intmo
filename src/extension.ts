@@ -47,6 +47,12 @@ function truncate(text:string, maxLength:30):string{
   return text.length > maxLength ? text.substring(0, maxLength-1) + "...": text;
 }
 
+//Search songs, artsists, playlists
+async function searchSpotify(){
+  const query = await vscode.window.showInputBox({prompt: "Search Spotify (song, artist, playlist)"});
+  if(!query) {return;}
+}
+
 export async function activate(context: vscode.ExtensionContext) {
   try {
     //Authenticate on activation if no tokens are stored
