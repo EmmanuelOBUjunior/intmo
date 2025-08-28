@@ -147,18 +147,18 @@ async function searchSpotify(context: vscode.ExtensionContext) {
       try {
         switch (pick.type) {
           case "track":
-            await withTokenRefresh(context, spotifyApi!, ()=>
-              spotifyApi!.play({uris:[pick.uri]})
-          );
-          break;
+            await withTokenRefresh(context, spotifyApi!, () =>
+              spotifyApi!.play({ uris: [pick.uri] })
+            );
+            break;
           case "artist":
           case "playlist":
-            await withTokenRefresh(context, spotifyApi!, ()=>
+            await withTokenRefresh(context, spotifyApi!, () =>
               spotifyApi!.play({ context_uri: pick.uri })
             );
             break;
-          }
-          vscode.window.showInformationMessage(`Now playing: ${pick.label}`);
+        }
+        vscode.window.showInformationMessage(`Now playing: ${pick.label}`);
       } catch (error) {
         console.error("Playback error: ", error);
         vscode.window.showErrorMessage(`Failed to play ${pick.label}`);
