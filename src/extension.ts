@@ -88,7 +88,8 @@ async function searchSpotify(){
 
     const pick = await vscode.window.showQuickPick(items, {placeHolder: "Select to play"});
     if(pick){
-      await spotifyApi?.play({});
+      await spotifyApi?.play({context_uri:pick.uri});
+      vscode.window.showInformationMessage(`Now playing: ${pick.label}`);
     }
 
   } catch (error) {
