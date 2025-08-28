@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import SpotifyWebApi from "spotify-web-api-node";
+import { truncate } from '../extension';
 
 let spotifyApi:SpotifyWebApi | null = null;
 
@@ -153,4 +154,21 @@ export class MiniplayerPanel{
 export async function updateTrackInfo(){
     const state = await spotifyApi?.getMyCurrentPlayingTrack();
     if(!state?.body || !state?.body.item) {return;}
+    if(state?.body?.item){
+        let artist = "";
+              if ("artists" in item && Array.isArray((item as any).artists)) {
+                artist = truncate(
+                  (item as any).artists
+                    .map((a: { name: string }) => a.name)
+                    .join(", "),
+                  30
+                );
+            }
+
+    }
+    const track = {
+        name: state.body.item.name,
+        artists: state.body.item.artists.map((a: any) => a.name),
+        albumArt: state.body.item.album.images[0]?.url || ""
+    };
 }

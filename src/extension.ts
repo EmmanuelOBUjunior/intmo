@@ -44,7 +44,7 @@ export async function handleVSCodeCallback(
 }
 
 //Helper function to truncate song to 30 characters
-function truncate(text: string, maxLength: 30): string {
+export function truncate(text: string, maxLength: 30): string {
   return text.length > maxLength
     ? text.substring(0, maxLength - 1) + "..."
     : text;
