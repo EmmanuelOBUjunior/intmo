@@ -152,12 +152,20 @@ export async function activate(context: vscode.ExtensionContext) {
 
           statusBarPlayPause.text = isPlaying ? `$(debug-pause)` : `$(play) ${song}`;
           statusBarPlayPause.tooltip = `${isPlaying ? "Pause": "Play"}: ${song}${artist ? " - " + artist : ""}`;
+
+          statusBarTrack.text = `🎵 ${song} - ${artist}`;
+          statusBarTrack.tooltip = `🎵 ${song} by ${artist}`;
         } else {
           statusBarPlayPause.text = "$(circle-slash)";
-          statusBarPrevious.show();
-          statusBarPlayPause.show();
-          statusBarNext.show();
+          statusBarPlayPause.text = "Nothing Playing";
+          
+          statusBarPlayPause.text = "🎵 Not Playing";
+          statusBarPlayPause.text = "Spotify idle";
         }
+        statusBarPrevious.show();
+        statusBarPlayPause.show();
+        statusBarNext.show();
+        statusBarTrack.show();
       } catch (error) {
         statusBarPlayPause.text = "$(alert)";
         statusBarPlayPause.tooltip = "Spotify: Error fetching playback";
