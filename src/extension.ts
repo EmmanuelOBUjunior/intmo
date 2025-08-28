@@ -406,8 +406,8 @@ export async function activate(context: vscode.ExtensionContext) {
       searchSpotify
     );
 
-    const openMiniplayer = vscode.commands.registerCommand(
-      "intmo.openMiniplayer",
+    const openMiniPlayer = vscode.commands.registerCommand(
+      "intmo.openMiniPlayer",
       () => {
         MiniplayerPanel.createOrShow(context.extensionUri);
       }
@@ -417,7 +417,8 @@ export async function activate(context: vscode.ExtensionContext) {
       playPause,
       nextTrack,
       previousTrack,
-      searchOnSpotify
+      searchOnSpotify,
+      openMiniPlayer
     );
   } catch (error: any) {
     console.error("Extension activation error:", error);
