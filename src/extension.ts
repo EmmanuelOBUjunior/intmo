@@ -147,14 +147,14 @@ export async function activate(context: vscode.ExtensionContext) {
         });
         if (track?.body?.item) {
           const item = track.body.item;
-          let song = item.name;
+          let song = truncate(item.name, 30);
           let artist = "";
           if ("artists" in item && Array.isArray((item as any).artists)) {
             artist = (item as any).artists
               .map((a: { name: string }) => a.name)
               .join(", ");
           } else if ("show" in item && item.show && item.show.name) {
-            artist = item.show.name;
+            artist = truncate(item.show.name, 30);
           }
           const isPlaying = track.body.is_playing;
 
