@@ -22,6 +22,9 @@
       },{
         "command": "intmo.playPause",
         "title": "Spotify: Play/Pause"
+      },{
+        "command": "intmo.searchSpotify",
+        "title": "Spotify: Search on Spotify"
       }
     ],
     "authentication": [
