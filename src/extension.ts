@@ -140,12 +140,18 @@ export async function activate(context: vscode.ExtensionContext) {
           return spotifyApi!.getMyCurrentPlayingTrack();
         });
         if (track?.body?.item) {
-          const song = track.body.item.name;
+          const item = track.body.item;
+          let song = item.name;
+          let artist = "";
+          if ("artists" in item && Array.isArray((item as any).artists)) {
+            artist = (item as any).artists.map((a: { name: string }) => a.name).join(", ");
+          } else if ("show" in item && item.show && item.show.name) {
+            artist = item.show.name;
+          }
           const isPlaying = track.body.is_playing;
 
           statusBarPlayPause.text = isPlaying ? `$(debug-pause)` : `$(play) ${song}`;
-
-          stau
+          statusBarPlayPause.tooltip = `${isPlaying ? "Pause": "Play"}: ${song}${artist ? " - " + artist : ""}`;
         } else {
           statusBarPlayPause.text = "$(circle-slash)";
           statusBarPrevious.show();
