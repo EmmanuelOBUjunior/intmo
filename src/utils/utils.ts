@@ -1,4 +1,7 @@
 import * as vscode from 'vscode';
+import SpotifyWebApi from "spotify-web-api-node";
+
+let spotifyApi:SpotifyWebApi | null = null;
 
 export class MiniplayerPanel{
 
@@ -40,7 +43,16 @@ export class MiniplayerPanel{
 
         //Listen for control actinos
         this._panel.webview.onDidReceiveMessage(async(message)=>{
-            
+            switch(message.command){
+                case 'playPause':
+                    const state = await spotifyApi?.getMyCurrentPlaybackState();
+                    if(state?.body.is_playing){
+                        spotifyApi?.pause();
+                    }else{
+                        spotifyApi?.play();
+                    }
+                    break;
+            }
         });
     }
 
