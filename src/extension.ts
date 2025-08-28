@@ -51,6 +51,9 @@ function truncate(text: string, maxLength: 30): string {
 
 //Search songs, artsists, playlists
 async function searchSpotify() {
+try {
+
+
   const query = await vscode.window.showInputBox({
     prompt: "Search Spotify (song, artist, playlist)",
   });
@@ -58,7 +61,7 @@ async function searchSpotify() {
     return;
   }
 
-  try {
+  
     const data = await spotifyApi?.search(
       query,
       ["track", "artist", "playlist"],
