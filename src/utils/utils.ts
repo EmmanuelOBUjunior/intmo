@@ -61,7 +61,7 @@ export class MiniplayerPanel {
             }
             break;
           case "nextTrack":
-            spotifyApi?.skipToNext();
+            await withTokenRefresh(vscode.getExtensionContext(), spotifyApi, ()=>spotifyApi.skipToNext());
             break;
           case "previousTrack":
             spotifyApi?.skipToPrevious();
