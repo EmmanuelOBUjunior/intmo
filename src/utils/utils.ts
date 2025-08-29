@@ -43,20 +43,27 @@ export class MiniplayerPanel{
 
         //Listen for control actinos
         this._panel.webview.onDidReceiveMessage(async(message)=>{
-            switch(message.command){
-                case 'playPause':
-                    const state = await spotifyApi?.getMyCurrentPlaybackState();
-                    if(state?.body.is_playing){
-                        spotifyApi?.pause();
-                    }else{
-                        spotifyApi?.play();
-                    }
-                    break;
-                case "nextTrack":
-                    spotifyApi?.skipToNext();
-                    break;
-                case "previousTrack":
-                    spotifyApi?.skipToPrevious();
+            try {
+                if(!spotifyApi){
+                    throw new Error("Spotify API not initialiazed");
+                }
+                switch(message.command){
+                    case 'playPause':
+                        const state = await spotifyApi?.getMyCurrentPlaybackState();
+                        if(state?.body.is_playing){
+                            spotifyApi?.pause();
+                        }else{
+                            spotifyApi?.play();
+                        }
+                        break;
+                    case "nextTrack":
+                        spotifyApi?.skipToNext();
+                        break;
+                    case "previousTrack":
+                        spotifyApi?.skipToPrevious();
+                }
+            } catch (error) {
+                
             }
         });
     }
