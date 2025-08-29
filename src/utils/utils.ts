@@ -69,7 +69,7 @@ export class MiniplayerPanel {
         }
         //Update track info after each action.
         await updateTrackInfo();
-      } catch (error) {
+      } catch (error:any) {
         console.error("Mini player command error: ", error);
         vscode.window.showErrorMessage("Failed to execute command: ", error.message);
       }
