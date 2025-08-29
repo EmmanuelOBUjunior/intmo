@@ -244,6 +244,22 @@ export class MiniplayerPanel {
             <div class="artist-name" id="artistName">Connecting to Spotify...</div>
             <div class="album-name" id="albumName">Cosmic Echoes</div>
         </div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="time-info">
+                <span id="currentTime">0:00</span>
+                <span id="duration">3:45</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn" id="prevBtn">⏮</button>
+            <button class="control-btn play-pause-btn" id="playPauseBtn">▶</button>
+            <button class="control-btn" id="nextBtn">⏭</button>
+        </div>
             </div>
 
 
