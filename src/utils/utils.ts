@@ -213,7 +213,7 @@ export class MiniplayerPanel {
 
         .progress {
             height: 100%;
-            background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+            background: linear-gradient(90deg, #4827c0ff, #1f9cbbff);
             border-radius: 3px;
             width: 0%;
             transition: width 0.1s ease;
