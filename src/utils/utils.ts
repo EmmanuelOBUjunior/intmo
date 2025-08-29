@@ -440,6 +440,7 @@ export async function updateTrackInfo() {
           name: "No track playing",
           artists: [""],
           albumArt: "",
+          album:""
         });
       }
       return;
@@ -450,6 +451,7 @@ export async function updateTrackInfo() {
       artists: state.body.item.artists.map((a: any) => a.name),
       albumArt: state.body.item.album.images[0]?.url || "",
       durationMs: state.body.item.duration_ms,
+      albumName: state.body.item.album.name,
       progressMs: state.body.progress_ms,
       isPlaying: state.body.is_playing,
     };
