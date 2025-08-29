@@ -137,7 +137,8 @@ export class MiniplayerPanel {
                     margin-top: 20px;
                 }
                 button {
-                    background: var(--vscode-button-background);
+                    background: #fff;
+                    // background: var(--vscode-button-background);
                     color: var(--vscode-button-foreground);
                     border: none;
                     padding: 8px 12px;
