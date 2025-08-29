@@ -235,6 +235,18 @@ export class MiniplayerPanel {
             ${style}
         </head>
         <body>
+            <div>
+            <img src="" 
+             alt="Album Cover" class="album-cover" id="albumCover"/>
+
+              <div class="song-info">
+            <div class="song-title" id="songTitle">Midnight Dreams</div>
+            <div class="artist-name" id="artistName">Luna & The Stargazers</div>
+            <div class="album-name" id="albumName">Cosmic Echoes</div>
+        </div>
+            </div>
+
+
             <h2 id="title" class="loading">Loading...</h2>
             <img id="cover" src="" alt="Album Art" style="display: none"/>
             <div id="info" class="loading">Connecting to Spotify...</div>
