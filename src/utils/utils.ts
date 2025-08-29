@@ -214,6 +214,10 @@ export class MiniplayerPanel {
                         track.albumArt || "default-album-art.png";
                     document.getElementById("cover").style.display = 
                         track.albumArt ? "block" : "none";
+
+                    duration = track.durationMs;
+                    progress = track.progressMs;
+                    playing = track.isPlaying;
                 }
             });
         </script>
