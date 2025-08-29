@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import SpotifyWebApi from "spotify-web-api-node";
 import { authenticateSpotify, withTokenRefresh } from "./auth";
-import { MiniplayerPanel } from "./utils/utils";
+import { MiniplayerPanel, setSpotifyApi } from "./utils/utils";
 
 let spotifyApi: SpotifyWebApi | null = null;
 let statusBarItem: vscode.StatusBarItem;
@@ -176,6 +176,8 @@ export async function activate(context: vscode.ExtensionContext) {
     //Authenticate on activation if no tokens are stored
     const token = await context.secrets.get("spotifyAccessToken");
     const refresh = await context.secrets.get("spotifyRefreshToken");
+
+    setSpotifyApi(spotifyApi!);
 
     spotifyApi = await handleVSCodeCallback(context);
 
