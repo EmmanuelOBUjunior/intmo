@@ -243,7 +243,7 @@ export async function updateTrackInfo() {
       albumArt: state.body.item.album.images[0]?.url || "",
       durationMs: state.body.item.duration_ms,
       progressMs: state.body.progress_ms,
-      isPlaying: state.body.is_playing,
+      isPlaying: state.body.is_playing
     };
 
     if (MiniplayerPanel.currentPanel) {
