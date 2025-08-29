@@ -165,6 +165,9 @@ export class MiniplayerPanel {
         <script>
             const vscode = acquireVsCodeApi();
             let isPlaying = false;
+            let duration = 0;
+            let progress = 0;
+            let timer;
 
             document.getElementById("playPause").addEventListener("click", () => {
                 vscode.postMessage({ command: "playPause" });
