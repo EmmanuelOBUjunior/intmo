@@ -83,8 +83,9 @@ export class MiniplayerPanel {
         if(!spotifyApi){
             throw new Error("Spotify API is not initialized");
         }
-    } catch (error) {
+    } catch (error:any) {
         console.error("Mini player command error: ", error);
+        vscode.window.showErrorMessage("Failed to execute command: ", error.message);
     }
     this._panel.webview.postMessage({
       command: "updateTrack",
