@@ -1,87 +1,89 @@
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 import SpotifyWebApi from "spotify-web-api-node";
+import { withTokenRefresh } from "../auth";
 
-let spotifyApi:SpotifyWebApi | null = null;
+let spotifyApi: SpotifyWebApi | null = null;
 
-export class MiniplayerPanel{
+export class MiniplayerPanel {
+  public static currentPanel: MiniplayerPanel | undefined;
+  private readonly _panel: vscode.WebviewPanel;
+  private readonly _extensionUri: vscode.Uri;
 
-    public static currentPanel:MiniplayerPanel | undefined;
-    private readonly _panel: vscode.WebviewPanel;
-    private readonly _extensionUri: vscode.Uri;
+  public static createOrShow(extentionUri: vscode.Uri) {
+    const column = vscode.ViewColumn.Two;
 
-    public static createOrShow(extentionUri: vscode.Uri){
-        const column = vscode.ViewColumn.Two;
+    //If we already have a pane;, reveal it
+    if (MiniplayerPanel.currentPanel) {
+      MiniplayerPanel.currentPanel._panel.reveal(column);
+      return;
+    }
 
-        //If we already have a pane;, reveal it
-        if(MiniplayerPanel.currentPanel){
-            MiniplayerPanel.currentPanel._panel.reveal(column);
-            return;
+    //Otherwise, we create one
+    const panel = vscode.window.createWebviewPanel(
+      "spotifyMiniPlayer",
+      "Spotify Mini Player",
+      column,
+      {
+        enableScripts: true,
+        localResourceRoots: [vscode.Uri.joinPath(extentionUri, "media")],
+      }
+    );
+    MiniplayerPanel.currentPanel = new MiniplayerPanel(panel, extentionUri);
+  }
+
+  private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
+    this._panel = panel;
+    this._extensionUri = extensionUri;
+
+    //Initial HTML content
+    this._panel.webview.html = this._getHtmlForWebview(this._panel.webview);
+    //Handle disposal
+    this._panel.onDidDispose(() => this.dispose(), null, []);
+
+    //Listen for control actinos
+    this._panel.webview.onDidReceiveMessage(async (message) => {
+      try {
+        if (!spotifyApi) {
+          throw new Error("Spotify API not initialiazed");
         }
 
-        //Otherwise, we create one
-        const panel = vscode.window.createWebviewPanel(
-            "spotifyMiniPlayer",
-            "Spotify Mini Player",
-            column,
-            {
-                enableScripts: true,
-                localResourceRoots: [vscode.Uri.joinPath(extentionUri, 'media')]
+        switch (message.command) {
+          case "playPause":
+            const state = await withTokenRefresh(
+              vscode.getExtenstionContext(),
+              spotifyApi,
+              () => spotifyApi.getMyCurrentPlaybackState()
+            );
+            if (state?.body.is_playing) {
+              await withTokenRefresh(vscode.getExtensionContext(), spotifyApi, ()=>spotifyApi.pause());
+            } else {
+              spotifyApi?.play();
             }
-        );
-        MiniplayerPanel.currentPanel = new MiniplayerPanel(panel, extentionUri);
-    }
+            break;
+          case "nextTrack":
+            spotifyApi?.skipToNext();
+            break;
+          case "previousTrack":
+            spotifyApi?.skipToPrevious();
+        }
+      } catch (error) {}
+    });
+  }
 
-    private constructor(panel:vscode.WebviewPanel,extensionUri:vscode.Uri){
-        this._panel = panel;
-        this._extensionUri = extensionUri;
+  public dispose() {
+    MiniplayerPanel.currentPanel = undefined;
+    this._panel.dispose();
+  }
 
-        //Initial HTML content
-        this._panel.webview.html = this._getHtmlForWebview(this._panel.webview);
+  public updateTrack(track: any) {
+    this._panel.webview.postMessage({
+      command: "updateTrack",
+      track,
+    });
+  }
 
-        //Handle disposal
-        this._panel.onDidDispose(()=> this.dispose(), null, []);
-
-        //Listen for control actinos
-        this._panel.webview.onDidReceiveMessage(async(message)=>{
-            try {
-                if(!spotifyApi){
-                    throw new Error("Spotify API not initialiazed");
-                }
-                switch(message.command){
-                    case 'playPause':
-                        const state = await spotifyApi?.getMyCurrentPlaybackState();
-                        if(state?.body.is_playing){
-                            spotifyApi?.pause();
-                        }else{
-                            spotifyApi?.play();
-                        }
-                        break;
-                    case "nextTrack":
-                        spotifyApi?.skipToNext();
-                        break;
-                    case "previousTrack":
-                        spotifyApi?.skipToPrevious();
-                }
-            } catch (error) {
-                
-            }
-        });
-    }
-
-    public dispose(){
-        MiniplayerPanel.currentPanel = undefined;
-        this._panel.dispose();
-    }
-
-    public updateTrack(track:any){
-        this._panel.webview.postMessage({
-            command: "updateTrack",
-            track
-        });
-    }
-
-    private _getHtmlForWebview(webview:vscode.Webview):string{
-        const style = `
+  private _getHtmlForWebview(webview: vscode.Webview): string {
+    const style = `
             <style>
                 body {
                     font-family: sans-serif;
@@ -110,7 +112,7 @@ export class MiniplayerPanel{
             </style>
         `;
 
-        const script = `
+    const script = `
             <script>
                 const vscode = acquireVsCodeApi();
 
@@ -135,7 +137,7 @@ export class MiniplayerPanel{
             </script>
         `;
 
-        return `
+    return `
             <!DOCTYPE html>
             <html lang="en">
             <head><meta charset="UTF-8">${style}</head>
@@ -152,31 +154,31 @@ export class MiniplayerPanel{
             </body>
             </html>
         `;
-    }
+  }
 }
 
+export async function updateTrackInfo() {
+  const state: any = await spotifyApi?.getMyCurrentPlayingTrack();
+  if (!state?.body || !state?.body.item) {
+    return;
+  }
+  // const item = state.body.item;
+  // let artist = "";
+  //       if ("artists" in item && Array.isArray((item as any).artists)) {
+  //         artist = truncate(
+  //           (item as any).artists
+  //             .map((a: { name: string }) => a.name)
+  //             .join(", "),
+  //           30
+  //         );
+  //     }
+  const track = {
+    name: state.body.item.name,
+    artists: state.body.item.artists.map((a: any) => a.name),
+    albumArt: state.body.item.album.images[0]?.url || "",
+  };
 
-
-export async function updateTrackInfo(){
-    const state:any = await spotifyApi?.getMyCurrentPlayingTrack();
-    if(!state?.body || !state?.body.item) {return;}
-    // const item = state.body.item;
-    // let artist = "";
-    //       if ("artists" in item && Array.isArray((item as any).artists)) {
-    //         artist = truncate(
-    //           (item as any).artists
-    //             .map((a: { name: string }) => a.name)
-    //             .join(", "),
-    //           30
-    //         );
-    //     }
-    const track = {
-        name: state.body.item.name,
-        artists: state.body.item.artists.map((a: any) => a.name),
-        albumArt: state.body.item.album.images[0]?.url || ""
-    };
-
-    if(MiniplayerPanel.currentPanel){
-        MiniplayerPanel.currentPanel.updateTrack(track);
-    }
+  if (MiniplayerPanel.currentPanel) {
+    MiniplayerPanel.currentPanel.updateTrack(track);
+  }
 }
