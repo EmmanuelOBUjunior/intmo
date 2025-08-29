@@ -202,6 +202,13 @@ export class MiniplayerPanel {
             <h2 id="title" class="loading">Loading...</h2>
             <img id="cover" src="" alt="Album Art" style="display: none"/>
             <div id="info" class="loading">Connecting to Spotify...</div>
+
+            <progress id="progress" value="0" max="100"></progress>
+            <div class="time">
+                <span id="current">0:00</span>
+                <span id="total">0:00</span>
+            </div>
+
             <div class="controls">
                 <button id="prev">⏮️</button>
                 <button id="playPause">⏯️</button>
