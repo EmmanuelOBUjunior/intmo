@@ -177,8 +177,6 @@ export async function activate(context: vscode.ExtensionContext) {
     const token = await context.secrets.get("spotifyAccessToken");
     const refresh = await context.secrets.get("spotifyRefreshToken");
 
-    setSpotifyApi(spotifyApi!);
-
     spotifyApi = await handleVSCodeCallback(context);
 
     // Add detailed logging
@@ -209,6 +207,10 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     console.log("Spotify API initialized", spotifyApi);
+    setSpotifyApi(spotifyApi!);
+
+    //Helper function to make context available
+    vscode.extensions.getExtension('local-dev.intomo')!.exports.getExtensionContext = ()=> context;
 
     // Status bar items
     statusBarItem = vscode.window.createStatusBarItem(
