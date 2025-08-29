@@ -109,6 +109,7 @@ export class MiniplayerPanel {
 
     // Get path to media folder
         const mediaPath = vscode.Uri.joinPath(this._extensionUri, 'media');
+        console.log("Media Path:", mediaPath);
         
         // Create URIs for resources
         const defaultAlbumArt = webview.asWebviewUri(
