@@ -169,6 +169,12 @@ export class MiniplayerPanel {
             let progress = 0;
             let timer;
 
+            function formatTime(ms){
+            const totalSec = Math.floor(ms/1000);
+            const min = Math.floor(totalSec/60);
+            const sec = totalSec%60;
+            }
+
             document.getElementById("playPause").addEventListener("click", () => {
                 vscode.postMessage({ command: "playPause" });
             });
@@ -253,7 +259,7 @@ export async function updateTrackInfo() {
       albumArt: state.body.item.album.images[0]?.url || "",
       durationMs: state.body.item.duration_ms,
       progressMs: state.body.progress_ms,
-      isPlaying: state.body.is_playing
+      isPlaying: state.body.is_playing,
     };
 
     if (MiniplayerPanel.currentPanel) {
