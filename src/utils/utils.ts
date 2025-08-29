@@ -172,7 +172,7 @@ export async function updateTrackInfo() {
         const state:any = await withTokenRefresh(
             vscode.getExtensionContext(),
             spotifyApi,
-            () => spotifyApi.getMyCurrentPlayingTrack()
+            () => spotifyApi!.getMyCurrentPlayingTrack()
         );
 
         if (!state?.body || !state?.body.item) {
