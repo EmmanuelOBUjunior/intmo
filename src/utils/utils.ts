@@ -365,7 +365,7 @@ export class MiniplayerPanel {
             document.getElementById("artistName").textContent = 
                 track.artists.length ? track.artists.join(", ") : "Unknown Artist";
             document.getElementById("albumName").textContent = 
-                track.album || "Unknown Album";
+                track.albumName || "Unknown Album";
             document.getElementById("albumCover").src = 
                 track.albumArt || defaultAlbumArt.path;
 
