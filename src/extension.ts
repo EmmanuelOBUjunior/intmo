@@ -213,7 +213,7 @@ export async function activate(context: vscode.ExtensionContext) {
     setExtensionContext(context);
 
     //Helper function to make context available
-    vscode.extensions.getExtension('local-dev.intomo')!.exports.getExtensionContext = ()=> context;
+    // vscode.extensions.getExtension('local-dev.intomo')!.exports.getExtensionContext = ()=> context;
 
     // Status bar items
     statusBarItem = vscode.window.createStatusBarItem(
