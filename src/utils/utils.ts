@@ -41,6 +41,13 @@ export class MiniplayerPanel {
     this._panel = panel;
     this._extensionUri = extensionUri;
 
+    // Set up webview content using the stored extensionUri
+        const mediaPath = vscode.Uri.joinPath(this._extensionUri, 'media');
+        const webviewOptions = {
+            enableScripts: true,
+            localResourceRoots: [mediaPath]
+        };
+
     //Initial HTML content
     this._panel.webview.html = this._getHtmlForWebview(this._panel.webview);
     //Handle disposal
@@ -56,21 +63,21 @@ export class MiniplayerPanel {
         switch (message.command) {
           case "playPause":
             const state = await withTokenRefresh(
-              vscode.getExtenstionContext(),
+              extensionContext,
               spotifyApi,
               () => spotifyApi!.getMyCurrentPlaybackState()
             );
             if (state?.body.is_playing) {
-              await withTokenRefresh(vscode.getExtensionContext(), spotifyApi, ()=>spotifyApi!.pause());
+              await withTokenRefresh(extensionContext, spotifyApi, ()=>spotifyApi!.pause());
             } else {
               spotifyApi?.play();
             }
             break;
           case "nextTrack":
-            await withTokenRefresh(vscode.getExtensionContext(), spotifyApi, ()=>spotifyApi!.skipToNext());
+            await withTokenRefresh(extensionContext, spotifyApi, ()=>spotifyApi!.skipToNext());
             break;
           case "previousTrack":
-            await withTokenRefresh(vscode.getExtensionContext(), spotifyApi, ()=>spotifyApi!.skipToNext());
+            await withTokenRefresh(extensionContext, spotifyApi, ()=>spotifyApi!.skipToNext());
             break;
         }
         //Update track info after each action.
@@ -166,7 +173,7 @@ export async function updateTrackInfo() {
         }
 
         const state:any = await withTokenRefresh(
-            vscode.getExtensionContext(),
+            extensionContext,
             spotifyApi,
             () => spotifyApi!.getMyCurrentPlayingTrack()
         );
