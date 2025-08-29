@@ -271,7 +271,7 @@ export class MiniplayerPanel {
             width: 60px;
             height: 60px;
             font-size: 1.5em;
-            background: #00BFFF;
+            background: #1724d8ff;
         }
 
         .control-btn:hover {
@@ -280,7 +280,7 @@ export class MiniplayerPanel {
         }
 
         .play-pause-btn:hover {
-            background: #89CFF0;
+            background: #0a088aff;
         }
                 .loading {
                     color: var(--vscode-descriptionForeground);
