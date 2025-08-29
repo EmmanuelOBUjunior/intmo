@@ -3,11 +3,11 @@ import SpotifyWebApi from "spotify-web-api-node";
 import { withTokenRefresh } from "../auth";
 
 let spotifyApi: SpotifyWebApi | null = null;
-let extensionContext:vscode.ExtensionContext;
+let extensionContext: vscode.ExtensionContext;
 
 // Hlper function to store the extension context
 export function setExtensionContext(context: vscode.ExtensionContext) {
-    extensionContext = context;
+  extensionContext = context;
 }
 
 export class MiniplayerPanel {
@@ -42,11 +42,11 @@ export class MiniplayerPanel {
     this._extensionUri = extensionUri;
 
     // Set up webview content using the stored extensionUri
-        const mediaPath = vscode.Uri.joinPath(this._extensionUri, 'media');
-        const webviewOptions = {
-            enableScripts: true,
-            localResourceRoots: [mediaPath]
-        };
+    const mediaPath = vscode.Uri.joinPath(this._extensionUri, "media");
+    const webviewOptions = {
+      enableScripts: true,
+      localResourceRoots: [mediaPath],
+    };
 
     //Initial HTML content
     this._panel.webview.html = this._getHtmlForWebview(this._panel.webview);
@@ -68,24 +68,32 @@ export class MiniplayerPanel {
               () => spotifyApi!.getMyCurrentPlaybackState()
             );
             if (state?.body.is_playing) {
-              await withTokenRefresh(extensionContext, spotifyApi, ()=>spotifyApi!.pause());
+              await withTokenRefresh(extensionContext, spotifyApi, () =>
+                spotifyApi!.pause()
+              );
             } else {
               spotifyApi?.play();
             }
             break;
           case "nextTrack":
-            await withTokenRefresh(extensionContext, spotifyApi, ()=>spotifyApi!.skipToNext());
+            await withTokenRefresh(extensionContext, spotifyApi, () =>
+              spotifyApi!.skipToNext()
+            );
             break;
           case "previousTrack":
-            await withTokenRefresh(extensionContext, spotifyApi, ()=>spotifyApi!.skipToNext());
+            await withTokenRefresh(extensionContext, spotifyApi, () =>
+              spotifyApi!.skipToNext()
+            );
             break;
         }
         //Update track info after each action.
         await updateTrackInfo();
-
-      } catch (error:any) {
+      } catch (error: any) {
         console.error("Mini player command error: ", error);
-        vscode.window.showErrorMessage("Failed to execute command: ", error.message);
+        vscode.window.showErrorMessage(
+          "Failed to execute command: ",
+          error.message
+        );
       }
     });
 
@@ -106,18 +114,17 @@ export class MiniplayerPanel {
   }
 
   private _getHtmlForWebview(webview: vscode.Webview): string {
-
     // Get path to media folder
-        const mediaPath = vscode.Uri.joinPath(this._extensionUri, 'media');
-        console.log("Media Path:", mediaPath);
-        
-        // Create URIs for resources
-        const defaultAlbumArt = webview.asWebviewUri(
-            vscode.Uri.joinPath(mediaPath, 'default-album-art.png')
-        );
-        console.log("default Album art:", defaultAlbumArt);
+    const mediaPath = vscode.Uri.joinPath(this._extensionUri, "media");
+    console.log("Media Path:", mediaPath);
 
-     const style = `
+    // Create URIs for resources
+    const defaultAlbumArt = webview.asWebviewUri(
+      vscode.Uri.joinPath(mediaPath, "default-album-art.png")
+    );
+    console.log("default Album art:", defaultAlbumArt);
+
+    const style = `
             <style>
                 body {
                     padding: 20px;
@@ -204,48 +211,53 @@ export class MiniplayerPanel {
         </body>
         </html>
     `;
-}
+  }
 }
 
 export async function updateTrackInfo() {
-    try {
-        if (!spotifyApi) {
-            throw new Error('Spotify API not initialized');
-        }
-
-        const state:any = await withTokenRefresh(
-            extensionContext,
-            spotifyApi,
-            () => spotifyApi!.getMyCurrentPlayingTrack()
-        );
-
-        if (!state?.body || !state?.body.item) {
-            if (MiniplayerPanel.currentPanel) {
-                MiniplayerPanel.currentPanel.updateTrack({
-                    name: 'No track playing',
-                    artists: [''],
-                    albumArt: ''
-                });
-            }
-            return;
-        }
-
-        const track = {
-            name: state.body.item.name,
-            artists: state.body.item.artists.map((a: any) => a.name),
-            albumArt: state.body.item.album.images[0]?.url || ""
-        };
-
-        if (MiniplayerPanel.currentPanel) {
-            MiniplayerPanel.currentPanel.updateTrack(track);
-        }
-    } catch (error:any) {
-        console.error('Update track info error:', error);
-        vscode.window.showErrorMessage(`Failed to update track info: ${error.message}`);
+  try {
+    if (!spotifyApi) {
+      throw new Error("Spotify API not initialized");
     }
+
+    const state: any = await withTokenRefresh(
+      extensionContext,
+      spotifyApi,
+      () => spotifyApi!.getMyCurrentPlayingTrack()
+    );
+
+    if (!state?.body || !state?.body.item) {
+      if (MiniplayerPanel.currentPanel) {
+        MiniplayerPanel.currentPanel.updateTrack({
+          name: "No track playing",
+          artists: [""],
+          albumArt: "",
+        });
+      }
+      return;
+    }
+
+    const track = {
+      name: state.body.item.name,
+      artists: state.body.item.artists.map((a: any) => a.name),
+      albumArt: state.body.item.album.images[0]?.url || "",
+      durationMs: state.body.item.duration_ms,
+      progressMs: state.body.progress_ms,
+      isPlaying: state.body.is_playing,
+    };
+
+    if (MiniplayerPanel.currentPanel) {
+      MiniplayerPanel.currentPanel.updateTrack(track);
+    }
+  } catch (error: any) {
+    console.error("Update track info error:", error);
+    vscode.window.showErrorMessage(
+      `Failed to update track info: ${error.message}`
+    );
+  }
 }
 
 //A helper function to store the Spotify API
-export function setSpotifyApi(api: SpotifyWebApi){
-    spotifyApi = api;
+export function setSpotifyApi(api: SpotifyWebApi) {
+  spotifyApi = api;
 }
