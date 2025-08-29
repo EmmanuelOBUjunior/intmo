@@ -115,6 +115,7 @@ export class MiniplayerPanel {
         const defaultAlbumArt = webview.asWebviewUri(
             vscode.Uri.joinPath(mediaPath, 'default-album-art.png')
         );
+        console.log("default Album art:", defaultAlbumArt);
 
      const style = `
             <style>
