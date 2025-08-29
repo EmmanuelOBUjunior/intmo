@@ -67,6 +67,8 @@ export class MiniplayerPanel {
             await withTokenRefresh(vscode.getExtensionContext(), spotifyApi, ()=>spotifyApi.skipToNext());
             break;
         }
+        //Update track info after each action.
+        await updateTrackInfo();
       } catch (error) {}
     });
   }
