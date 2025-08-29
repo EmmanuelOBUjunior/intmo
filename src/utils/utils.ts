@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import SpotifyWebApi from "spotify-web-api-node";
-import { truncate } from '../extension';
 
 let spotifyApi:SpotifyWebApi | null = null;
 
