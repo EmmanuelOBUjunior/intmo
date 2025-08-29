@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import SpotifyWebApi from "spotify-web-api-node";
 import { authenticateSpotify, withTokenRefresh } from "./auth";
-import { MiniplayerPanel, setSpotifyApi, setExtensionContext } from "./utils/utils";
+import { MiniplayerPanel, setSpotifyApi, setExtensionContext, updateTrackInfo } from "./utils/utils";
 
 let spotifyApi: SpotifyWebApi | null = null;
 let statusBarItem: vscode.StatusBarItem;
@@ -158,6 +158,7 @@ async function searchSpotify(context: vscode.ExtensionContext) {
             );
             break;
         }
+        updateTrackInfo();
         vscode.window.showInformationMessage(`Now playing: ${pick.label}`);
       } catch (error) {
         console.error("Playback error: ", error);

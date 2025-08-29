@@ -141,6 +141,7 @@ export class MiniplayerPanel {
                     color: var(--vscode-button-foreground);
                     border: none;
                     padding: 8px 12px;
+                    border-radius: 4px;
                     margin: 0 5px;
                     cursor: pointer;
                 }
