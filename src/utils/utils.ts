@@ -368,6 +368,8 @@ export class MiniplayerPanel {
                     document.getElementById("songTitle").textContent = track.name;
                     document.getElementById("artist-name").textContent = 
                         track.artists.length ? track.artists.join(", ") : "No artist info";
+                    document.getElementById("albumName").textContent = 
+                        track.album ? track.album : "No album info";
                     document.getElementById("cover").src = 
                         track.albumArt || "default-album-art.png";
                     document.getElementById("cover").style.display = 
