@@ -218,6 +218,10 @@ export class MiniplayerPanel {
                     duration = track.durationMs;
                     progress = track.progressMs;
                     playing = track.isPlaying;
+
+                    document.getElementById("total").textContent = formatTime(duration);
+                    updateProgressBar();
+                    startTimer();
                 }
             });
         </script>
