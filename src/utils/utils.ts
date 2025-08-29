@@ -195,7 +195,7 @@ export async function updateTrackInfo() {
         if (MiniplayerPanel.currentPanel) {
             MiniplayerPanel.currentPanel.updateTrack(track);
         }
-    } catch (error) {
+    } catch (error:any) {
         console.error('Update track info error:', error);
         vscode.window.showErrorMessage(`Failed to update track info: ${error.message}`);
     }
