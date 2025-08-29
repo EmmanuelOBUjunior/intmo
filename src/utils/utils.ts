@@ -357,6 +357,7 @@ export class MiniplayerPanel {
     });
 
     // Handle incoming track updates
+
     window.addEventListener("message", event => {
         const { command, track } = event.data;
         if (command === "updateTrack") {
@@ -364,9 +365,9 @@ export class MiniplayerPanel {
             document.getElementById("artistName").textContent = 
                 track.artists.length ? track.artists.join(", ") : "Unknown Artist";
             document.getElementById("albumName").textContent = 
-                track.album.name || "Unknown Album";
+                track.album || "Unknown Album";
             document.getElementById("albumCover").src = 
-                track.albumArt || "media/default-album-art.png";
+                track.albumArt || defaultAlbumArt.path;
 
             duration = track.durationMs;
             progress = track.progressMs;
