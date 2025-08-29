@@ -400,7 +400,7 @@ export class MiniplayerPanel {
               <div class="song-info">
             <div class="song-title" id="songTitle">Loading...</div>
             <div class="artist-name" id="artistName">Connecting to Spotify...</div>
-            <div class="album-name" id="albumName">Cosmic Echoes</div>
+            <div class="album-name" id="albumName">Connecting...s</div>
         </div>
 
         <div class="progress-container">
