@@ -365,8 +365,8 @@ export class MiniplayerPanel {
             window.addEventListener("message", event => {
                 const { command, track } = event.data;
                 if (command === "updateTrack") {
-                    document.getElementById("title").textContent = track.name;
-                    document.getElementById("info").textContent = 
+                    document.getElementById("songTitle").textContent = track.name;
+                    document.getElementById("artist-name").textContent = 
                         track.artists.length ? track.artists.join(", ") : "No artist info";
                     document.getElementById("cover").src = 
                         track.albumArt || "default-album-art.png";
