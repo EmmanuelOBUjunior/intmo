@@ -271,7 +271,7 @@ export class MiniplayerPanel {
             width: 60px;
             height: 60px;
             font-size: 1.5em;
-            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            background: #00BFFF;
         }
 
         .control-btn:hover {
@@ -280,7 +280,7 @@ export class MiniplayerPanel {
         }
 
         .play-pause-btn:hover {
-            background: linear-gradient(135deg, #ff5252, #ff7043);
+            background: #89CFF0;
         }
                 .loading {
                     color: var(--vscode-descriptionForeground);
@@ -295,19 +295,6 @@ export class MiniplayerPanel {
                 }
                 .controls {
                     margin-top: 20px;
-                }
-                button {
-                    background: #fff;
-                    // background: var(--vscode-button-background);
-                    color: var(--vscode-button-foreground);
-                    border: none;
-                    padding: 8px 12px;
-                    border-radius: 4px;
-                    margin: 0 5px;
-                    cursor: pointer;
-                }
-                button:hover {
-                    background: var(--vscode-button-hoverBackground);
                 }
             </style>
         `;
