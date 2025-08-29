@@ -126,12 +126,6 @@ export class MiniplayerPanel {
 
     const style = `
             <style>
-                // body {
-                //     padding: 20px;
-                //     color: var(--vscode-foreground);
-                //     background-color: var(--vscode-editor-background);
-                // }
-                
                 * {
             margin: 0;
             padding: 0;
@@ -140,7 +134,6 @@ export class MiniplayerPanel {
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -402,7 +395,7 @@ export class MiniplayerPanel {
               <div class="song-info">
             <div class="song-title" id="songTitle">Loading...</div>
             <div class="artist-name" id="artistName">Connecting to Spotify...</div>
-            <div class="album-name" id="albumName">Connecting...s</div>
+            <div class="album-name" id="albumName">Connecting...</div>
         </div>
 
         <div class="progress-container">
@@ -421,23 +414,6 @@ export class MiniplayerPanel {
             <button class="control-btn" id="nextBtn">⏭</button>
         </div>
             </div>
-
-
-            // <h2 id="title" class="loading">Loading...</h2>
-            // <img id="cover" src="" alt="Album Art" style="display: none"/>
-            // <div id="info" class="loading">Connecting to Spotify...</div>
-
-            // <progress id="progress" value="0" max="100"></progress>
-            // <div class="time">
-            //     <span id="current">0:00</span>
-            //     <span id="total">0:00</span>
-            // </div>
-
-            // <div class="controls">
-            //     <button id="prev">⏮️</button>
-            //     <button id="playPause">⏯️</button>
-            //     <button id="next">⏭️</button>
-            // </div>
             ${script}
         </body>
         </html>
