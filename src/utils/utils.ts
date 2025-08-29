@@ -240,8 +240,8 @@ export class MiniplayerPanel {
              alt="Album Cover" class="album-cover" id="albumCover"/>
 
               <div class="song-info">
-            <div class="song-title" id="songTitle">Midnight Dreams</div>
-            <div class="artist-name" id="artistName">Luna & The Stargazers</div>
+            <div class="song-title" id="songTitle">Loading...</div>
+            <div class="artist-name" id="artistName">Connecting to Spotify...</div>
             <div class="album-name" id="albumName">Cosmic Echoes</div>
         </div>
             </div>
