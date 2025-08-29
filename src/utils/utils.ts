@@ -313,72 +313,72 @@ export class MiniplayerPanel {
         `;
 
     const script = `
-        <script>
-            const vscode = acquireVsCodeApi();
-            let isPlaying = false;
-            let duration = 0;
-            let progress = 0;
-            let timer;
+<script>
+    const vscode = acquireVsCodeApi();
+    let isPlaying = false;
+    let duration = 0;
+    let progress = 0;
+    let timer;
 
-            function formatTime(ms){
-            const totalSec = Math.floor(ms/1000);
-            const min = Math.floor(totalSec/60);
-            const sec = totalSec%60;
-            return min + ":" + (sec < 10 ? "0" + sec : sec)
-            }
+    function formatTime(ms){
+        const totalSec = Math.floor(ms/1000);
+        const min = Math.floor(totalSec/60);
+        const sec = totalSec%60;
+        return min + ":" + (sec < 10 ? "0" + sec : sec);
+    }
 
-            function startTimer(){
-                if(timer) clearInterval(timer);
-                if(!playing)return;
+    function startTimer(){
+        if(timer) clearInterval(timer);
+        if(!isPlaying) return;
 
-                timer = setInterval(()=>{
-                if(progress < duration){
+        timer = setInterval(()=>{
+            if(progress < duration){
                 progress += 1000;
                 updateProgressBar();
-                }
-                },1000);
-            } 
+            }
+        },1000);
+    } 
 
-            function updateProgressBar() {
-                    const percent = (progress / duration) * 100;
-                    document.getElementById("progress").value = percent;
-                    document.getElementById("current").textContent = formatTime(progress);
-                }
+    function updateProgressBar() {
+        const percent = (progress / duration) * 100;
+        document.getElementById("progress").style.width = percent + "%";
+        document.getElementById("currentTime").textContent = formatTime(progress);
+    }
 
-            document.getElementById("playPause").addEventListener("click", () => {
-                vscode.postMessage({ command: "playPause" });
-            });
-            document.getElementById("next").addEventListener("click", () => {
-                vscode.postMessage({ command: "nextTrack" });
-            });
-            document.getElementById("prev").addEventListener("click", () => {
-                vscode.postMessage({ command: "previousTrack" });
-            });
+    // Button events
+    document.getElementById("playPauseBtn").addEventListener("click", () => {
+        vscode.postMessage({ command: "playPause" });
+    });
+    document.getElementById("nextBtn").addEventListener("click", () => {
+        vscode.postMessage({ command: "nextTrack" });
+    });
+    document.getElementById("prevBtn").addEventListener("click", () => {
+        vscode.postMessage({ command: "previousTrack" });
+    });
 
-            window.addEventListener("message", event => {
-                const { command, track } = event.data;
-                if (command === "updateTrack") {
-                    document.getElementById("songTitle").textContent = track.name;
-                    document.getElementById("artist-name").textContent = 
-                        track.artists.length ? track.artists.join(", ") : "No artist info";
-                    document.getElementById("albumName").textContent = 
-                        track.album ? track.album : "No album info";
-                    document.getElementById("cover").src = 
-                        track.albumArt || "default-album-art.png";
-                    document.getElementById("cover").style.display = 
-                        track.albumArt ? "block" : "none";
+    // Handle incoming track updates
+    window.addEventListener("message", event => {
+        const { command, track } = event.data;
+        if (command === "updateTrack") {
+            document.getElementById("songTitle").textContent = track.name;
+            document.getElementById("artistName").textContent = 
+                track.artists.length ? track.artists.join(", ") : "Unknown Artist";
+            document.getElementById("albumName").textContent = 
+                track.album || "Unknown Album";
+            document.getElementById("albumCover").src = 
+                track.albumArt || "default-album-art.png";
 
-                    duration = track.durationMs;
-                    progress = track.progressMs;
-                    playing = track.isPlaying;
+            duration = track.durationMs;
+            progress = track.progressMs;
+            isPlaying = track.isPlaying;
 
-                    document.getElementById("total").textContent = formatTime(duration);
-                    updateProgressBar();
-                    startTimer();
-                }
-            });
-        </script>
-    `;
+            document.getElementById("duration").textContent = formatTime(duration);
+            updateProgressBar();
+            startTimer();
+        }
+    });
+</script>
+`;
 
     return `
         <!DOCTYPE html>
