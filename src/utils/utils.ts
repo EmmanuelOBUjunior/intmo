@@ -176,7 +176,23 @@ export class MiniplayerPanel {
             return min + ":" + (sec < 10 ? "0" + sec : sec)
             }
 
-            
+            function startTimer(){
+                if(timer) clearInterval(timer);
+                if(!playing)return;
+
+                timer = setInterval(()=>{
+                if(progress < duration){
+                progress += 1000;
+                updateProgressBar();
+                }
+                },1000);
+            } 
+
+            function updateProgressBar() {
+                    const percent = (progress / duration) * 100;
+                    document.getElementById("progress").value = percent;
+                    document.getElementById("current").textContent = formatTime(progress);
+                }
 
             document.getElementById("playPause").addEventListener("click", () => {
                 vscode.postMessage({ command: "playPause" });
