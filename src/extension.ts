@@ -321,7 +321,7 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     updateStatusBar();
-    setInterval(updateStatusBar, 150000); //Update every 1.5 seconds
+    setInterval(updateStatusBar, 1500); //Update every 1.5 seconds
 
     //Command: Show Now Playing
     const nowPlaying = vscode.commands.registerCommand(
