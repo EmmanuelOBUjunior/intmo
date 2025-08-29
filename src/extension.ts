@@ -321,7 +321,7 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     updateStatusBar();
-    setInterval(updateStatusBar, 15000); //Update every 15 seconds
+    setInterval(updateStatusBar, 150000); //Update every 1.5 seconds
 
     //Command: Show Now Playing
     const nowPlaying = vscode.commands.registerCommand(
@@ -342,6 +342,8 @@ export async function activate(context: vscode.ExtensionContext) {
             vscode.window.showInformationMessage(
               `🎶 Now playing: ${track.body.item.name} - ${track.body.currently_playing_type}`
             );
+            updateTrackInfo();
+            updateStatusBar();
           } else {
             vscode.window.showInformationMessage(
               "No track is currently playing."
@@ -369,10 +371,12 @@ export async function activate(context: vscode.ExtensionContext) {
             await spotifyApi?.pause();
             vscode.window.showInformationMessage("⏸️ Playback paused");
             updateStatusBar();
+            updateTrackInfo();
           } else {
             await spotifyApi?.play();
             vscode.window.showInformationMessage("▶️ Playback resumed");
             updateStatusBar();
+            updateTrackInfo();
           }
         } catch (error) {
           vscode.window.showErrorMessage("⚠️ Failed to toggle playback.");
@@ -388,6 +392,7 @@ export async function activate(context: vscode.ExtensionContext) {
           await spotifyApi?.skipToNext();
           vscode.window.showInformationMessage("⏭️ Skipped to next track");
           updateStatusBar();
+          updateTrackInfo();
         } catch (error) {
           vscode.window.showErrorMessage("⚠️ Failed to skip track.");
         }
@@ -403,6 +408,7 @@ export async function activate(context: vscode.ExtensionContext) {
             "⏮️ Went back to previous track"
           );
           updateStatusBar();
+          updateTrackInfo();
         } catch (error) {
           vscode.window.showErrorMessage("⚠️ Failed to go to previous track");
         }
