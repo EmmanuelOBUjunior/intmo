@@ -79,6 +79,13 @@ export class MiniplayerPanel {
   }
 
   public updateTrack(track: any) {
+    try {
+        if(!spotifyApi){
+            throw new Error("Spotify API is not initialized");
+        }
+    } catch (error) {
+        
+    }
     this._panel.webview.postMessage({
       command: "updateTrack",
       track,
