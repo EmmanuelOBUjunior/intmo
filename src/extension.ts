@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import SpotifyWebApi from "spotify-web-api-node";
 import { authenticateSpotify, withTokenRefresh } from "./auth";
-import { MiniplayerPanel, setSpotifyApi } from "./utils/utils";
+import { MiniplayerPanel, setSpotifyApi, setExtensionContext } from "./utils/utils";
 
 let spotifyApi: SpotifyWebApi | null = null;
 let statusBarItem: vscode.StatusBarItem;
@@ -207,7 +207,10 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     console.log("Spotify API initialized", spotifyApi);
+
+    //Store both the APO instance and context
     setSpotifyApi(spotifyApi!);
+    setExtensionContext(context);
 
     //Helper function to make context available
     vscode.extensions.getExtension('local-dev.intomo')!.exports.getExtensionContext = ()=> context;
