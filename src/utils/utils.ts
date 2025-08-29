@@ -3,6 +3,7 @@ import SpotifyWebApi from "spotify-web-api-node";
 import { withTokenRefresh } from "../auth";
 
 let spotifyApi: SpotifyWebApi | null = null;
+let extensionContext:vscode.ExtensionContext;
 
 export class MiniplayerPanel {
   public static currentPanel: MiniplayerPanel | undefined;
@@ -52,19 +53,19 @@ export class MiniplayerPanel {
             const state = await withTokenRefresh(
               vscode.getExtenstionContext(),
               spotifyApi,
-              () => spotifyApi.getMyCurrentPlaybackState()
+              () => spotifyApi!.getMyCurrentPlaybackState()
             );
             if (state?.body.is_playing) {
-              await withTokenRefresh(vscode.getExtensionContext(), spotifyApi, ()=>spotifyApi.pause());
+              await withTokenRefresh(vscode.getExtensionContext(), spotifyApi, ()=>spotifyApi!.pause());
             } else {
               spotifyApi?.play();
             }
             break;
           case "nextTrack":
-            await withTokenRefresh(vscode.getExtensionContext(), spotifyApi, ()=>spotifyApi.skipToNext());
+            await withTokenRefresh(vscode.getExtensionContext(), spotifyApi, ()=>spotifyApi!.skipToNext());
             break;
           case "previousTrack":
-            await withTokenRefresh(vscode.getExtensionContext(), spotifyApi, ()=>spotifyApi.skipToNext());
+            await withTokenRefresh(vscode.getExtensionContext(), spotifyApi, ()=>spotifyApi!.skipToNext());
             break;
         }
         //Update track info after each action.
