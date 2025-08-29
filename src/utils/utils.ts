@@ -106,16 +106,49 @@ export class MiniplayerPanel {
   }
 
   private _getHtmlForWebview(webview: vscode.Webview): string {
-    const style = `
-        // ...existing styles...
-        .loading {
-            color: #666;
-            font-style: italic;
-        }
-        .error {
-            color: #ff0033;
-        }
-    `;
+
+    // Get path to media folder
+        const mediaPath = vscode.Uri.joinPath(this._extensionUri, 'media');
+        
+        // Create URIs for resources
+        const defaultAlbumArt = webview.asWebviewUri(
+            vscode.Uri.joinPath(mediaPath, 'default-album-art.png')
+        );
+
+     const style = `
+            <style>
+                body {
+                    padding: 20px;
+                    color: var(--vscode-foreground);
+                    background-color: var(--vscode-editor-background);
+                }
+                .loading {
+                    color: var(--vscode-descriptionForeground);
+                    font-style: italic;
+                }
+                .error {
+                    color: var(--vscode-errorForeground);
+                }
+                #cover {
+                    max-width: 200px;
+                    margin: 10px 0;
+                }
+                .controls {
+                    margin-top: 20px;
+                }
+                button {
+                    background: var(--vscode-button-background);
+                    color: var(--vscode-button-foreground);
+                    border: none;
+                    padding: 8px 12px;
+                    margin: 0 5px;
+                    cursor: pointer;
+                }
+                button:hover {
+                    background: var(--vscode-button-hoverBackground);
+                }
+            </style>
+        `;
 
     const script = `
         <script>
