@@ -5,6 +5,11 @@ import { withTokenRefresh } from "../auth";
 let spotifyApi: SpotifyWebApi | null = null;
 let extensionContext:vscode.ExtensionContext;
 
+// Hlper function to store the extension context
+export function setExtensionContext(context: vscode.ExtensionContext) {
+    extensionContext = context;
+}
+
 export class MiniplayerPanel {
   public static currentPanel: MiniplayerPanel | undefined;
   private readonly _panel: vscode.WebviewPanel;
