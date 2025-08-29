@@ -69,7 +69,10 @@ export class MiniplayerPanel {
         }
         //Update track info after each action.
         await updateTrackInfo();
-      } catch (error) {}
+      } catch (error) {
+        console.error("Mini player command error: ", error);
+        vscode.window.showErrorMessage("Failed to execute command: ", error.message);
+      }
     });
   }
 
@@ -79,14 +82,6 @@ export class MiniplayerPanel {
   }
 
   public updateTrack(track: any) {
-    try {
-        if(!spotifyApi){
-            throw new Error("Spotify API is not initialized");
-        }
-    } catch (error:any) {
-        console.error("Mini player command error: ", error);
-        vscode.window.showErrorMessage("Failed to execute command: ", error.message);
-    }
     this._panel.webview.postMessage({
       command: "updateTrack",
       track,
@@ -169,27 +164,44 @@ export class MiniplayerPanel {
 }
 
 export async function updateTrackInfo() {
-  const state: any = await spotifyApi?.getMyCurrentPlayingTrack();
-  if (!state?.body || !state?.body.item) {
-    return;
-  }
-  // const item = state.body.item;
-  // let artist = "";
-  //       if ("artists" in item && Array.isArray((item as any).artists)) {
-  //         artist = truncate(
-  //           (item as any).artists
-  //             .map((a: { name: string }) => a.name)
-  //             .join(", "),
-  //           30
-  //         );
-  //     }
-  const track = {
-    name: state.body.item.name,
-    artists: state.body.item.artists.map((a: any) => a.name),
-    albumArt: state.body.item.album.images[0]?.url || "",
-  };
+    try {
+        if (!spotifyApi) {
+            throw new Error('Spotify API not initialized');
+        }
 
-  if (MiniplayerPanel.currentPanel) {
-    MiniplayerPanel.currentPanel.updateTrack(track);
-  }
+        const state:any = await withTokenRefresh(
+            vscode.getExtensionContext(),
+            spotifyApi,
+            () => spotifyApi.getMyCurrentPlayingTrack()
+        );
+
+        if (!state?.body || !state?.body.item) {
+            if (MiniplayerPanel.currentPanel) {
+                MiniplayerPanel.currentPanel.updateTrack({
+                    name: 'No track playing',
+                    artists: [''],
+                    albumArt: ''
+                });
+            }
+            return;
+        }
+
+        const track = {
+            name: state.body.item.name,
+            artists: state.body.item.artists.map((a: any) => a.name),
+            albumArt: state.body.item.album.images[0]?.url || ""
+        };
+
+        if (MiniplayerPanel.currentPanel) {
+            MiniplayerPanel.currentPanel.updateTrack(track);
+        }
+    } catch (error) {
+        console.error('Update track info error:', error);
+        vscode.window.showErrorMessage(`Failed to update track info: ${error.message}`);
+    }
+}
+
+//A helper function to store the Spotify API
+export function setSpotifyApi(api: SpotifyWebApi){
+    spotifyApi = api;
 }
