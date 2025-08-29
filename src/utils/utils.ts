@@ -64,7 +64,8 @@ export class MiniplayerPanel {
             await withTokenRefresh(vscode.getExtensionContext(), spotifyApi, ()=>spotifyApi.skipToNext());
             break;
           case "previousTrack":
-            spotifyApi?.skipToPrevious();
+            await withTokenRefresh(vscode.getExtensionContext(), spotifyApi, ()=>spotifyApi.skipToNext());
+            break;
         }
       } catch (error) {}
     });
