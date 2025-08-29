@@ -173,7 +173,10 @@ export class MiniplayerPanel {
             const totalSec = Math.floor(ms/1000);
             const min = Math.floor(totalSec/60);
             const sec = totalSec%60;
+            return min + ":" + (sec < 10 ? "0" + sec : sec)
             }
+
+            
 
             document.getElementById("playPause").addEventListener("click", () => {
                 vscode.postMessage({ command: "playPause" });
