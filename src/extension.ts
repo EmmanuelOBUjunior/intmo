@@ -353,9 +353,11 @@ export async function activate(context: vscode.ExtensionContext) {
             updateStatusBar();
           } else {
             const hasActiveDevice = await ensureActiveDevice(context);
-            vscode.window.showInformationMessage(
-              "No track is currently playing."
-            );
+            if(hasActiveDevice){
+              vscode.window.showInformationMessage(
+                "No track is currently playing."
+              );
+            }
           }
         } catch (error) {
           console.error("Failed to initialize Spotify API", error);
