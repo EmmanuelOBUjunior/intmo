@@ -430,6 +430,13 @@ export async function activate(context: vscode.ExtensionContext) {
       "intmo.previousTrack",
       async () => {
         try {
+
+          // Check for active device first
+    const hasDevice = await ensureActiveDevice(context);
+    if (!hasDevice) {
+      return;
+    }
+
           await spotifyApi?.skipToPrevious();
           vscode.window.showInformationMessage(
             "⏮️ Went back to previous track"
