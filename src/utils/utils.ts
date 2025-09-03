@@ -495,6 +495,9 @@ export async function updateTrackInfo() {
       throw new Error("Spotify API not initialized");
     }
 
+    //Only try to get track info if we have an active device
+    const devices = await withTokenRefresh(extensionContext, spotifyApi!, ()=>spotifyApi!.getMyDevices());
+
     const state: any = await withTokenRefresh(
       extensionContext,
       spotifyApi,
