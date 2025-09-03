@@ -352,6 +352,7 @@ export async function activate(context: vscode.ExtensionContext) {
             updateTrackInfo();
             updateStatusBar();
           } else {
+            const hasActiveDevice = await ensureActiveDevice(context);
             vscode.window.showInformationMessage(
               "No track is currently playing."
             );
