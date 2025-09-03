@@ -117,6 +117,12 @@ export class MiniplayerPanel {
           throw new Error("Spotify API not initialiazed");
         }
 
+        //Check for active devices before any playback command
+        const hasDevice = await ensureActiveDevice(extensionContext);
+        if(!hasDevice){
+          return;
+        }
+
         switch (message.command) {
           case "playPause":
             const state = await withTokenRefresh(
@@ -480,8 +486,9 @@ export class MiniplayerPanel {
   }
 }
 
-let lastTrackId: string | null = null;
 
+
+let lastTrackId: string | null = null;
 export async function updateTrackInfo() {
   try {
     if (!spotifyApi) {
@@ -537,7 +544,9 @@ export async function updateTrackInfo() {
   }
 }
 
-//A helper function to store the Spotify API
+
+
+//Helper function to store the Spotify API
 export function setSpotifyApi(api: SpotifyWebApi) {
   spotifyApi = api;
 }
