@@ -276,6 +276,16 @@ export async function activate(context: vscode.ExtensionContext) {
 
     async function updateStatusBar() {
       try {
+
+        const hasDevice = await ensureActiveDevice(context);
+        if(!hasDevice){
+          statusBarPlayPause.text = "$(circle-slash)";
+      statusBarPlayPause.tooltip = "No active device";
+      statusBarTrack.text = "🎵 No active device";
+      statusBarTrack.tooltip = "Open Spotify on any device";
+      return;
+        }
+
         if (statusBarItem) {
           statusBarItem.dispose();
         }
