@@ -467,7 +467,9 @@ export async function updateTrackInfo() {
 
     //Check if the track has changed
     const currentTrackId = state.body.item.id;
-    if(currentTrackId)
+    if(currentTrackId !== lastTrackId){
+      lastTrackId = currentTrackId;
+    }
 
     const track = {
       name: state.body.item.name,
