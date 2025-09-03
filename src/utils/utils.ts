@@ -465,6 +465,10 @@ export async function updateTrackInfo() {
       return;
     }
 
+    //Check if the track has changed
+    const currentTrackId = state.body.item.id;
+    if(currentTrackId)
+
     const track = {
       name: state.body.item.name,
       artists: state.body.item.artists.map((a: any) => a.name),
