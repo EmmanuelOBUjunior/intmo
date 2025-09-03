@@ -373,16 +373,12 @@ export async function activate(context: vscode.ExtensionContext) {
       "intmo.playPause",
       async () => {
         try {
-          if(!spotifyApi){
-            throw new Error("Spotify API not initialized");
-          }
-
           //Check for active devices first
           const hasDevice = await ensureActiveDevice(context);
           if(!hasDevice){
             return;
           }
-          console.log("Fetching current playing track...");
+          
 
           const playback = await withTokenRefresh(context, spotifyApi!, () =>
             spotifyApi!.getMyCurrentPlaybackState()
