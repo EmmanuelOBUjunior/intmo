@@ -55,7 +55,7 @@ export class MiniplayerPanel {
     //Start auto-updating when panel is created
     this.startAutoUpdate();
     //Handle disposal
-    this._panel.onDidDispose(() => this.dispose(), null, []);
+    this._panel.onDidDispose(() => {this.dispose(); this.stopAutoUpdate()}, null, []);
 
     //Listen for control actinos
     this._panel.webview.onDidReceiveMessage(async (message) => {
