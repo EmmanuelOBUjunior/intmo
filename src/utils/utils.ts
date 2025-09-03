@@ -507,6 +507,21 @@ export async function updateTrackInfo() {
     if(!devices.body.devices.some(d=>d.is_active)) {
       if (MiniplayerPanel.currentPanel) {
         MiniplayerPanel.currentPanel.updateTrack({
+          name: "No active device",
+          artists: ["Please open Spotify on any device"],
+          albumArt: "",
+          album: "",
+          durationMS: 0,
+          progressMs: 0,
+          isPlaying: false,
+        });
+      }
+      return;
+    }
+
+    if (!state?.body || !state?.body.item) {
+      if (MiniplayerPanel.currentPanel) {
+        MiniplayerPanel.currentPanel.updateTrack({
           name: "No track playing",
           artists: [""],
           albumArt: "",
