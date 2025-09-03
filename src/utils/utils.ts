@@ -38,6 +38,7 @@ try {
 
       //Transfer playback to selected device
       await withTokenRefresh(context, spotifyApi!, ()=> spotifyApi!.transferMyPlayback([deviceChoice.id]));
+      return true;
   }
 
 
