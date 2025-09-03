@@ -45,7 +45,8 @@ try {
 
 
 } catch (error) {
-  
+  console.error("Device activation error: ", error);
+  return false;
 }
 }
 
