@@ -10,8 +10,18 @@ export function setExtensionContext(context: vscode.ExtensionContext) {
   extensionContext = context;
 }
 
-async function ensureActiveDevice(context: extensionContext):Promise<Boolean>{
+async function ensureActiveDevice(context: vscode.ExtensionContext):Promise<Boolean>{
+try {
+  const devices = await withTokenRefresh(context, spotifyApi!, ()=> spotifyApi!.getMyDevices());
 
+  if(!devices.body.devices.length){
+    vscode.window.showErrorMessage("No Spotify devices found. Please open Spotify on any device");
+    return false;
+  }
+
+} catch (error) {
+  
+}
 }
 
 export class MiniplayerPanel {
