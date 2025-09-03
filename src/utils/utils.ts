@@ -461,6 +461,7 @@ export async function updateTrackInfo() {
           isPlaying:false
         });
       }
+      lastTrackId = null;
       return;
     }
 
