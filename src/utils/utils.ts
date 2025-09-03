@@ -119,7 +119,12 @@ export class MiniplayerPanel {
     }, 3000);
   }
 
-  private stopAutoUpdate() {}
+  private stopAutoUpdate() {
+    if(this._updateInterval){
+      clearInterval(this._updateInterval);
+      this._updateInterval = undefined
+    }
+  }
 
   public dispose() {
     MiniplayerPanel.currentPanel = undefined;
