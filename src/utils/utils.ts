@@ -120,7 +120,7 @@ export class MiniplayerPanel {
   }
 
   private stopAutoUpdate() {
-    if(this._updateInterval){
+    if (this._updateInterval) {
       clearInterval(this._updateInterval);
       this._updateInterval = undefined;
     }
@@ -434,8 +434,7 @@ export class MiniplayerPanel {
   }
 }
 
-
-let lastTrackId:string| null = null;
+let lastTrackId: string | null = null;
 
 export async function updateTrackInfo() {
   try {
@@ -456,9 +455,9 @@ export async function updateTrackInfo() {
           artists: [""],
           albumArt: "",
           album: "",
-          durationMS:0,
-          progressMs:0,
-          isPlaying:false
+          durationMS: 0,
+          progressMs: 0,
+          isPlaying: false,
         });
       }
       lastTrackId = null;
@@ -467,23 +466,22 @@ export async function updateTrackInfo() {
 
     //Check if the track has changed
     const currentTrackId = state.body.item.id;
-    if(currentTrackId !== lastTrackId){
+    if (currentTrackId !== lastTrackId) {
       lastTrackId = currentTrackId;
-    
 
-    const track = {
-      name: state.body.item.name,
-      artists: state.body.item.artists.map((a: any) => a.name),
-      albumArt: state.body.item.album.images[0]?.url || "",
-      durationMs: state.body.item.duration_ms,
-      albumName: state.body.item.album.name,
-      progressMs: state.body.progress_ms,
-      isPlaying: state.body.is_playing,
-    };
+      const track = {
+        name: state.body.item.name,
+        artists: state.body.item.artists.map((a: any) => a.name),
+        albumArt: state.body.item.album.images[0]?.url || "",
+        durationMs: state.body.item.duration_ms,
+        albumName: state.body.item.album.name,
+        progressMs: state.body.progress_ms,
+        isPlaying: state.body.is_playing,
+      };
 
-    if (MiniplayerPanel.currentPanel) {
-      MiniplayerPanel.currentPanel.updateTrack(track);
-    }
+      if (MiniplayerPanel.currentPanel) {
+        MiniplayerPanel.currentPanel.updateTrack(track);
+      }
     }
   } catch (error: any) {
     console.error("Update track info error:", error);
