@@ -10,7 +10,7 @@ export function setExtensionContext(context: vscode.ExtensionContext) {
   extensionContext = context;
 }
 
-async function ensureActiveDevice(
+export async function ensureActiveDevice(
   context: vscode.ExtensionContext
 ): Promise<Boolean> {
   try {
