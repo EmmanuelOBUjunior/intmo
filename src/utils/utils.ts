@@ -434,6 +434,9 @@ export class MiniplayerPanel {
   }
 }
 
+
+let lastTrackId:string| null = null;
+
 export async function updateTrackInfo() {
   try {
     if (!spotifyApi) {
@@ -453,6 +456,9 @@ export async function updateTrackInfo() {
           artists: [""],
           albumArt: "",
           album: "",
+          durationMS:0,
+          progressMs:0,
+          isPlaying:false
         });
       }
       return;
