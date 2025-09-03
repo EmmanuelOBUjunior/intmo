@@ -331,6 +331,13 @@ export async function activate(context: vscode.ExtensionContext) {
           if (!spotifyApi) {
             throw new Error("Spotify API not initialized");
           }
+
+          //Check for active devices first
+          const hasDevice = await ensureActiveDevice(context);
+          if(!hasDevice){
+            return;
+          }
+
           console.log("Fetching current playing track...");
           // await updateStatusBar();
           // vscode.window.showInformationMessage(statusBarItem.text);
