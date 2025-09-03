@@ -372,6 +372,7 @@ export async function activate(context: vscode.ExtensionContext) {
           if(!hasDevice){
             return;
           }
+          console.log("Fetching current playing track...");
 
           const playback = await withTokenRefresh(context, spotifyApi!, () =>
             spotifyApi!.getMyCurrentPlaybackState()
