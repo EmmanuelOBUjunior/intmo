@@ -504,7 +504,7 @@ export async function updateTrackInfo() {
       () => spotifyApi!.getMyCurrentPlayingTrack()
     );
 
-    if (!state?.body || !state?.body.item) {
+    if(!devices.body.devices.some(d=>d.is_active)) {
       if (MiniplayerPanel.currentPanel) {
         MiniplayerPanel.currentPanel.updateTrack({
           name: "No track playing",
