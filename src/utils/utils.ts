@@ -469,7 +469,7 @@ export async function updateTrackInfo() {
     const currentTrackId = state.body.item.id;
     if(currentTrackId !== lastTrackId){
       lastTrackId = currentTrackId;
-    }
+    
 
     const track = {
       name: state.body.item.name,
@@ -483,6 +483,7 @@ export async function updateTrackInfo() {
 
     if (MiniplayerPanel.currentPanel) {
       MiniplayerPanel.currentPanel.updateTrack(track);
+    }
     }
   } catch (error: any) {
     console.error("Update track info error:", error);
