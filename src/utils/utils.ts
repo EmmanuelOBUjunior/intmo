@@ -122,7 +122,7 @@ export class MiniplayerPanel {
   private stopAutoUpdate() {
     if(this._updateInterval){
       clearInterval(this._updateInterval);
-      this._updateInterval = undefined
+      this._updateInterval = undefined;
     }
   }
 
