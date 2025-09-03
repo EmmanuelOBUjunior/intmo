@@ -23,7 +23,7 @@ try {
 
   //If no active device, let user pick one
   if(!activeDevice && devices.body.devices.length > 0){
-    const deviceChoice = await vscode.window.showQuickPick(
+    const deviceChoice:any = await vscode.window.showQuickPick(
         devices.body.devices.map(d => ({
           label: d.name,
           description: d.type,
