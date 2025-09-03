@@ -436,7 +436,7 @@ export async function activate(context: vscode.ExtensionContext) {
             return;
           }
 
-          await spotifyApi?.skipToPrevious();
+          await withTokenRefresh(context, spotifyApi!, ()=>spotifyApi!.skipToPrevious());
           vscode.window.showInformationMessage(
             "⏮️ Went back to previous track"
           );
