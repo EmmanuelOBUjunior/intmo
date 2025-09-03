@@ -107,7 +107,7 @@ export class MiniplayerPanel {
 
   private startAutoUpdate(){
     //Update every 3 seconds
-    this._updateInterval = setInterval(async()=>{});
+    this._updateInterval = setInterval(async()=>{await updateTrackInfo();}, 300);
   }
 
   private stopAutoUpdate(){}
