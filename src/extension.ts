@@ -264,6 +264,7 @@ export async function activate(context: vscode.ExtensionContext) {
     );
     statusBarTrack.text = "🎵 Not Playing";
     statusBarTrack.tooltip = "Current Song";
+    statusBarTrack.command = "intmo.openMiniPlayer";
     statusBarTrack.show();
 
     context.subscriptions.push(
