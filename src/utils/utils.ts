@@ -55,7 +55,14 @@ export class MiniplayerPanel {
     //Start auto-updating when panel is created
     this.startAutoUpdate();
     //Handle disposal
-    this._panel.onDidDispose(() => {this.dispose(); this.stopAutoUpdate();}, null, []);
+    this._panel.onDidDispose(
+      () => {
+        this.dispose();
+        this.stopAutoUpdate();
+      },
+      null,
+      []
+    );
 
     //Listen for control actinos
     this._panel.webview.onDidReceiveMessage(async (message) => {
@@ -105,12 +112,14 @@ export class MiniplayerPanel {
     updateTrackInfo();
   }
 
-  private startAutoUpdate(){
+  private startAutoUpdate() {
     //Update every 3 seconds
-    this._updateInterval = setInterval(async()=>{await updateTrackInfo();}, 3000);
+    this._updateInterval = setInterval(async () => {
+      await updateTrackInfo();
+    }, 3000);
   }
 
-  private stopAutoUpdate(){}
+  private stopAutoUpdate() {}
 
   public dispose() {
     MiniplayerPanel.currentPanel = undefined;
@@ -438,7 +447,7 @@ export async function updateTrackInfo() {
           name: "No track playing",
           artists: [""],
           albumArt: "",
-          album:""
+          album: "",
         });
       }
       return;
