@@ -41,6 +41,8 @@ try {
       return true;
   }
 
+  return !!activeDevice;
+
 
 } catch (error) {
   
