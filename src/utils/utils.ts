@@ -31,6 +31,10 @@ try {
         })),
         { placeHolder: 'Select a Spotify device to use' }
       );
+
+      if(!deviceChoice){
+        return false;
+      }
   }
 
 
