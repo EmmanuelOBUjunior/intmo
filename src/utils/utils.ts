@@ -18,6 +18,8 @@ try {
     vscode.window.showErrorMessage("No Spotify devices found. Please open Spotify on any device");
     return false;
   }
+  //Check for active devices
+  let activeDevice = devices.body.devices.find(d=> d.is_active);
 
 } catch (error) {
   
