@@ -10,44 +10,50 @@ export function setExtensionContext(context: vscode.ExtensionContext) {
   extensionContext = context;
 }
 
-async function ensureActiveDevice(context: vscode.ExtensionContext):Promise<Boolean>{
-try {
-  const devices = await withTokenRefresh(context, spotifyApi!, ()=> spotifyApi!.getMyDevices());
+async function ensureActiveDevice(
+  context: vscode.ExtensionContext
+): Promise<Boolean> {
+  try {
+    const devices = await withTokenRefresh(context, spotifyApi!, () =>
+      spotifyApi!.getMyDevices()
+    );
 
-  if(!devices.body.devices.length){
-    vscode.window.showErrorMessage("No Spotify devices found. Please open Spotify on any device");
-    return false;
-  }
-  //Check for active devices
-  let activeDevice = devices.body.devices.find(d=> d.is_active);
+    if (!devices.body.devices.length) {
+      vscode.window.showErrorMessage(
+        "No Spotify devices found. Please open Spotify on any device"
+      );
+      return false;
+    }
+    //Check for active devices
+    let activeDevice = devices.body.devices.find((d) => d.is_active);
 
-  //If no active device, let user pick one
-  if(!activeDevice && devices.body.devices.length > 0){
-    const deviceChoice:any = await vscode.window.showQuickPick(
-        devices.body.devices.map(d => ({
+    //If no active device, let user pick one
+    if (!activeDevice && devices.body.devices.length > 0) {
+      const deviceChoice: any = await vscode.window.showQuickPick(
+        devices.body.devices.map((d) => ({
           label: d.name,
           description: d.type,
-          id: d.id
+          id: d.id,
         })),
-        { placeHolder: 'Select a Spotify device to use' }
+        { placeHolder: "Select a Spotify device to use" }
       );
 
-      if(!deviceChoice){
+      if (!deviceChoice) {
         return false;
       }
 
       //Transfer playback to selected device
-      await withTokenRefresh(context, spotifyApi!, ()=> spotifyApi!.transferMyPlayback([deviceChoice.id]));
+      await withTokenRefresh(context, spotifyApi!, () =>
+        spotifyApi!.transferMyPlayback([deviceChoice.id])
+      );
       return true;
+    }
+
+    return !!activeDevice;
+  } catch (error) {
+    console.error("Device activation error: ", error);
+    return false;
   }
-
-  return !!activeDevice;
-
-
-} catch (error) {
-  console.error("Device activation error: ", error);
-  return false;
-}
 }
 
 export class MiniplayerPanel {
