@@ -1,7 +1,13 @@
 import * as vscode from "vscode";
 import SpotifyWebApi from "spotify-web-api-node";
 import { authenticateSpotify, withTokenRefresh } from "./auth";
-import { MiniplayerPanel, setSpotifyApi, setExtensionContext, updateTrackInfo, ensureActiveDevice } from "./utils/utils";
+import {
+  MiniplayerPanel,
+  setSpotifyApi,
+  setExtensionContext,
+  updateTrackInfo,
+  ensureActiveDevice,
+} from "./utils/utils";
 
 let spotifyApi: SpotifyWebApi | null = null;
 let statusBarItem: vscode.StatusBarItem;
@@ -171,7 +177,6 @@ async function searchSpotify(context: vscode.ExtensionContext) {
   }
 }
 
-
 export async function activate(context: vscode.ExtensionContext) {
   try {
     //Authenticate on activation if no tokens are stored
@@ -334,7 +339,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
           //Check for active devices first
           const hasDevice = await ensureActiveDevice(context);
-          if(!hasDevice){
+          if (!hasDevice) {
             return;
           }
 
@@ -353,7 +358,7 @@ export async function activate(context: vscode.ExtensionContext) {
             updateStatusBar();
           } else {
             const hasActiveDevice = await ensureActiveDevice(context);
-            if(hasActiveDevice){
+            if (hasActiveDevice) {
               vscode.window.showInformationMessage(
                 "No track is currently playing."
               );
@@ -375,10 +380,9 @@ export async function activate(context: vscode.ExtensionContext) {
         try {
           //Check for active devices first
           const hasDevice = await ensureActiveDevice(context);
-          if(!hasDevice){
+          if (!hasDevice) {
             return;
           }
-          
 
           const playback = await withTokenRefresh(context, spotifyApi!, () =>
             spotifyApi!.getMyCurrentPlaybackState()
@@ -406,12 +410,11 @@ export async function activate(context: vscode.ExtensionContext) {
       "intmo.nextTrack",
       async () => {
         try {
-
           // Check for active device first
-    const hasDevice = await ensureActiveDevice(context);
-    if (!hasDevice) {
-      return;
-    }
+          const hasDevice = await ensureActiveDevice(context);
+          if (!hasDevice) {
+            return;
+          }
 
           await spotifyApi?.skipToNext();
           vscode.window.showInformationMessage("⏭️ Skipped to next track");
