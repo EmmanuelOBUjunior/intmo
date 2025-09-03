@@ -21,6 +21,19 @@ try {
   //Check for active devices
   let activeDevice = devices.body.devices.find(d=> d.is_active);
 
+  //If no active device, let user pick one
+  if(!activeDevice && devices.body.devices.length > 0){
+    const deviceChoice = await vscode.window.showQuickPick(
+        devices.body.devices.map(d => ({
+          label: d.name,
+          description: d.type,
+          id: d.id
+        })),
+        { placeHolder: 'Select a Spotify device to use' }
+      );
+  }
+
+
 } catch (error) {
   
 }
