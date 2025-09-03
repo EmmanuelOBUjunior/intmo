@@ -556,9 +556,12 @@ export async function updateTrackInfo() {
     }
   } catch (error: any) {
     console.error("Update track info error:", error);
-    vscode.window.showErrorMessage(
-      `Failed to update track info: ${error.message}`
-    );
+    //Don't show error message for device checks
+    if(!error.message.includes("N)_ACTIVE_DEVICE")){
+      vscode.window.showErrorMessage(
+        `Failed to update track info: ${error.message}`
+      );
+    }
   }
 }
 
