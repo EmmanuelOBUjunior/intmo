@@ -195,42 +195,77 @@ suite("Spotify Extension Test Suite", () => {
 //     showErrorStub.restore();
 //   });
 
- test('Error handling in device activation', async () => {
-    // Set up stubs BEFORE calling the function
-    const consoleErrorStub = sandBox.stub(console, 'error');
-    const consoleLogStub = sandBox.stub(console, 'log');
-    const showErrorStub = sandBox.stub(vscode.window, 'showErrorMessage');
+//  test('Error handling in device activation', async () => {
+//     // Set up stubs BEFORE calling the function
+//     const consoleErrorStub = sandBox.stub(console, 'error');
+//     const consoleLogStub = sandBox.stub(console, 'log');
+//     const showErrorStub = sandBox.stub(vscode.window, 'showErrorMessage');
     
-    // Stub withTokenRefresh to reject with an error
-    const apiError = new Error('API Error');
-    const withTokenRefreshStub = sandBox.stub(authModule, 'withTokenRefresh')
-      .rejects(apiError);
+//     // Stub withTokenRefresh to reject with an error
+//     const apiError = new Error('API Error');
+//     const withTokenRefreshStub = sandBox.stub(authModule, 'withTokenRefresh')
+//       .rejects(apiError);
     
-    console.log('About to call ensureActiveDevice');
-    const result = await ensureActiveDevice(context);
-    console.log('ensureActiveDevice returned:', result);
+//     console.log('About to call ensureActiveDevice');
+//     const result = await ensureActiveDevice(context);
+//     console.log('ensureActiveDevice returned:', result);
     
-    console.log('withTokenRefresh call count:', withTokenRefreshStub.callCount);
-    console.log('console.error call count:', consoleErrorStub.callCount);
-    console.log('showErrorMessage call count:', showErrorStub.callCount);
+//     console.log('withTokenRefresh call count:', withTokenRefreshStub.callCount);
+//     console.log('console.error call count:', consoleErrorStub.callCount);
+//     console.log('showErrorMessage call count:', showErrorStub.callCount);
     
-    if (consoleErrorStub.callCount > 0) {
-      console.log('console.error was called with:', consoleErrorStub.firstCall.args);
-    }
+//     if (consoleErrorStub.callCount > 0) {
+//       console.log('console.error was called with:', consoleErrorStub.firstCall.args);
+//     }
     
-    assert.strictEqual(result, false);
-    assert.strictEqual(withTokenRefreshStub.callCount, 1, 'withTokenRefresh should be called exactly once');
-    assert.strictEqual(consoleErrorStub.callCount, 1, 'console.error should be called exactly once');
+//     assert.strictEqual(result, false);
+//     assert.strictEqual(withTokenRefreshStub.callCount, 1, 'withTokenRefresh should be called exactly once');
+//     assert.strictEqual(consoleErrorStub.callCount, 1, 'console.error should be called exactly once');
     
-    if (consoleErrorStub.callCount > 0) {
-      assert.match(consoleErrorStub.firstCall.args[0], /Device activation error:/);
-    }
+//     if (consoleErrorStub.callCount > 0) {
+//       assert.match(consoleErrorStub.firstCall.args[0], /Device activation error:/);
+//     }
     
-    withTokenRefreshStub.restore();
-    consoleErrorStub.restore();
-    consoleLogStub.restore();
-    showErrorStub.restore();
-  });
+//     withTokenRefreshStub.restore();
+//     consoleErrorStub.restore();
+//     consoleLogStub.restore();
+//     showErrorStub.restore();
+//   });
+
+test('Error handling in device activation - manual console replacement', async () => {
+  // Manually replace console.error
+  const originalConsoleError = console.error;
+  let errorCallCount = 0;
+  let errorMessage = '';
+  
+  console.error = (...args: any[]) => {
+    errorCallCount++;
+    errorMessage = args.join(' ');
+  };
+  
+  const showErrorStub = sandBox.stub(vscode.window, 'showErrorMessage');
+  
+  // Stub withTokenRefresh to reject with an error
+  const apiError = new Error('API Error');
+  const withTokenRefreshStub = sandBox.stub(authModule, 'withTokenRefresh')
+    .rejects(apiError);
+  
+  const result = await ensureActiveDevice(context);
+  
+  // Restore console.error
+  console.error = originalConsoleError;
+  
+  console.log('Error call count:', errorCallCount);
+  console.log('Error message:', errorMessage);
+  
+  assert.strictEqual(result, false);
+  assert.strictEqual(withTokenRefreshStub.callCount, 1, 'withTokenRefresh should be called exactly once');
+  assert.strictEqual(errorCallCount, 1, 'console.error should be called exactly once');
+  assert.match(errorMessage, /Device activation error:/, 'Error message should contain expected text');
+  
+  withTokenRefreshStub.restore();
+  showErrorStub.restore();
+});
 
   // Test 5
   test("MiniPlayer play/pause button messaging", async () => {
