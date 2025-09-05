@@ -9,7 +9,7 @@ import {
   setSpotifyApi,
 } from "../../utils/utils";
 import { handleVSCodeCallback } from "../../extension";
-import * as authModule from '../../../src/auth';
+import * as authModule from '../../auth';
 
 suite("Spotify Extension Test Suite", () => {
   let context: vscode.ExtensionContext;
