@@ -204,10 +204,7 @@ suite("Spotify Extension Test Suite", () => {
     // Stub withTokenRefresh to reject with an error
     const apiError = new Error('API Error');
     const withTokenRefreshStub = sandBox.stub(authModule, 'withTokenRefresh')
-      .callsFake(async () => {
-        console.log('withTokenRefresh stub called - throwing error');
-        throw apiError;
-      });
+      .rejects(apiError);
     
     console.log('About to call ensureActiveDevice');
     const result = await ensureActiveDevice(context);
