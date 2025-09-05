@@ -31,11 +31,9 @@ suite("Spotify Extension Test Suite", () => {
       extensionMode: vscode.ExtensionMode.Test,
     } as vscode.ExtensionContext;
 
-	//Create a mock spotify api
-  spotifyApi = new SpotifyWebApi();
-  setSpotifyApi(spotifyApi);
-  setExtensionContext(context);
+    //Create a mock spotify api
+    spotifyApi = new SpotifyWebApi();
+    setSpotifyApi(spotifyApi);
+    setExtensionContext(context);
   });
-
-  
 });
