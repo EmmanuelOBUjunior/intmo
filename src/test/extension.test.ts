@@ -114,4 +114,43 @@ suite("Spotify Extension Test Suite", () => {
         assert.strictEqual(createWebviewPanelStub.calledOnce, true);
         createWebviewPanelStub.restore();
     });
+
+	test('Track info update with no active device', async () => {
+        // Mock getMyDevices to return no active devices
+        const getDevicesStub = sinon.stub(spotifyApi, 'getMyDevices')
+            .resolves({
+                body: {
+                    devices: [{
+                        id: 'device1',
+                        is_active: false,
+                        name: 'Test Device',
+                        type: 'Computer'
+                    }]
+                }
+            });
+
+        // Create a mock panel
+        const mockPanel = {
+            updateTrack: sinon.spy()
+        };
+        MiniplayerPanel.currentPanel = mockPanel as any;
+
+        await vscode.commands.executeCommand('intmo.nowPlaying');
+
+        assert.strictEqual(mockPanel.updateTrack.calledOnce, true);
+        assert.deepStrictEqual(
+            mockPanel.updateTrack.firstCall.args[0],
+            {
+                name: 'No active device',
+                artists: ['Please open Spotify on any device'],
+                albumArt: '',
+                album: '',
+                durationMS: 0,
+                progressMs: 0,
+                isPlaying: false
+            }
+        );
+
+        getDevicesStub.restore();
+    });
 });
