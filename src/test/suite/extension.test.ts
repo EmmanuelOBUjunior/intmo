@@ -57,7 +57,10 @@ suite("Spotify Extension Test Suite", () => {
       },
       reveal: () => {},
       dispose: () => {},
-      onDidDispose: () => ({ dispose: () => {} }),
+      onDidDispose: (callback:any) =>{
+        callback();//Ensures the dispose callback is called
+        return {dispose: ()=>{}};
+      },
     } as any);
 
     sandBox

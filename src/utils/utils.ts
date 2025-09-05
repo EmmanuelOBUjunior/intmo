@@ -72,7 +72,7 @@ export class MiniplayerPanel {
     const column = vscode.ViewColumn.Two;
 
     //If we already have a panel, reveal it
-    if (MiniplayerPanel.currentPanel) {
+    if (MiniplayerPanel.currentPanel && MiniplayerPanel.currentPanel._panel) {
       try {
         MiniplayerPanel.currentPanel._panel.reveal(column);
       } catch (error) {
