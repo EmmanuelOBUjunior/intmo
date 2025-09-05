@@ -56,6 +56,6 @@ suite("Spotify Extension Test Suite", () => {
 
 	test('ensureActiveDevice - no device available',async()=>{
 //Mock getMyDevices to return empty list
-
+const getDevicesStub = sinon.stub(spotifyApi, 'getMyDevices').resolves({body:{devices:[]}});
 	});
 });
