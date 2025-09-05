@@ -8,6 +8,7 @@ import {
   setExtensionContext,
   setSpotifyApi,
 } from "../utils/utils";
+import { handleVSCodeCallback } from "../extension";
 
 suite("Spotify Extension Test Suite", () => {
   let context: vscode.ExtensionContext;
@@ -37,7 +38,9 @@ suite("Spotify Extension Test Suite", () => {
 		sandBox.restore();
 	});
 
-	test('',()=>{});
+	test('handleVSCodeCallback creates SpotifyWebApi instance',async()=>{
+		const api = await handleVSCodeCallback(context);
+	});
 
   test('ensureActiveDevice - no devices available', async () => {
         const getDevicesStub = sandBox.stub(spotifyApi, 'getMyDevices')
