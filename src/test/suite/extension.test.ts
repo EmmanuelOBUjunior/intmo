@@ -47,7 +47,13 @@ suite("Spotify Extension Test Suite", () => {
         html: "",
         onDidReceiveMessage: () => ({ dispose: () => {} }),
         postMessage: sinon.stub().resolves(true),
-        asWebviewUri: (uri: vscode.Uri) => uri,
+        // Ensure this is a proper function that returns a valid object
+        asWebviewUri: function(uri: vscode.Uri) {
+          return { 
+            toString: () => uri.toString(),
+            with: () => uri
+          };
+        }
       },
       reveal: () => {},
       dispose: () => {},

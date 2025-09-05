@@ -8,26 +8,23 @@ interface CallbackResult {
 }
 
 // Add this function to handle token refresh
-export async function refreshTokens(
+// Update the refreshTokens function to handle missing refresh tokens in tests
+async function refreshTokens(
   spotifyApi: SpotifyWebApi,
   context: vscode.ExtensionContext
 ): Promise<boolean> {
   try {
-    const data = await spotifyApi.refreshAccessToken();
-    spotifyApi.setAccessToken(data.body.access_token);
-
-    // Store the new access token
-    await context.secrets.store("spotifyAccessToken", data.body.access_token);
-
-    // If a new refresh token is provided, store it too
-    if (data.body.refresh_token) {
-      spotifyApi.setRefreshToken(data.body.refresh_token);
-      await context.secrets.store(
-        "spotifyRefreshToken",
-        data.body.refresh_token
-      );
+    const refreshToken = await context.secrets.get("spotifyRefreshToken");
+    
+    if (!refreshToken) {
+      console.log("No refresh token found, starting new authentication");
+      return false;
     }
-
+    
+    spotifyApi.setRefreshToken(refreshToken);
+    const data = await spotifyApi.refreshAccessToken();
+    await context.secrets.store("spotifyAccessToken", data.body.access_token);
+    spotifyApi.setAccessToken(data.body.access_token);
     return true;
   } catch (error) {
     console.error("Token refresh failed:", error);
