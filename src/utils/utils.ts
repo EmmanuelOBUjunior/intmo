@@ -198,11 +198,17 @@ export class MiniplayerPanel {
     // Get path to media folder
     const mediaPath = vscode.Uri.joinPath(this._extensionUri, "media");
     console.log("Media Path:", mediaPath);
-
+  
     // Create URIs for resources
-    const defaultAlbumArt = webview.asWebviewUri(
-      vscode.Uri.joinPath(mediaPath, "default-album-art.png")
-    );
+    let defaultAlbumArt;
+    try {
+      defaultAlbumArt = webview.asWebviewUri(
+        vscode.Uri.joinPath(mediaPath, "default-album-art.png")
+      );
+    } catch (error) {
+      console.error("Error creating webview URI:", error);
+      defaultAlbumArt = { toString: () => "" }; // Fallback for tests
+    }
     console.log("default Album art:", defaultAlbumArt);
 
     const style = `
