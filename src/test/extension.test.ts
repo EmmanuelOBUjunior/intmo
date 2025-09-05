@@ -104,6 +104,7 @@ suite("Spotify Extension Test Suite", () => {
         
         MiniplayerPanel.currentPanel?.dispose();
         assert.strictEqual(MiniplayerPanel.currentPanel, undefined);
+		createWebviewPanelStub.restore();
     });
 
   test("Track info update with no active device", async () => {
