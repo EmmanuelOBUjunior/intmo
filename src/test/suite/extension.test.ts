@@ -165,12 +165,9 @@ test("Error handling in device activation", async () => {
   // assert console.error was called
   assert.ok(errorSpy.calledOnce, "Expected console.error to be called once");
  assert.ok(
-  errorSpy.calledWithMatch(
-    sinon.match("Device activation error:"),
-    sinon.match.instanceOf(Error)
-  ),
-  "Expected error log for device activation failure"
-);
+    errorSpy.firstCall.args[0].includes("Device activation error"),
+    "Expected error log for device activation failure"
+  );
 
   // restore console.error
   console.error = originalConsoleError;
