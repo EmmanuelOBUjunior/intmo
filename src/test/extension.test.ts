@@ -4,6 +4,7 @@ import * as sinon from "sinon";
 import SpotifyWebApi from "spotify-web-api-node";
 import {
   ensureActiveDevice,
+  MiniplayerPanel,
   setExtensionContext,
   setSpotifyApi,
 } from "../utils/utils";
