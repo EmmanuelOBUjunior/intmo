@@ -198,6 +198,11 @@ export async function withTokenRefresh<T>(
       } as unknown as T;
     }
 
+    // 👇 When explicitly forcing an error in tests
+    if (process.env.TEST_FORCE_ERROR === "true") {
+      throw new Error("API Error");
+    }
+
     // Default mock response for other operations in tests
     return {} as T;
   }

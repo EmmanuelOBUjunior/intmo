@@ -175,6 +175,7 @@ suite("Spotify Extension Test Suite", () => {
   // });
 
   test("Error handling in device activation", async () => {
+    process.env.TEST_FORCE_ERROR = "true";
     const errorStub = sandBox.stub(console, "error");
 
     console.log("withTokenRefresh is", authModule.withTokenRefresh);
