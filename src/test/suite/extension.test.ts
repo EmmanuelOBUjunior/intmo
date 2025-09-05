@@ -9,7 +9,7 @@ import {
   setSpotifyApi,
 } from "../../utils/utils";
 import { handleVSCodeCallback } from "../../extension";
-import * as authModule from "../../auth";
+import * as authModule from '../../../src/auth';
 
 suite("Spotify Extension Test Suite", () => {
   let context: vscode.ExtensionContext;
@@ -49,18 +49,18 @@ suite("Spotify Extension Test Suite", () => {
         onDidReceiveMessage: () => ({ dispose: () => {} }),
         postMessage: sinon.stub().resolves(true),
         // Ensure this is a proper function that returns a valid object
-        asWebviewUri: function(uri: vscode.Uri) {
-          return { 
+        asWebviewUri: function (uri: vscode.Uri) {
+          return {
             toString: () => uri.toString(),
-            with: () => uri
+            with: () => uri,
           };
-        }
+        },
       },
       reveal: () => {},
       dispose: () => {},
-      onDidDispose: (callback:any) =>{
-        callback();//Ensures the dispose callback is called
-        return {dispose: ()=>{}};
+      onDidDispose: (callback: any) => {
+        callback(); //Ensures the dispose callback is called
+        return { dispose: () => {} };
       },
     } as any);
 
@@ -82,14 +82,12 @@ suite("Spotify Extension Test Suite", () => {
         return Promise.resolve();
       });
 
-      sandBox.stub(spotifyApi, "getMe").resolves({
-      body: { id: "user123" , display_name: "Test User"},
+    sandBox.stub(spotifyApi, "getMe").resolves({
+      body: { id: "user123", display_name: "Test User" },
     } as any);
 
     sandBox.stub(console, "error");
   });
-
-  
 
   teardown(() => {
     sandBox.restore();
@@ -104,8 +102,6 @@ suite("Spotify Extension Test Suite", () => {
         expires_in: 3600,
       },
     } as any);
-
-    
 
     const api = await handleVSCodeCallback(context);
     assert.ok(api instanceof SpotifyWebApi);
@@ -127,7 +123,9 @@ suite("Spotify Extension Test Suite", () => {
   // Test 3
   test("Track info update with no active device", async () => {
     sandBox.stub(spotifyApi, "getMyDevices").resolves({
-      body: { devices: [{ id: "device1", is_active: false, name: "Device 1" }] },
+      body: {
+        devices: [{ id: "device1", is_active: false, name: "Device 1" }],
+      },
     } as any);
 
     sandBox
@@ -152,47 +150,51 @@ suite("Spotify Extension Test Suite", () => {
   });
 
   // Test 4 (device activation error handling)
-// test("Error handling in device activation", async () => {
-//   const originalConsoleError = console.error; // save original
-//   const errorSpy = sinon.spy();
-//   console.error = errorSpy as any; // patch manually
+  // test("Error handling in device activation", async () => {
+  //   const originalConsoleError = console.error; // save original
+  //   const errorSpy = sinon.spy();
+  //   console.error = errorSpy as any; // patch manually
 
-//   console.log("withTokenRefresh is", authModule.withTokenRefresh);
-//   sandBox.stub(authModule, "withTokenRefresh").rejects(new Error("API Error"));
+  //   console.log("withTokenRefresh is", authModule.withTokenRefresh);
+  //   sandBox.stub(authModule, "withTokenRefresh").rejects(new Error("API Error"));
 
-//   const result = await ensureActiveDevice(context);
+  //   const result = await ensureActiveDevice(context);
 
-//   assert.strictEqual(result, false);
+  //   assert.strictEqual(result, false);
 
-//   // assert console.error was called
-//   console.log("console.error calls:", errorSpy.callCount, errorSpy.args);
-//   assert.ok(errorSpy.calledOnce, "Expected console.error to be called once");
-//  assert.ok(
-//     errorSpy.firstCall.args[0].includes("Device activation error"),
-//     "Expected error log for device activation failure"
-//   );
+  //   // assert console.error was called
+  //   console.log("console.error calls:", errorSpy.callCount, errorSpy.args);
+  //   assert.ok(errorSpy.calledOnce, "Expected console.error to be called once");
+  //  assert.ok(
+  //     errorSpy.firstCall.args[0].includes("Device activation error"),
+  //     "Expected error log for device activation failure"
+  //   );
 
-//   // restore console.error
-//   console.error = originalConsoleError;
-// });
+  //   // restore console.error
+  //   console.error = originalConsoleError;
+  // });
 
-test("Error handling in device activation", async () => {
-  const errorStub = sandBox.stub(console, "error");
+  test("Error handling in device activation", async () => {
+    const errorStub = sandBox.stub(console, "error");
 
-  sandBox.stub(authModule, "withTokenRefresh").rejects(new Error("API Error"));
+    console.log("withTokenRefresh is", authModule.withTokenRefresh);
+    sandBox
+      .stub(authModule, "withTokenRefresh")
+      .rejects(new Error("API Error"));
 
-  const result = await ensureActiveDevice(context);
+    // const result = await ensureActiveDevice(context);
+    const result = await ensureActiveDevice({} as any);
+    assert.strictEqual(result, false);
 
-  assert.strictEqual(result, false);
-
-  // assert console.error was called
-  assert.ok(errorStub.calledOnce, "Expected console.error to be called once");
-  assert.match(
-    errorStub.firstCall.args[0],
-    /Device activation error/,
-    "Expected error log for device activation failure"
-  );
-});
+    // assert console.error was called
+    console.log("console.error calls:", errorStub.callCount, errorStub.args);
+    assert.ok(errorStub.calledOnce, "Expected console.error to be called once");
+    assert.match(
+      errorStub.firstCall.args[0],
+      /Device activation error/,
+      "Expected error log for device activation failure"
+    );
+  });
 
   // Test 5
   test("MiniPlayer play/pause button messaging", async () => {
