@@ -69,10 +69,17 @@ suite("Spotify Extension Test Suite", () => {
             isPlaying: false,
           });
         }
+        return Promise.resolve();
       });
+
+      sandBox.stub(spotifyApi, "getMe").resolves({
+      body: { id: "user123" , display_name: "Test User"},
+    } as any);
 
     sandBox.stub(console, "error");
   });
+
+  
 
   teardown(() => {
     sandBox.restore();
@@ -88,9 +95,7 @@ suite("Spotify Extension Test Suite", () => {
       },
     } as any);
 
-    sandBox.stub(spotifyApi, "getMe").resolves({
-      body: { id: "user123" , display_name: "Test User"},
-    } as any);
+    
 
     const api = await handleVSCodeCallback(context);
     assert.ok(api instanceof SpotifyWebApi);
