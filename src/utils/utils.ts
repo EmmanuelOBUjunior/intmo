@@ -68,33 +68,33 @@ export class MiniplayerPanel {
   return this._panel;
 }
 
-  public static createOrShow(extentionUri: vscode.Uri) {
+  public static createOrShow(extensionUri: vscode.Uri) {
     const column = vscode.ViewColumn.Two;
 
-    //If we already have a pane;, reveal it
+    //If we already have a panel, reveal it
     if (MiniplayerPanel.currentPanel) {
-    try {
-      MiniplayerPanel.currentPanel._panel.reveal(column);
-    } catch (error) {
-      console.error("Error revealing panel:", error);
-      MiniplayerPanel.currentPanel.dispose();
-      MiniplayerPanel.currentPanel = undefined;
+      try {
+        MiniplayerPanel.currentPanel._panel.reveal(column);
+      } catch (error) {
+        console.error("Error revealing panel:", error);
+        MiniplayerPanel.currentPanel.dispose();
+        MiniplayerPanel.currentPanel = undefined;
+      }
+      return;
     }
-    return;
-  }
 
     //Otherwise, we create one
     try {
       const panel = vscode.window.createWebviewPanel(
-      "spotifyMiniPlayer",
-      "Spotify Mini Player",
-      column,
-      {
-        enableScripts: true,
-        localResourceRoots: [vscode.Uri.joinPath(extentionUri, "media")],
-      }
-    );
-    MiniplayerPanel.currentPanel = new MiniplayerPanel(panel, extentionUri);
+        "spotifyMiniPlayer",
+        "Spotify Mini Player",
+        column,
+        {
+          enableScripts: true,
+          localResourceRoots: [vscode.Uri.joinPath(extensionUri, "media")],
+        }
+      );
+      MiniplayerPanel.currentPanel = new MiniplayerPanel(panel, extensionUri);
     } catch (error) {
       console.error("Error creating webview panel:", error);
     }
