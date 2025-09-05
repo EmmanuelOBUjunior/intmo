@@ -55,6 +55,7 @@ suite("Spotify Extension Test Suite", () => {
     });
 
 	test('ensureActiveDevice - no device available',async()=>{
+//Mock getMyDevices to return empty list
 
 	});
 });
