@@ -9,6 +9,7 @@ import {
   setSpotifyApi,
 } from "../../utils/utils";
 import { handleVSCodeCallback } from "../../extension";
+import { withTokenRefresh } from "../../auth";
 
 suite("Spotify Extension Test Suite", () => {
   let context: vscode.ExtensionContext;
@@ -156,13 +157,14 @@ test("Error handling in device activation", async () => {
   const errorSpy = sinon.spy();
   console.error = errorSpy as any; // patch manually
 
-  sandBox.stub(spotifyApi, "getMyDevices").rejects(new Error("API Error"));
+  sandBox.stub<any, any>(withTokenRefresh, "withTokenRefresh").rejects(new Error("API Error"));
 
   const result = await ensureActiveDevice(context);
 
   assert.strictEqual(result, false);
 
   // assert console.error was called
+  console.log("console.error calls:", errorSpy.callCount, errorSpy.args);
   assert.ok(errorSpy.calledOnce, "Expected console.error to be called once");
  assert.ok(
     errorSpy.firstCall.args[0].includes("Device activation error"),
