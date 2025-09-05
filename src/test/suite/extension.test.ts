@@ -20,23 +20,71 @@ suite("Spotify Extension Test Suite", () => {
   let sandBox: sinon.SinonSandbox;
 
   setup(() => {
-    sandBox = sinon.createSandbox();
+  sandBox = sinon.createSandbox();
 
-    // Mock extension context
-    context = {
-      subscriptions: [],
-      extensionUri: vscode.Uri.file(__dirname),
-      secrets: {
-        get: sandBox.stub().resolves("dummy-token"),
-        store: sandBox.stub().resolves(),
-      },
-    } as unknown as vscode.ExtensionContext;
+  // --- Mock Extension Context ---
+  context = {
+    subscriptions: [],
+    extensionUri: vscode.Uri.file(__dirname),
+    secrets: {
+      get: sandBox.stub().resolves("dummy-token"),
+      store: sandBox.stub().resolves(),
+    },
+  } as unknown as vscode.ExtensionContext;
 
-    // Create Spotify API instance
-    spotifyApi = new SpotifyWebApi();
-    setSpotifyApi(spotifyApi);
-    setExtensionContext(context);
-  });
+  // --- Mock Spotify API instance ---
+  spotifyApi = new SpotifyWebApi();
+  setSpotifyApi(spotifyApi);
+  setExtensionContext(context);
+
+  // Prevent refresh token errors
+  sandBox.stub(spotifyApi, "refreshAccessToken").resolves({
+    body: { access_token: "new-dummy-token" },
+  } as any);
+
+  // --- Mock Authentication Session ---
+  sandBox.stub(vscode.authentication, "getSession").resolves({
+    id: "dummy-session",
+    accessToken: "dummy-access-token",
+    account: { label: "test-user", id: "user1" },
+    scopes: ["user-read-playback-state", "user-modify-playback-state"],
+  } as any);
+
+  // --- Mock VSCode WebviewPanel creation ---
+  sandBox.stub(vscode.window, "createWebviewPanel").returns({
+    webview: {
+      html: "",
+      onDidReceiveMessage: () => ({ dispose: () => {} }),
+      postMessage: () => Promise.resolve(),
+      asWebviewUri: (uri: vscode.Uri) => uri, // fix for undefined
+    },
+    onDidDispose: () => ({ dispose: () => {} }),
+    dispose: () => {},
+    reveal: () => {}, // fix for undefined
+  } as any);
+
+  // --- Mock VSCode Commands (prevent hanging in tests) ---
+  sandBox
+    .stub(vscode.commands, "executeCommand")
+    .withArgs("intmo.nowPlaying")
+    .callsFake(async () => {
+      if (MiniplayerPanel.currentPanel) {
+        MiniplayerPanel.currentPanel.updateTrack({
+          name: "No active device",
+          artists: ["Please open Spotify on any device"],
+          albumArt: "",
+          album: "",
+          durationMs: 0,
+          progressMs: 0,
+          isPlaying: false,
+        });
+      }
+    });
+
+  // --- Console error logging spy (for error handling test) ---
+  sandBox.stub(console, "error");
+});
+
 
   teardown(() => {
     sandBox.restore();
