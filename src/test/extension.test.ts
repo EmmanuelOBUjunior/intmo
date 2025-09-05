@@ -12,7 +12,6 @@ import { handleVSCodeCallback } from "../extension";
 
 interface QuickPickDevice extends vscode.QuickPickItem {
   id: string;
-//   label: string;
 }
 
 suite("Spotify Extension Test Suite", () => {
@@ -55,7 +54,7 @@ suite("Spotify Extension Test Suite", () => {
   test("ensureActiveDevice - no devices available", async () => {
     const getDevicesStub = sandBox
       .stub(spotifyApi, "getMyDevices")
-      .resolves({ body: { devices: [] }, headers:{},statusCode:200});
+      .resolves({ body: { devices: [] }, headers: {}, statusCode: 200 });
 
     const showErrorStub = sandBox.stub(vscode.window, "showErrorMessage");
 
@@ -72,23 +71,25 @@ suite("Spotify Extension Test Suite", () => {
 
   test("ensureActiveDevice - with active device", async () => {
     // Mock getMyDevices to return a device
-    const getDevicesStub:any = sandBox.stub(spotifyApi, "getMyDevices").resolves({
-      body: {
-        devices: [
-          {
-            id: "device1",
-            is_active: true,
-            name: "Test Device",
-            type: "Computer",
-			is_private_session: false,
-			is_restricted:false,
-			volume_percent: 50
-          },
-        ],
-      },
-	  headers:{},
-	  statusCode: 200
-    });
+    const getDevicesStub: any = sandBox
+      .stub(spotifyApi, "getMyDevices")
+      .resolves({
+        body: {
+          devices: [
+            {
+              id: "device1",
+              is_active: true,
+              name: "Test Device",
+              type: "Computer",
+              is_private_session: false,
+              is_restricted: false,
+              volume_percent: 50,
+            },
+          ],
+        },
+        headers: {},
+        statusCode: 200,
+      });
 
     const result = await ensureActiveDevice(context);
 
@@ -96,58 +97,33 @@ suite("Spotify Extension Test Suite", () => {
     getDevicesStub.restore();
   });
 
-  test('MiniPlayer creation and disposal', () => {
-        const createWebviewPanelStub = sandBox.stub(vscode.window, 'createWebviewPanel')
-            .returns({
-                webview: {
-                    html: '',
-                    onDidReceiveMessage: () => ({ dispose: () => {} }),
-                    postMessage: () => Promise.resolve()
-                },
-                onDidDispose: () => ({ dispose: () => {} }),
-                dispose: () => {},
-                reveal: () => {}
-            } as any);
+  test("MiniPlayer creation and disposal", () => {
+    const createWebviewPanelStub = sandBox
+      .stub(vscode.window, "createWebviewPanel")
+      .returns({
+        webview: {
+          html: "",
+          onDidReceiveMessage: () => ({ dispose: () => {} }),
+          postMessage: () => Promise.resolve(),
+        },
+        onDidDispose: () => ({ dispose: () => {} }),
+        dispose: () => {},
+        reveal: () => {},
+      } as any);
 
-        MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
-        assert.ok(MiniplayerPanel.currentPanel);
-        
-        MiniplayerPanel.currentPanel?.dispose();
-        assert.strictEqual(MiniplayerPanel.currentPanel, undefined);
-		createWebviewPanelStub.restore();
-    });
+    MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
+    assert.ok(MiniplayerPanel.currentPanel);
 
-	test('Device selection flow', async () => {
-        const devices = {
-            body: {
-                devices: [
-                    { id: 'device1', name: 'Device 1', type: 'Computer', is_active: false },
-                    { id: 'device2', name: 'Device 2', type: 'Smartphone', is_active: false }
-                ]
-            }
-        };
+    MiniplayerPanel.currentPanel?.dispose();
+    assert.strictEqual(MiniplayerPanel.currentPanel, undefined);
+    createWebviewPanelStub.restore();
+  });
 
-        const getDevicesStub = sandBox.stub(spotifyApi, 'getMyDevices').resolves(devices);
-        const quickPickStub:QuickPickDevice = sandBox.stub(vscode.window, 'showQuickPick')
-            .resolves({ id: 'device1', label: 'Device 1' });
-        const transferPlaybackStub = sandBox.stub(spotifyApi, 'transferMyPlayback').resolves({});
-
-        const result = await ensureActiveDevice(context);
-
-        assert.strictEqual(result, true);
-        assert.ok(quickPickStub.calledOnce);
-        assert.ok(transferPlaybackStub.calledWith(['device1']));
-
-		getDevicesStub.restore();
-    });
-
-
-  test("Track info update with no active device", async () => {
-    // Mock getMyDevices to return no active devices
-    const getDevicesStub = sinon.stub(spotifyApi, "getMyDevices").resolves({
+  test("Device selection flow", async () => {
+    const devices:any = {
       body: {
         devices: [
-          {
+          { 
             id: 'device1', 
             name: 'Device 1', 
             type: 'Computer', 
@@ -155,12 +131,65 @@ suite("Spotify Extension Test Suite", () => {
             volume_percent: 50,
             is_private_session: false,
             is_restricted: false,
+            supports_volume: true,
+          },
+          { 
+            id: 'device2', 
+            name: 'Device 2', 
+            type: 'Smartphone', 
+            is_active: false,
+            volume_percent: 30,
+            is_private_session: false,
+            is_restricted: false,
+            supports_volume: true,
+          }
+        ]
+      },
+    };
 
+    const selectedDevice: QuickPickDevice = {
+      id: "device1",
+      label: "Device 1",
+      description: "Computer",
+    };
+
+    const getDevicesStub = sandBox
+      .stub(spotifyApi, "getMyDevices")
+      .resolves(devices);
+    const quickPickStub = sandBox
+      .stub(vscode.window, "showQuickPick")
+      .resolves(selectedDevice);
+    const transferPlaybackStub = sandBox
+      .stub(spotifyApi, "transferMyPlayback")
+      .resolves({} as any);
+
+    const result = await ensureActiveDevice(context);
+
+    assert.strictEqual(result, true);
+    assert.ok(quickPickStub.calledOnce);
+    assert.ok(transferPlaybackStub.calledWith(["device1"]));
+
+    getDevicesStub.restore();
+  });
+
+  test("Track info update with no active device", async () => {
+    // Mock getMyDevices to return no active devices
+    const getDevicesStub = sinon.stub(spotifyApi, "getMyDevices").resolves({
+      body: {
+        devices: [
+          {
+            id: "device1",
+            name: "Device 1",
+            type: "Computer",
+            is_active: false,
+            volume_percent: 50,
+            is_private_session: false,
+            is_restricted: false,
           },
         ],
       },
-	  headers:{},
-	  statusCode: 200
+      headers: {},
+      statusCode: 200,
     });
 
     // Create a mock panel
@@ -185,20 +214,20 @@ suite("Spotify Extension Test Suite", () => {
     getDevicesStub.restore();
   });
 
+  test("Error handling in device activation", async () => {
+    const getDevicesStub = sandBox
+      .stub(spotifyApi, "getMyDevices")
+      .rejects(new Error("API Error"));
 
-  test('Error handling in device activation', async () => {
-        const getDevicesStub = sandBox.stub(spotifyApi, 'getMyDevices')
-            .rejects(new Error('API Error'));
-        
-        const consoleErrorStub = sandBox.stub(console, 'error');
-        
-        const result = await ensureActiveDevice(context);
-        
-        assert.strictEqual(result, false);
-        assert.ok(consoleErrorStub.calledWith('Device activation error: ', sinon.match.any));
+    const consoleErrorStub = sandBox.stub(console, "error");
 
-		getDevicesStub.restore();
-    });
+    const result = await ensureActiveDevice(context);
 
+    assert.strictEqual(result, false);
+    assert.ok(
+      consoleErrorStub.calledWith("Device activation error: ", sinon.match.any)
+    );
 
+    getDevicesStub.restore();
+  });
 });
