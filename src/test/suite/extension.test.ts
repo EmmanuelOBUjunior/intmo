@@ -226,44 +226,37 @@ suite("Spotify Extension Test Suite", () => {
     );
   });
 
-  test("Handles no devices found", async () => {
-  process.env.TEST_FORCE_ERROR = "false";
 
-  // const consoleErrorStub = sandBox.stub(console, "error");
+  test("Handles no devices found", async () => {
   const showErrorStub = sandBox.stub(vscode.window, "showErrorMessage");
 
-  sandBox.stub(authModule, "withTokenRefresh").rejects(new Error("API Error"));
+  sandBox.stub(authModule, "withTokenRefresh").resolves({
+    body: { devices: [] },
+  } as any);
 
   const result = await ensureActiveDevice(context);
 
   assert.strictEqual(result, false);
-  assert.strictEqual(showErrorStub.called, false);
-  assert.ok(showErrorStub.calledWithMatch("No Spotify devices detected: Please open Spotify on any device", sinon.match.any));
-  // showErrorStub.restore();
+  assert.ok(
+    showErrorStub.calledWithMatch("No Spotify devices found. Please open Spotify on any device")
+  );
 });
 
 test("ensureActiveDevice - with active device", async () => {
-  sandBox.stub(authModule, "withTokenRefresh").rejects(new Error("API Error"));
-    const getDevicesStub = sandBox
-      .stub(spotifyApi, "getMyDevices")
-      .resolves({
-        body: {
-          devices: [
-            {
-              id: "device1",
-              is_active: true,
-              name: "Test Device",
-              type: "Computer",
-              is_private_session: false,
-              is_restricted: false,
-              volume_percent: 50,
-            },
-          ],
+  sandBox.stub(authModule, "withTokenRefresh").resolves({
+    body: {
+      devices: [
+        {
+          id: "device1",
+          is_active: true,
+          name: "Test Device",
+          type: "Computer",
         },
-      } as any);
+      ],
+    },
+  } as any);
 
-    const result = await ensureActiveDevice(context);
-    assert.strictEqual(result, true);
-    getDevicesStub.restore();
+  const result = await ensureActiveDevice(context);
+  assert.strictEqual(result, true);
   });
 });
