@@ -18,6 +18,16 @@ export async function ensureActiveDevice(
       spotifyApi!.getMyDevices()
     );
 
+    const deviceList = devices?.body?.devices ??  [];
+
+if (deviceList.length === 0) {
+  console.error("No Spotify devices found");
+  vscode.window.showErrorMessage(
+    "No Spotify devices found. Please open Spotify on any device."
+  );
+  return false;
+}
+
     if (!devices.body.devices.length) {
       console.error("No Spotify devices found");
       vscode.window.showErrorMessage(
