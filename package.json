@@ -19,13 +19,16 @@
       {
         "command": "intmo.nowPlaying",
         "title": "Spotify: Show Now Playing"
-      },{
+      },
+      {
         "command": "intmo.playPause",
         "title": "Spotify: Play/Pause"
-      },{
+      },
+      {
         "command": "intmo.searchSpotify",
         "title": "Spotify: Search on Spotify"
-      },{
+      },
+      {
         "command": "intmo.openMiniPlayer",
         "title": "Spotify: Open Mini Player"
       }
@@ -37,7 +40,9 @@
       }
     ]
   },
-  "extensionKind": ["workspace"],
+  "extensionKind": [
+    "workspace"
+  ],
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": true
@@ -56,6 +61,7 @@
   "devDependencies": {
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
+    "@types/sinon": "^17.0.4",
     "@types/spotify-web-api-node": "^5.0.11",
     "@types/vscode": "^1.103.0",
     "@typescript-eslint/eslint-plugin": "^8.39.0",
@@ -63,6 +69,7 @@
     "@vscode/test-cli": "^0.0.11",
     "@vscode/test-electron": "^2.5.2",
     "eslint": "^9.32.0",
+    "sinon": "^21.0.0",
     "typescript": "^5.9.2"
   },
   "dependencies": {
