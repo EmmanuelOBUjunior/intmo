@@ -13,67 +13,72 @@ import { handleVSCodeCallback } from "../extension";
 suite("Spotify Extension Test Suite", () => {
   let context: vscode.ExtensionContext;
   let spotifyApi: SpotifyWebApi;
-  let sandBox:sinon.SinonSandbox;
+  let sandBox: sinon.SinonSandbox;
 
   setup(() => {
-        sandBox = sinon.createSandbox();
-        
-        // Mock extension context
-        context = {
-            subscriptions: [],
-            extensionUri: vscode.Uri.file(__dirname),
-            secrets: {
-                get: sandBox.stub().resolves('dummy-token'),
-                store: sandBox.stub().resolves()
-            }
-        } as unknown as vscode.ExtensionContext;
+    sandBox = sinon.createSandbox();
 
-        // Create Spotify API instance
-        spotifyApi = new SpotifyWebApi();
-        setSpotifyApi(spotifyApi);
-        setExtensionContext(context);
-    });
+    // Mock extension context
+    context = {
+      subscriptions: [],
+      extensionUri: vscode.Uri.file(__dirname),
+      secrets: {
+        get: sandBox.stub().resolves("dummy-token"),
+        store: sandBox.stub().resolves(),
+      },
+    } as unknown as vscode.ExtensionContext;
 
-	teardown(()=>{
-		sandBox.restore();
-	});
+    // Create Spotify API instance
+    spotifyApi = new SpotifyWebApi();
+    setSpotifyApi(spotifyApi);
+    setExtensionContext(context);
+  });
 
-	test('handleVSCodeCallback creates SpotifyWebApi instance',async()=>{
-		const api = await handleVSCodeCallback(context);
-		assert.ok(api instanceof SpotifyWebApi);
-		assert.strictEqual(api.getRedirectURI(), 'vscode://local-dev.intmo/callback');
-	});
+  teardown(() => {
+    sandBox.restore();
+  });
 
-  test('ensureActiveDevice - no devices available', async () => {
-        const getDevicesStub = sandBox.stub(spotifyApi, 'getMyDevices')
-            .resolves({ body: { devices: [] } });
-        
-        const showErrorStub = sandBox.stub(vscode.window, 'showErrorMessage');
-        
-        const result = await ensureActiveDevice(context);
-        
-        assert.strictEqual(result, false);
-        assert.strictEqual(showErrorStub.calledOnce, true);
-        assert.strictEqual(
-            showErrorStub.firstCall.args[0],
-            'No Spotify devices found. Please open Spotify on any device'
-        );
-		getDevicesStub.restore();
-    });
+  test("handleVSCodeCallback creates SpotifyWebApi instance", async () => {
+    const api = await handleVSCodeCallback(context);
+    assert.ok(api instanceof SpotifyWebApi);
+    assert.strictEqual(
+      api.getRedirectURI(),
+      "vscode://local-dev.intmo/callback"
+    );
+  });
+
+  test("ensureActiveDevice - no devices available", async () => {
+    const getDevicesStub = sandBox
+      .stub(spotifyApi, "getMyDevices")
+      .resolves({ body: { devices: [] } });
+
+    const showErrorStub = sandBox.stub(vscode.window, "showErrorMessage");
+
+    const result = await ensureActiveDevice(context);
+
+    assert.strictEqual(result, false);
+    assert.strictEqual(showErrorStub.calledOnce, true);
+    assert.strictEqual(
+      showErrorStub.firstCall.args[0],
+      "No Spotify devices found. Please open Spotify on any device"
+    );
+    getDevicesStub.restore();
+  });
 
   test("ensureActiveDevice - with active device", async () => {
     // Mock getMyDevices to return a device
-    const getDevicesStub = sandBox.stub(spotifyApi, 'getMyDevices')
-            .resolves({
-                body: {
-                    devices: [{
-                        id: 'device1',
-                        is_active: true,
-                        name: 'Test Device',
-                        type: 'Computer'
-                    }]
-                }
-            });
+    const getDevicesStub = sandBox.stub(spotifyApi, "getMyDevices").resolves({
+      body: {
+        devices: [
+          {
+            id: "device1",
+            is_active: true,
+            name: "Test Device",
+            type: "Computer",
+          },
+        ],
+      },
+    });
 
     const result = await ensureActiveDevice(context);
 
