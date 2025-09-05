@@ -94,7 +94,7 @@ suite("Spotify Extension Test Suite", () => {
     sandBox.restore();
   });
 
-  // ✅ FIXED: Test 1
+  // Test 1
   test("handleVSCodeCallback creates SpotifyWebApi instance", async () => {
     sandBox.stub(spotifyApi, "authorizationCodeGrant").resolves({
       body: {
@@ -114,7 +114,7 @@ suite("Spotify Extension Test Suite", () => {
     );
   });
 
-  // ✅ FIXED: Test 2
+  // Test 2
   test("MiniPlayer creation and disposal", () => {
     MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
     assert.ok(MiniplayerPanel.currentPanel);
@@ -123,7 +123,7 @@ suite("Spotify Extension Test Suite", () => {
     assert.strictEqual(MiniplayerPanel.currentPanel, undefined);
   });
 
-  // ✅ FIXED: Test 3
+  // Test 3
   test("Track info update with no active device", async () => {
     sandBox.stub(spotifyApi, "getMyDevices").resolves({
       body: { devices: [{ id: "device1", is_active: false, name: "Device 1" }] },
@@ -150,30 +150,21 @@ suite("Spotify Extension Test Suite", () => {
     });
   });
 
-  // ✅ FIXED: Test 4 + 7 (device activation error handling)
-// test("Error handling in device activation", async () => {
-//   const originalConsoleError = console.error; // save original
-//   const errorSpy = sinon.spy();
-//   console.error = errorSpy as any; // patch manually
+  // ✅ FIXED: Test 4 (device activation error handling)
+test("Error handling in device activation", async () => {
+    const consoleErrorStub = sandBox.stub(console, "error");
+    sandBox.stub(spotifyApi, "getMyDevices").rejects(new Error("API Error"));
 
-//   sandBox.stub(spotifyApi, "getMyDevices").rejects(new Error("API Error"));
+    const result = await ensureActiveDevice(context);
 
-//   const result = await ensureActiveDevice(context);
+    assert.strictEqual(result, false);
+    assert.ok(
+      consoleErrorStub.calledWithMatch(/Device activation error/),
+      "Expected error log for device activation failure"
+    );
+  });
 
-//   assert.strictEqual(result, false);
-
-//   // assert console.error was called
-//   assert.ok(errorSpy.calledOnce, "Expected console.error to be called once");
-//   assert.ok(
-//     errorSpy.calledWithMatch(sinon.match("Device activation error")),
-//     "Expected error log for device activation failure"
-//   );
-
-//   // restore console.error
-//   console.error = originalConsoleError;
-// });
-
-  // ✅ FIXED: Test 8
+  // Test 5
   test("MiniPlayer play/pause button messaging", async () => {
     MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
     const postMessageStub = (MiniplayerPanel.currentPanel as any).panel.webview
@@ -189,7 +180,7 @@ suite("Spotify Extension Test Suite", () => {
     );
   });
 
-  // ✅ FIXED: Test 9
+  //Test 6
   test("MiniPlayer updateTrack with valid data", () => {
     MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
     const postMessageStub = (MiniplayerPanel.currentPanel as any).panel.webview
