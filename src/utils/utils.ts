@@ -55,7 +55,7 @@ export async function ensureActiveDevice(
     console.error("Device activation error:", error);
     vscode.window.showErrorMessage(`Device activation failed: ${error}`);
     // throw error;
-    // return false;
+    return false;
   }
 }
 
