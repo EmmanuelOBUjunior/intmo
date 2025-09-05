@@ -174,28 +174,18 @@ suite("Spotify Extension Test Suite", () => {
   //   console.error = originalConsoleError;
   // });
 
-  test("Error handling in device activation", async () => {
-    process.env.TEST_FORCE_ERROR = "true";
-    const errorStub = sandBox.stub(console, "error");
+ test("Error handling in device activation", async () => {
+  sandBox.stub(authModule, "withTokenRefresh").rejects(new Error("API Error"));
 
-    console.log("withTokenRefresh is", authModule.withTokenRefresh);
-    sandBox
-      .stub(authModule, "withTokenRefresh")
-      .rejects(new Error("API Error"));
+  const result = await ensureActiveDevice(context);
 
-    // const result = await ensureActiveDevice(context);
-    const result = await ensureActiveDevice({} as any);
-    assert.strictEqual(result, false, "Expected ensureActiveDevice to return false");
-
-    // assert console.error was called
-    console.log("console.error calls:", errorStub.callCount, errorStub.args);
-    assert.ok(errorStub.calledOnce, "Expected console.error to be called once");
-    assert.match(
-      errorStub.firstCall.args[0],
-      /Device activation error/,
-      "Expected error log for device activation failure"
-    );
-  });
+  assert.strictEqual(result, false);
+  assert.ok((console.error as sinon.SinonStub).calledOnce);
+  assert.match(
+    (console.error as sinon.SinonStub).firstCall.args[0],
+    /Device activation error/
+  );
+});
 
   // Test 5
   test("MiniPlayer play/pause button messaging", async () => {
@@ -240,18 +230,21 @@ suite("Spotify Extension Test Suite", () => {
   test("Handles no devices found", async () => {
   process.env.TEST_FORCE_ERROR = "false";
 
-  const consoleErrorStub = sandBox.stub(console, "error");
+  // const consoleErrorStub = sandBox.stub(console, "error");
   const showErrorStub = sandBox.stub(vscode.window, "showErrorMessage");
+
+  sandBox.stub(authModule, "withTokenRefresh").rejects(new Error("API Error"));
 
   const result = await ensureActiveDevice(context);
 
   assert.strictEqual(result, false);
-  assert.strictEqual(consoleErrorStub.called, false);
-  assert.ok(consoleErrorStub.calledWithMatch("No Spotify devices detected: ", sinon.match.any));
-  showErrorStub.restore();
+  assert.strictEqual(showErrorStub.called, false);
+  assert.ok(showErrorStub.calledWithMatch("No Spotify devices detected: ", sinon.match.any));
+  // showErrorStub.restore();
 });
 
 test("ensureActiveDevice - with active device", async () => {
+  sandBox.stub(authModule, "withTokenRefresh").rejects(new Error("API Error"));
     const getDevicesStub = sandBox
       .stub(spotifyApi, "getMyDevices")
       .resolves({
