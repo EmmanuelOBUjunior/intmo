@@ -183,7 +183,7 @@ suite("Spotify Extension Test Suite", () => {
   assert.ok((console.error as sinon.SinonStub).calledOnce);
   assert.match(
     (console.error as sinon.SinonStub).firstCall.args[0],
-    /Device activation error/
+    /Device activation error:/
   );
 });
 
@@ -239,7 +239,7 @@ suite("Spotify Extension Test Suite", () => {
 
   assert.strictEqual(result, false);
   assert.strictEqual(showErrorStub.called, false);
-  assert.ok(showErrorStub.calledWithMatch("No Spotify devices detected: ", sinon.match.any));
+  assert.ok(showErrorStub.calledWithMatch("No Spotify devices detected: Please open Spotify on any device", sinon.match.any));
   // showErrorStub.restore();
 });
 
