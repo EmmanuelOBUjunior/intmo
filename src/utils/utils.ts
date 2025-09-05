@@ -83,11 +83,7 @@ export class MiniplayerPanel {
 
     //Otherwise, we create one
     try {
-      
-    } catch (error) {
-      console.error("Error creating webview panel:", error);
-    }
-    const panel = vscode.window.createWebviewPanel(
+      const panel = vscode.window.createWebviewPanel(
       "spotifyMiniPlayer",
       "Spotify Mini Player",
       column,
@@ -97,6 +93,9 @@ export class MiniplayerPanel {
       }
     );
     MiniplayerPanel.currentPanel = new MiniplayerPanel(panel, extentionUri);
+    } catch (error) {
+      console.error("Error creating webview panel:", error);
+    }
   }
 
   private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
