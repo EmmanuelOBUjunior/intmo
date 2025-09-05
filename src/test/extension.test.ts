@@ -30,10 +30,12 @@ suite("Spotify Extension Test Suite", () => {
       logUri: vscode.Uri.file(__dirname),
       extensionMode: vscode.ExtensionMode.Test,
     } as vscode.ExtensionContext;
-  });
 
-  //Create a mock spotify api
+	//Create a mock spotify api
   spotifyApi = new SpotifyWebApi();
   setSpotifyApi(spotifyApi);
   setExtensionContext(context);
+  });
+
+  
 });
