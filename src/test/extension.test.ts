@@ -95,4 +95,5 @@ suite("Spotify Extension Test Suite", () => {
         assert.strictEqual(result, true);
         getDevicesStub.restore();
     });
+	
 });
