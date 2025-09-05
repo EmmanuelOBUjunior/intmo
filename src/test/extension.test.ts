@@ -37,6 +37,8 @@ suite("Spotify Extension Test Suite", () => {
 		sandBox.restore();
 	});
 
+	test('',()=>{});
+
   test('ensureActiveDevice - no devices available', async () => {
         const getDevicesStub = sandBox.stub(spotifyApi, 'getMyDevices')
             .resolves({ body: { devices: [] } });
