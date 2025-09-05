@@ -77,81 +77,81 @@ suite("Spotify Extension Test Suite", () => {
     );
   });
 
-  test('ensureActiveDevice - with active device', async () => {
-        // Mock getMyDevices to return a device
-        const getDevicesStub = sinon.stub(spotifyApi, 'getMyDevices')
-            .resolves({
-                body: {
-                    devices: [{
-                        id: 'device1',
-                        is_active: true,
-                        name: 'Test Device',
-                        type: 'Computer',
-                    }]
-                }
-            });
-
-        const result = await ensureActiveDevice(context);
-
-        assert.strictEqual(result, true);
-        getDevicesStub.restore();
+  test("ensureActiveDevice - with active device", async () => {
+    // Mock getMyDevices to return a device
+    const getDevicesStub = sinon.stub(spotifyApi, "getMyDevices").resolves({
+      body: {
+        devices: [
+          {
+            id: "device1",
+            is_active: true,
+            name: "Test Device",
+            type: "Computer",
+          },
+        ],
+      },
     });
 
-	test('MiniplayerPanel creation', () => {
-        const createWebviewPanelStub = sinon.stub(vscode.window, 'createWebviewPanel')
-            .returns({
-                webview: {
-                    html: '',
-                    onDidReceiveMessage: () => ({ dispose: () => {} }),
-                    postMessage: () => Promise.resolve()
-                },
-                onDidDispose: () => ({ dispose: () => {} }),
-                dispose: () => {},
-                reveal: () => {}
-            } as any);
+    const result = await ensureActiveDevice(context);
 
-        MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
+    assert.strictEqual(result, true);
+    getDevicesStub.restore();
+  });
 
-        assert.strictEqual(createWebviewPanelStub.calledOnce, true);
-        createWebviewPanelStub.restore();
+  test("MiniplayerPanel creation", () => {
+    const createWebviewPanelStub = sinon
+      .stub(vscode.window, "createWebviewPanel")
+      .returns({
+        webview: {
+          html: "",
+          onDidReceiveMessage: () => ({ dispose: () => {} }),
+          postMessage: () => Promise.resolve(),
+        },
+        onDidDispose: () => ({ dispose: () => {} }),
+        dispose: () => {},
+        reveal: () => {},
+      } as any);
+
+    MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
+
+    assert.strictEqual(createWebviewPanelStub.calledOnce, true);
+    createWebviewPanelStub.restore();
+  });
+
+  test("Track info update with no active device", async () => {
+    // Mock getMyDevices to return no active devices
+    const getDevicesStub = sinon.stub(spotifyApi, "getMyDevices").resolves({
+      body: {
+        devices: [
+          {
+            id: "device1",
+            is_active: false,
+            name: "Test Device",
+            type: "Computer",
+          },
+        ],
+      },
     });
 
-	test('Track info update with no active device', async () => {
-        // Mock getMyDevices to return no active devices
-        const getDevicesStub = sinon.stub(spotifyApi, 'getMyDevices')
-            .resolves({
-                body: {
-                    devices: [{
-                        id: 'device1',
-                        is_active: false,
-                        name: 'Test Device',
-                        type: 'Computer'
-                    }]
-                }
-            });
+    // Create a mock panel
+    const mockPanel = {
+      updateTrack: sinon.spy(),
+    };
+    MiniplayerPanel.currentPanel = mockPanel as any;
 
-        // Create a mock panel
-        const mockPanel = {
-            updateTrack: sinon.spy()
-        };
-        MiniplayerPanel.currentPanel = mockPanel as any;
+    await vscode.commands.executeCommand("intmo.nowPlaying");
 
-        await vscode.commands.executeCommand('intmo.nowPlaying');
-
-        assert.strictEqual(mockPanel.updateTrack.calledOnce, true);
-        assert.deepStrictEqual(
-            mockPanel.updateTrack.firstCall.args[0],
-            {
-                name: 'No active device',
-                artists: ['Please open Spotify on any device'],
-                albumArt: '',
-                album: '',
-                durationMS: 0,
-                progressMs: 0,
-                isPlaying: false
-            }
-        );
-
-        getDevicesStub.restore();
+    assert.strictEqual(mockPanel.updateTrack.calledOnce, true);
+    assert.deepStrictEqual(mockPanel.updateTrack.firstCall.args[0], {
+      name: "No active device",
+      artists: ["Please open Spotify on any device"],
+      albumArt: "",
+      album: "",
+      durationMS: 0,
+      progressMs: 0,
+      isPlaying: false,
     });
+
+    getDevicesStub.restore();
+  });
 });
