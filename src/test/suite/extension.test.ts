@@ -174,20 +174,26 @@ suite("Spotify Extension Test Suite", () => {
   //   console.error = originalConsoleError;
   // });
 
- test("Error handling in device activation", async () => {
-   
-   const withTokenRefreshStub = sandBox.stub(authModule, "withTokenRefresh").rejects(new Error("API Error"));
-   const consoleErrorStub = sandBox.stub(console, "error"); // fresh stub here
-   
-  const result = await ensureActiveDevice(context);
-
-  assert.strictEqual(result, false);
-  assert.ok(consoleErrorStub.calledOnce);
-  assert.match(consoleErrorStub.firstCall.args[0], /Device activation error:/);
-
-  withTokenRefreshStub.restore();
-  consoleErrorStub.restore();
-});
+ test('Error handling in device activation', async () => {
+    // Set up stubs BEFORE calling the function
+    const consoleErrorStub = sandBox.stub(console, 'error');
+    const showErrorStub = sandBox.stub(vscode.window, 'showErrorMessage');
+    
+    // Stub withTokenRefresh to reject with an error
+    const apiError = new Error('API Error');
+    const withTokenRefreshStub = sandBox.stub(authModule, 'withTokenRefresh')
+      .rejects(apiError);
+    
+    const result = await ensureActiveDevice(context);
+    
+    assert.strictEqual(result, false);
+    assert.strictEqual(consoleErrorStub.callCount, 1, 'console.error should be called exactly once');
+    assert.match(consoleErrorStub.firstCall.args[0], /Device activation error:/);
+    
+    withTokenRefreshStub.restore();
+    consoleErrorStub.restore();
+    showErrorStub.restore();
+  });
 
   // Test 5
   test("MiniPlayer play/pause button messaging", async () => {
