@@ -55,7 +55,7 @@ suite("Spotify Extension Test Suite", () => {
   test("ensureActiveDevice - no devices available", async () => {
     const getDevicesStub = sandBox
       .stub(spotifyApi, "getMyDevices")
-      .resolves({ body: { devices: [] } });
+      .resolves({ body: { devices: [] }, headers:{},statusCode:200});
 
     const showErrorStub = sandBox.stub(vscode.window, "showErrorMessage");
 
