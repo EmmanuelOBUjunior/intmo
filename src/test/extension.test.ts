@@ -15,6 +15,7 @@ suite("Spotify Extension Test Suite", () => {
   let sandBox:sinon.SinonSandbox;
 
   setup(() => {
+	sandBox = sinon.createSandbox();
     // Create a mock extension context
     context = {
       subscriptions: [],
