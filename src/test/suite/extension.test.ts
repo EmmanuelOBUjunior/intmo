@@ -151,13 +151,34 @@ suite("Spotify Extension Test Suite", () => {
     });
   });
 
-  // ✅ FIXED: Test 4 (device activation error handling)
-test("Error handling in device activation", async () => {
-  const originalConsoleError = console.error; // save original
-  const errorSpy = sinon.spy();
-  console.error = errorSpy as any; // patch manually
+  // Test 4 (device activation error handling)
+// test("Error handling in device activation", async () => {
+//   const originalConsoleError = console.error; // save original
+//   const errorSpy = sinon.spy();
+//   console.error = errorSpy as any; // patch manually
 
-  console.log("withTokenRefresh is", authModule.withTokenRefresh);
+//   console.log("withTokenRefresh is", authModule.withTokenRefresh);
+//   sandBox.stub(authModule, "withTokenRefresh").rejects(new Error("API Error"));
+
+//   const result = await ensureActiveDevice(context);
+
+//   assert.strictEqual(result, false);
+
+//   // assert console.error was called
+//   console.log("console.error calls:", errorSpy.callCount, errorSpy.args);
+//   assert.ok(errorSpy.calledOnce, "Expected console.error to be called once");
+//  assert.ok(
+//     errorSpy.firstCall.args[0].includes("Device activation error"),
+//     "Expected error log for device activation failure"
+//   );
+
+//   // restore console.error
+//   console.error = originalConsoleError;
+// });
+
+test("Error handling in device activation", async () => {
+  const errorStub = sandBox.stub(console, "error");
+
   sandBox.stub(authModule, "withTokenRefresh").rejects(new Error("API Error"));
 
   const result = await ensureActiveDevice(context);
@@ -165,15 +186,12 @@ test("Error handling in device activation", async () => {
   assert.strictEqual(result, false);
 
   // assert console.error was called
-  console.log("console.error calls:", errorSpy.callCount, errorSpy.args);
-  assert.ok(errorSpy.calledOnce, "Expected console.error to be called once");
- assert.ok(
-    errorSpy.firstCall.args[0].includes("Device activation error"),
+  assert.ok(errorStub.calledOnce, "Expected console.error to be called once");
+  assert.match(
+    errorStub.firstCall.args[0],
+    /Device activation error/,
     "Expected error log for device activation failure"
   );
-
-  // restore console.error
-  console.error = originalConsoleError;
 });
 
   // Test 5
