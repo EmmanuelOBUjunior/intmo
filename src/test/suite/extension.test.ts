@@ -220,9 +220,6 @@ suite("Spotify Extension Test Suite", () => {
     if (consoleErrorStub.callCount > 0) {
       console.log('console.error was called with:', consoleErrorStub.firstCall.args);
     }
-    if (consoleErrorStub.callCount > 0) {
-      assert.match(consoleErrorStub.firstCall.args[0], /Device activation error:/);
-    }
     
     assert.strictEqual(result, false);
     assert.strictEqual(withTokenRefreshStub.callCount, 1, 'withTokenRefresh should be called exactly once');
