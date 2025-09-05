@@ -164,8 +164,16 @@ suite("Spotify Extension Test Suite", () => {
     //   consoleErrorStub.calledWithMatch(sinon.match(/Device activation error/)),
     //   "Expected error log for device activation failure"
     // );
-    assert.ok(
-    consoleErrorStub.firstCall.args[0].includes("Device activation error"),
+   // Assert that console.error was called at least once
+  assert.ok(consoleErrorStub.called, "Expected console.error to be called");
+
+  // Check if any call contains the message
+  const wasLogged = consoleErrorStub.getCalls().some(call =>
+    String(call.args[0]).includes("Device activation error")
+  );
+
+  assert.ok(
+    wasLogged,
     "Expected error log for device activation failure"
   );
   });
