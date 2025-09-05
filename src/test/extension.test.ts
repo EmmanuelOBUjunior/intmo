@@ -95,5 +95,23 @@ suite("Spotify Extension Test Suite", () => {
         assert.strictEqual(result, true);
         getDevicesStub.restore();
     });
-	
+
+	test('MiniplayerPanel creation', () => {
+        const createWebviewPanelStub = sinon.stub(vscode.window, 'createWebviewPanel')
+            .returns({
+                webview: {
+                    html: '',
+                    onDidReceiveMessage: () => ({ dispose: () => {} }),
+                    postMessage: () => Promise.resolve()
+                },
+                onDidDispose: () => ({ dispose: () => {} }),
+                dispose: () => {},
+                reveal: () => {}
+            } as any);
+
+        MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
+
+        assert.strictEqual(createWebviewPanelStub.calledOnce, true);
+        createWebviewPanelStub.restore();
+    });
 });
