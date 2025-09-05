@@ -112,34 +112,12 @@ suite("Spotify Extension Test Suite", () => {
   });
 
   // Test 2
-  // test("MiniPlayer creation and disposal", () => {
-  //   MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
-  //   assert.ok(MiniplayerPanel.currentPanel);
-
-  //   MiniplayerPanel.currentPanel?.dispose();
-  //   assert.strictEqual(MiniplayerPanel.currentPanel, undefined);
-  // });
-
   test("MiniPlayer creation and disposal", () => {
-    const createWebviewPanelStub = sandBox.stub(vscode.window, "createWebviewPanel").returns({
-      webview: {
-        html: "",
-        asWebviewUri: (uri: vscode.Uri) => uri, // ✅ Fix missing asWebviewUri
-        onDidReceiveMessage: () => ({ dispose: () => {} }),
-        postMessage: () => Promise.resolve(true),
-      },
-      onDidDispose: () => ({ dispose: () => {} }),
-      dispose: () => {},
-      reveal: () => {}, // ✅ Fix missing reveal
-    } as any);
-
     MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
     assert.ok(MiniplayerPanel.currentPanel);
 
     MiniplayerPanel.currentPanel?.dispose();
     assert.strictEqual(MiniplayerPanel.currentPanel, undefined);
-
-    createWebviewPanelStub.restore();
   });
 
   // Test 3
