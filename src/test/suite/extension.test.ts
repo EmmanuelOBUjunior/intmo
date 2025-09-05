@@ -157,7 +157,7 @@ test("Error handling in device activation", async () => {
   const errorSpy = sinon.spy();
   console.error = errorSpy as any; // patch manually
 
-  sandBox.stub<any, any>(authModule, "withTokenRefresh").rejects(new Error("API Error"));
+  sandBox.stub(authModule, "withTokenRefresh").rejects(new Error("API Error"));
 
   const result = await ensureActiveDevice(context);
 
