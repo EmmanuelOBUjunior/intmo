@@ -107,6 +107,29 @@ suite("Spotify Extension Test Suite", () => {
 		createWebviewPanelStub.restore();
     });
 
+	test('Device selection flow', async () => {
+        const devices = {
+            body: {
+                devices: [
+                    { id: 'device1', name: 'Device 1', type: 'Computer', is_active: false },
+                    { id: 'device2', name: 'Device 2', type: 'Smartphone', is_active: false }
+                ]
+            }
+        };
+
+        const getDevicesStub = sandBox.stub(spotifyApi, 'getMyDevices').resolves(devices);
+        const quickPickStub = sandBox.stub(vscode.window, 'showQuickPick')
+            .resolves({ id: 'device1', label: 'Device 1' });
+        const transferPlaybackStub = sandBox.stub(spotifyApi, 'transferMyPlayback').resolves({});
+
+        const result = await ensureActiveDevice(context);
+
+        assert.strictEqual(result, true);
+        assert.ok(quickPickStub.calledOnce);
+        assert.ok(transferPlaybackStub.calledWith(['device1']));
+    });
+
+	
   test("Track info update with no active device", async () => {
     // Mock getMyDevices to return no active devices
     const getDevicesStub = sinon.stub(spotifyApi, "getMyDevices").resolves({
