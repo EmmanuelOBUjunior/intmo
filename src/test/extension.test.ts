@@ -40,6 +40,8 @@ suite("Spotify Extension Test Suite", () => {
 
 	test('handleVSCodeCallback creates SpotifyWebApi instance',async()=>{
 		const api = await handleVSCodeCallback(context);
+		assert.ok(api instanceof SpotifyWebApi);
+		assert.strictEqual(api.getRedirectURI(), 'vscode://local-dev.intmo/callback');
 	});
 
   test('ensureActiveDevice - no devices available', async () => {
