@@ -85,7 +85,7 @@ suite("Spotify Extension Test Suite", () => {
                         id: 'device1',
                         is_active: true,
                         name: 'Test Device',
-                        type: 'Computer'
+                        type: 'Computer',
                     }]
                 }
             });
