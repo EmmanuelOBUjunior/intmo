@@ -67,5 +67,9 @@ suite("Spotify Extension Test Suite", () => {
 
     const showErrorStub = sinon.stub(vscode.window, "showErrorMessage");
     const result = await ensureActiveDevice(context);
+
+	assert.strictEqual(result, false);
+	assert.strictEqual(showErrorStub.calledOnce, true);
+	assert.strictEqual(showErrorStub.firstCall.args[0], 'No Spotify devices found. Please open Spotify on any device');
   });
 });
