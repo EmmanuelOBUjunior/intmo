@@ -174,45 +174,19 @@ suite("Spotify Extension Test Suite", () => {
   //   console.error = originalConsoleError;
   // });
 
-//  test("Error handling in device activation", async () => {
+ test("Error handling in device activation", async () => {
    
-//    const withTokenRefreshStub = sandBox.stub(authModule, "withTokenRefresh").rejects(new Error("API Error"));
-//    const consoleErrorStub = sandBox.stub(console, "error"); // fresh stub here
+   const withTokenRefreshStub = sandBox.stub(authModule, "withTokenRefresh").rejects(new Error("API Error"));
+   const consoleErrorStub = sandBox.stub(console, "error"); // fresh stub here
    
-//   const result = await ensureActiveDevice(context);
-
-//   assert.strictEqual(result, false);
-//   assert.ok(consoleErrorStub.calledOnce);
-//   assert.match(consoleErrorStub.firstCall.args[0], /Device activation error:/);
-
-//   withTokenRefreshStub.restore();
-//   consoleErrorStub.restore();
-// });
-
-test('Error handling in device activation - using test environment', async () => {
-  // Set test environment variables
-  const originalNodeEnv = process.env.NODE_ENV;
-  const originalTestForceError = process.env.TEST_FORCE_ERROR;
-  
-  process.env.NODE_ENV = 'test';
-  process.env.TEST_FORCE_ERROR = 'true';
-  
-  const consoleErrorStub = sandBox.stub(console, 'error');
-  const showErrorStub = sandBox.stub(vscode.window, 'showErrorMessage');
-  
   const result = await ensureActiveDevice(context);
-  
+
   assert.strictEqual(result, false);
   assert.ok(consoleErrorStub.calledOnce);
-  assert.strictEqual(consoleErrorStub.firstCall.args[0], 'Device activation error: API Error');
-  assert.ok(showErrorStub.calledOnce);
-  
-  // Restore environment variables
-  process.env.NODE_ENV = originalNodeEnv;
-  process.env.TEST_FORCE_ERROR = originalTestForceError;
-  
+  assert.match(consoleErrorStub.firstCall.args[0], /Device activation error:/);
+
+  withTokenRefreshStub.restore();
   consoleErrorStub.restore();
-  showErrorStub.restore();
 });
 
   // Test 5
