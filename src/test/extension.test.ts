@@ -127,9 +127,11 @@ suite("Spotify Extension Test Suite", () => {
         assert.strictEqual(result, true);
         assert.ok(quickPickStub.calledOnce);
         assert.ok(transferPlaybackStub.calledWith(['device1']));
+
+		getDevicesStub.restore();
     });
 
-	
+
   test("Track info update with no active device", async () => {
     // Mock getMyDevices to return no active devices
     const getDevicesStub = sinon.stub(spotifyApi, "getMyDevices").resolves({
@@ -166,4 +168,6 @@ suite("Spotify Extension Test Suite", () => {
 
     getDevicesStub.restore();
   });
+
+
 });
