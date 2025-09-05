@@ -206,7 +206,7 @@ suite("Spotify Extension Test Suite", () => {
       artists: ["Please open Spotify on any device"],
       albumArt: "",
       album: "",
-      durationMS: 0,
+      durationMs: 0,
       progressMs: 0,
       isPlaying: false,
     });
