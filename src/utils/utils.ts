@@ -71,9 +71,15 @@ export class MiniplayerPanel {
 
     //If we already have a pane;, reveal it
     if (MiniplayerPanel.currentPanel) {
+    try {
       MiniplayerPanel.currentPanel._panel.reveal(column);
-      return;
+    } catch (error) {
+      console.error("Error revealing panel:", error);
+      MiniplayerPanel.currentPanel.dispose();
+      MiniplayerPanel.currentPanel = undefined;
     }
+    return;
+  }
 
     //Otherwise, we create one
     const panel = vscode.window.createWebviewPanel(
