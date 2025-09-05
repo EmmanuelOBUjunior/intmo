@@ -48,13 +48,20 @@ export async function ensureActiveDevice(
       }
 
       //Transfer playback to selected device
-      await withTokenRefresh(context, spotifyApi!, () =>
-        spotifyApi!.transferMyPlayback([deviceChoice.id])
-      );
-      return true;
+      try {
+        await withTokenRefresh(context, spotifyApi!, () =>
+          spotifyApi!.transferMyPlayback([deviceChoice.id])
+        );
+        return true;
+      } catch (err) {
+        console.error("Device activation error during transfer:", err);
+        vscode.window.showErrorMessage(`Failed to transfer playback: ${err}`);
+        return false;
+      }
     }
 
-    return !!activeDevice;
+    return true;
+    // return !!activeDevice;
   } catch (error) {
     console.error("Device activation error:", error);
     vscode.window.showErrorMessage(`Device activation failed: ${error}`);
