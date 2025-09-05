@@ -169,7 +169,7 @@ suite("Spotify Extension Test Suite", () => {
 
   // Check if any call contains the message
   const wasLogged = consoleErrorStub.getCalls().some(call =>
-    String(call.args[0]).includes("Device activation error")
+    String(call.args[0]).includes("Device activation error ")
   );
 
   assert.ok(
