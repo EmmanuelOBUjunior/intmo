@@ -152,16 +152,22 @@ suite("Spotify Extension Test Suite", () => {
 
   // ✅ FIXED: Test 4 + 7 (device activation error handling)
   test("Error handling in device activation", async () => {
+
     const consoleErrorStub = sandBox.stub(console, "error");
+
     sandBox.stub(spotifyApi, "getMyDevices").rejects(new Error("API Error"));
 
     const result = await ensureActiveDevice(context);
 
     assert.strictEqual(result, false);
+    // assert.ok(
+    //   consoleErrorStub.calledWithMatch(sinon.match(/Device activation error/)),
+    //   "Expected error log for device activation failure"
+    // );
     assert.ok(
-      consoleErrorStub.calledWithMatch(sinon.match(/Device activation error/)),
-      "Expected error log for device activation failure"
-    );
+    consoleErrorStub.firstCall.args[0].includes("Device activation error"),
+    "Expected error log for device activation failure"
+  );
   });
 
   // ✅ FIXED: Test 8
