@@ -33,6 +33,10 @@ suite("Spotify Extension Test Suite", () => {
         setExtensionContext(context);
     });
 
+	teardown(()=>{
+		sandBox.restore();
+	});
+
   test("ensureActiveDevice - no device available", async () => {
     //Mock getMyDevices to return empty list
     const getDevicesStub = sinon
