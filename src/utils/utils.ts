@@ -40,6 +40,10 @@ export async function ensureActiveDevice(
       );
 
       if (!deviceChoice) {
+        console.error("No device selected by user");
+        vscode.window.showErrorMessage(
+        "No device selected"
+      );
         return false;
       }
 
