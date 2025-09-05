@@ -184,7 +184,7 @@ suite("Spotify Extension Test Suite", () => {
 
     // const result = await ensureActiveDevice(context);
     const result = await ensureActiveDevice({} as any);
-    assert.strictEqual(result, false);
+    assert.strictEqual(result, false, "Expected ensureActiveDevice to return false");
 
     // assert console.error was called
     console.log("console.error calls:", errorStub.callCount, errorStub.args);
