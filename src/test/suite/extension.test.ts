@@ -152,17 +152,29 @@ suite("Spotify Extension Test Suite", () => {
 
   // ✅ FIXED: Test 4 (device activation error handling)
 test("Error handling in device activation", async () => {
-    const consoleErrorStub = sandBox.stub(console, "error");
-    sandBox.stub(spotifyApi, "getMyDevices").rejects(new Error("API Error"));
+  const originalConsoleError = console.error; // save original
+  const errorSpy = sinon.spy();
+  console.error = errorSpy as any; // patch manually
 
-    const result = await ensureActiveDevice(context);
+  sandBox.stub(spotifyApi, "getMyDevices").rejects(new Error("API Error"));
 
-    assert.strictEqual(result, false);
-    assert.ok(
-      consoleErrorStub.calledWithMatch(/Device activation error/),
-      "Expected error log for device activation failure"
-    );
-  });
+  const result = await ensureActiveDevice(context);
+
+  assert.strictEqual(result, false);
+
+  // assert console.error was called
+  assert.ok(errorSpy.calledOnce, "Expected console.error to be called once");
+ assert.ok(
+  errorSpy.calledWithMatch(
+    sinon.match("Device activation error:"),
+    sinon.match.instanceOf(Error)
+  ),
+  "Expected error log for device activation failure"
+);
+
+  // restore console.error
+  console.error = originalConsoleError;
+});
 
   // Test 5
   test("MiniPlayer play/pause button messaging", async () => {
