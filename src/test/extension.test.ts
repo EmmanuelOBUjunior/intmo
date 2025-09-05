@@ -58,22 +58,22 @@ suite("Spotify Extension Test Suite", () => {
             showErrorStub.firstCall.args[0],
             'No Spotify devices found. Please open Spotify on any device'
         );
+		getDevicesStub.restore();
     });
 
   test("ensureActiveDevice - with active device", async () => {
     // Mock getMyDevices to return a device
-    const getDevicesStub = sinon.stub(spotifyApi, "getMyDevices").resolves({
-      body: {
-        devices: [
-          {
-            id: "device1",
-            is_active: true,
-            name: "Test Device",
-            type: "Computer",
-          },
-        ],
-      },
-    });
+    const getDevicesStub = sandBox.stub(spotifyApi, 'getMyDevices')
+            .resolves({
+                body: {
+                    devices: [{
+                        id: 'device1',
+                        is_active: true,
+                        name: 'Test Device',
+                        type: 'Computer'
+                    }]
+                }
+            });
 
     const result = await ensureActiveDevice(context);
 
