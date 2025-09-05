@@ -174,24 +174,64 @@ suite("Spotify Extension Test Suite", () => {
   //   console.error = originalConsoleError;
   // });
 
+//  test('Error handling in device activation', async () => {
+//     // Set up stubs BEFORE calling the function
+//     const consoleErrorStub = sandBox.stub(console, 'error');
+//     const showErrorStub = sandBox.stub(vscode.window, 'showErrorMessage');
+    
+//     // Stub withTokenRefresh to reject with an error
+//     const apiError = new Error('API Error');
+//     const withTokenRefreshStub = sandBox.stub(authModule, 'withTokenRefresh')
+//       .rejects(apiError);
+    
+//     const result = await ensureActiveDevice(context);
+    
+//     assert.strictEqual(result, false);
+//     assert.strictEqual(consoleErrorStub.callCount, 1, 'console.error should be called exactly once');
+//     assert.match(consoleErrorStub.firstCall.args[0], /Device activation error:/);
+    
+//     withTokenRefreshStub.restore();
+//     consoleErrorStub.restore();
+//     showErrorStub.restore();
+//   });
+
  test('Error handling in device activation', async () => {
     // Set up stubs BEFORE calling the function
     const consoleErrorStub = sandBox.stub(console, 'error');
+    const consoleLogStub = sandBox.stub(console, 'log');
     const showErrorStub = sandBox.stub(vscode.window, 'showErrorMessage');
     
     // Stub withTokenRefresh to reject with an error
     const apiError = new Error('API Error');
     const withTokenRefreshStub = sandBox.stub(authModule, 'withTokenRefresh')
-      .rejects(apiError);
+      .callsFake(async () => {
+        console.log('withTokenRefresh stub called - throwing error');
+        throw apiError;
+      });
     
+    console.log('About to call ensureActiveDevice');
     const result = await ensureActiveDevice(context);
+    console.log('ensureActiveDevice returned:', result);
+    
+    console.log('withTokenRefresh call count:', withTokenRefreshStub.callCount);
+    console.log('console.error call count:', consoleErrorStub.callCount);
+    console.log('showErrorMessage call count:', showErrorStub.callCount);
+    
+    if (consoleErrorStub.callCount > 0) {
+      console.log('console.error was called with:', consoleErrorStub.firstCall.args);
+    }
     
     assert.strictEqual(result, false);
+    assert.strictEqual(withTokenRefreshStub.callCount, 1, 'withTokenRefresh should be called exactly once');
     assert.strictEqual(consoleErrorStub.callCount, 1, 'console.error should be called exactly once');
-    assert.match(consoleErrorStub.firstCall.args[0], /Device activation error:/);
+    
+    if (consoleErrorStub.callCount > 0) {
+      assert.match(consoleErrorStub.firstCall.args[0], /Device activation error:/);
+    }
     
     withTokenRefreshStub.restore();
     consoleErrorStub.restore();
+    consoleLogStub.restore();
     showErrorStub.restore();
   });
 
