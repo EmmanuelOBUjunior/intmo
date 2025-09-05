@@ -159,7 +159,7 @@ suite("Spotify Extension Test Suite", () => {
 
     assert.strictEqual(result, false);
     assert.ok(
-      consoleErrorStub.calledWithMatch(/Device activation error/),
+      consoleErrorStub.calledWithMatch(sinon.match(/Device activation error/)),
       "Expected error log for device activation failure"
     );
   });
