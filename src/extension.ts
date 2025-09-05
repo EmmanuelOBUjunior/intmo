@@ -38,7 +38,8 @@ export async function handleVSCodeCallback(
     // Log the configuration for debugging
     console.log("Authentication Configuration:", {
       callbackUri,
-      extensionId: context.extension.id,
+      // extensionId: context.extension.id,
+      extensionId: "local-dev.intmo",
       uriScheme: vscode.env.uriScheme,
     });
 
