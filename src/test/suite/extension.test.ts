@@ -45,10 +45,7 @@ suite("Spotify Extension Test Suite", () => {
   test("handleVSCodeCallback creates SpotifyWebApi instance", async () => {
     const api = await handleVSCodeCallback(context);
     assert.ok(api instanceof SpotifyWebApi);
-    assert.strictEqual(
-      api.getRedirectURI(),
-      "vscode://local-dev.intmo/callback"
-    );
+    assert.strictEqual(api.getRedirectURI(), "vscode://local-dev.intmo/callback");
   });
 
   test("ensureActiveDevice - no devices available", async () => {
@@ -61,17 +58,15 @@ suite("Spotify Extension Test Suite", () => {
     const result = await ensureActiveDevice(context);
 
     assert.strictEqual(result, false);
-    assert.strictEqual(showErrorStub.calledOnce, true);
+    assert.ok(showErrorStub.calledOnce);
     assert.strictEqual(
       showErrorStub.firstCall.args[0],
       "No Spotify devices found. Please open Spotify on any device"
     );
-    getDevicesStub.restore();
   });
 
   test("ensureActiveDevice - with active device", async () => {
-    // Mock getMyDevices to return a device
-    const getDevicesStub: any = sandBox
+    const getDevicesStub = sandBox
       .stub(spotifyApi, "getMyDevices")
       .resolves({
         body: {
@@ -87,94 +82,36 @@ suite("Spotify Extension Test Suite", () => {
             },
           ],
         },
-        headers: {},
-        statusCode: 200,
-      });
+      } as any);
 
     const result = await ensureActiveDevice(context);
-
     assert.strictEqual(result, true);
-    getDevicesStub.restore();
   });
 
   test("MiniPlayer creation and disposal", () => {
-    const createWebviewPanelStub = sandBox
-      .stub(vscode.window, "createWebviewPanel")
-      .returns({
-        webview: {
-          html: "",
-          onDidReceiveMessage: () => ({ dispose: () => {} }),
-          postMessage: () => Promise.resolve(),
-        },
-        onDidDispose: () => ({ dispose: () => {} }),
-        dispose: () => {},
-        reveal: () => {},
-      } as any);
+    const createWebviewPanelStub = sandBox.stub(vscode.window, "createWebviewPanel").returns({
+      webview: {
+        html: "",
+        asWebviewUri: (uri: vscode.Uri) => uri, // ✅ Fix missing asWebviewUri
+        onDidReceiveMessage: () => ({ dispose: () => {} }),
+        postMessage: () => Promise.resolve(true),
+      },
+      onDidDispose: () => ({ dispose: () => {} }),
+      dispose: () => {},
+      reveal: () => {}, // ✅ Fix missing reveal
+    } as any);
 
     MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
     assert.ok(MiniplayerPanel.currentPanel);
 
     MiniplayerPanel.currentPanel?.dispose();
     assert.strictEqual(MiniplayerPanel.currentPanel, undefined);
+
     createWebviewPanelStub.restore();
   });
 
   test("Device selection flow", async () => {
-    const devices:any = {
-      body: {
-        devices: [
-          { 
-            id: 'device1', 
-            name: 'Device 1', 
-            type: 'Computer', 
-            is_active: false,
-            volume_percent: 50,
-            is_private_session: false,
-            is_restricted: false,
-            supports_volume: true,
-          },
-          { 
-            id: 'device2', 
-            name: 'Device 2', 
-            type: 'Smartphone', 
-            is_active: false,
-            volume_percent: 30,
-            is_private_session: false,
-            is_restricted: false,
-            supports_volume: true,
-          }
-        ]
-      },
-    };
-
-    const selectedDevice: QuickPickDevice = {
-      id: "device1",
-      label: "Device 1",
-      description: "Computer",
-    };
-
-    const getDevicesStub = sandBox
-      .stub(spotifyApi, "getMyDevices")
-      .resolves(devices);
-    const quickPickStub = sandBox
-      .stub(vscode.window, "showQuickPick")
-      .resolves(selectedDevice);
-    const transferPlaybackStub = sandBox
-      .stub(spotifyApi, "transferMyPlayback")
-      .resolves({} as any);
-
-    const result = await ensureActiveDevice(context);
-
-    assert.strictEqual(result, true);
-    assert.ok(quickPickStub.calledOnce);
-    assert.ok(transferPlaybackStub.calledWith(["device1"]));
-
-    getDevicesStub.restore();
-  });
-
-  test("Track info update with no active device", async () => {
-    // Mock getMyDevices to return no active devices
-    const getDevicesStub = sinon.stub(spotifyApi, "getMyDevices").resolves({
+    const devices: any = {
       body: {
         devices: [
           {
@@ -185,22 +122,50 @@ suite("Spotify Extension Test Suite", () => {
             volume_percent: 50,
             is_private_session: false,
             is_restricted: false,
+            supports_volume: true,
+          },
+          {
+            id: "device2",
+            name: "Device 2",
+            type: "Smartphone",
+            is_active: false,
+            volume_percent: 30,
+            is_private_session: false,
+            is_restricted: false,
+            supports_volume: true,
           },
         ],
       },
-      headers: {},
-      statusCode: 200,
-    });
-
-    // Create a mock panel
-    const mockPanel = {
-      updateTrack: sinon.spy(),
     };
+
+    const selectedDevice: QuickPickDevice = {
+      id: "device1",
+      label: "Device 1",
+      description: "Computer",
+    };
+
+    sandBox.stub(spotifyApi, "getMyDevices").resolves(devices);
+    const quickPickStub = sandBox.stub(vscode.window, "showQuickPick").resolves(selectedDevice);
+    const transferPlaybackStub = sandBox.stub(spotifyApi, "transferMyPlayback").resolves({} as any);
+
+    const result = await ensureActiveDevice(context);
+
+    assert.strictEqual(result, true);
+    assert.ok(quickPickStub.calledOnce);
+    assert.ok(transferPlaybackStub.calledWith(["device1"]));
+  });
+
+  test("Track info update with no active device", async () => {
+    sandBox.stub(spotifyApi, "getMyDevices").resolves({
+      body: { devices: [{ id: "device1", is_active: false, name: "Device 1", type: "Computer" }] },
+    } as any);
+
+    const mockPanel = { updateTrack: sinon.spy() };
     MiniplayerPanel.currentPanel = mockPanel as any;
 
     await vscode.commands.executeCommand("intmo.nowPlaying");
 
-    assert.strictEqual(mockPanel.updateTrack.calledOnce, true);
+    assert.ok(mockPanel.updateTrack.calledOnce);
     assert.deepStrictEqual(mockPanel.updateTrack.firstCall.args[0], {
       name: "No active device",
       artists: ["Please open Spotify on any device"],
@@ -210,73 +175,56 @@ suite("Spotify Extension Test Suite", () => {
       progressMs: 0,
       isPlaying: false,
     });
-
-    getDevicesStub.restore();
   });
 
   test("Error handling in device activation", async () => {
-    const getDevicesStub = sandBox
-      .stub(spotifyApi, "getMyDevices")
-      .rejects(new Error("API Error"));
-
+    sandBox.stub(spotifyApi, "getMyDevices").rejects(new Error("API Error"));
     const consoleErrorStub = sandBox.stub(console, "error");
 
     const result = await ensureActiveDevice(context);
 
     assert.strictEqual(result, false);
-    assert.ok(
-      consoleErrorStub.calledWith("Device activation error: ", sinon.match.any)
-    );
-
-    getDevicesStub.restore();
+    assert.ok(consoleErrorStub.calledWith("Device activation error: ", sinon.match.any));
   });
 
-    test("MiniPlayer play/pause button messaging", async () => {
+  test("MiniPlayer play/pause button messaging", async () => {
     const postMessageStub = sandBox.stub().resolves(true);
 
-    const createWebviewPanelStub = sandBox
-      .stub(vscode.window, "createWebviewPanel")
-      .returns({
-        webview: {
-          html: "",
-          postMessage: postMessageStub,
-          onDidReceiveMessage: () => ({ dispose: () => {} }),
-        },
-        onDidDispose: () => ({ dispose: () => {} }),
-        dispose: () => {},
-        reveal: () => {},
-      } as any);
+    sandBox.stub(vscode.window, "createWebviewPanel").returns({
+      webview: {
+        html: "",
+        asWebviewUri: (uri: vscode.Uri) => uri,
+        postMessage: postMessageStub,
+        onDidReceiveMessage: () => ({ dispose: () => {} }),
+      },
+      onDidDispose: () => ({ dispose: () => {} }),
+      dispose: () => {},
+      reveal: () => {},
+    } as any);
 
     MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
-
-    // simulate clicking play/pause (webview -> extension)
-    await MiniplayerPanel.currentPanel?.panel.webview.postMessage({
-      command: "playPause",
-    });
+    await MiniplayerPanel.currentPanel?.panel.webview.postMessage({ command: "playPause" });
 
     assert.ok(
       postMessageStub.calledWithMatch({ command: "playPause" }),
       "Expected playPause command to be sent"
     );
-
-    createWebviewPanelStub.restore();
   });
 
   test("MiniPlayer updateTrack with valid data", () => {
     const postMessageStub = sandBox.stub().resolves(true);
 
-    const createWebviewPanelStub = sandBox
-      .stub(vscode.window, "createWebviewPanel")
-      .returns({
-        webview: {
-          html: "",
-          postMessage: postMessageStub,
-          onDidReceiveMessage: () => ({ dispose: () => {} }),
-        },
-        onDidDispose: () => ({ dispose: () => {} }),
-        dispose: () => {},
-        reveal: () => {},
-      } as any);
+    sandBox.stub(vscode.window, "createWebviewPanel").returns({
+      webview: {
+        html: "",
+        asWebviewUri: (uri: vscode.Uri) => uri,
+        postMessage: postMessageStub,
+        onDidReceiveMessage: () => ({ dispose: () => {} }),
+      },
+      onDidDispose: () => ({ dispose: () => {} }),
+      dispose: () => {},
+      reveal: () => {},
+    } as any);
 
     MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
 
@@ -293,14 +241,8 @@ suite("Spotify Extension Test Suite", () => {
     MiniplayerPanel.currentPanel?.updateTrack(track);
 
     assert.ok(
-      postMessageStub.calledWithMatch({
-        command: "updateTrack",
-        track,
-      }),
+      postMessageStub.calledWithMatch({ command: "updateTrack", track }),
       "Expected updateTrack message with correct track data"
     );
-
-    createWebviewPanelStub.restore();
   });
-
 });
