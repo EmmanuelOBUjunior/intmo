@@ -86,25 +86,25 @@ suite("Spotify Extension Test Suite", () => {
     getDevicesStub.restore();
   });
 
-  test("MiniplayerPanel creation", () => {
-    const createWebviewPanelStub = sinon
-      .stub(vscode.window, "createWebviewPanel")
-      .returns({
-        webview: {
-          html: "",
-          onDidReceiveMessage: () => ({ dispose: () => {} }),
-          postMessage: () => Promise.resolve(),
-        },
-        onDidDispose: () => ({ dispose: () => {} }),
-        dispose: () => {},
-        reveal: () => {},
-      } as any);
+  test('MiniPlayer creation and disposal', () => {
+        const createWebviewPanelStub = sandBox.stub(vscode.window, 'createWebviewPanel')
+            .returns({
+                webview: {
+                    html: '',
+                    onDidReceiveMessage: () => ({ dispose: () => {} }),
+                    postMessage: () => Promise.resolve()
+                },
+                onDidDispose: () => ({ dispose: () => {} }),
+                dispose: () => {},
+                reveal: () => {}
+            } as any);
 
-    MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
-
-    assert.strictEqual(createWebviewPanelStub.calledOnce, true);
-    createWebviewPanelStub.restore();
-  });
+        MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
+        assert.ok(MiniplayerPanel.currentPanel);
+        
+        MiniplayerPanel.currentPanel?.dispose();
+        assert.strictEqual(MiniplayerPanel.currentPanel, undefined);
+    });
 
   test("Track info update with no active device", async () => {
     // Mock getMyDevices to return no active devices
