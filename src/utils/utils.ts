@@ -62,6 +62,10 @@ export class MiniplayerPanel {
   private readonly _extensionUri: vscode.Uri;
   private _updateInterval: NodeJS.Timeout | undefined;
 
+  public get panel(): vscode.WebviewPanel {
+  return this._panel;
+}
+
   public static createOrShow(extentionUri: vscode.Uri) {
     const column = vscode.ViewColumn.Two;
 

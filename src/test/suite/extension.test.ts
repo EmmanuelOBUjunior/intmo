@@ -230,4 +230,77 @@ suite("Spotify Extension Test Suite", () => {
 
     getDevicesStub.restore();
   });
+
+    test("MiniPlayer play/pause button messaging", async () => {
+    const postMessageStub = sandBox.stub().resolves(true);
+
+    const createWebviewPanelStub = sandBox
+      .stub(vscode.window, "createWebviewPanel")
+      .returns({
+        webview: {
+          html: "",
+          postMessage: postMessageStub,
+          onDidReceiveMessage: () => ({ dispose: () => {} }),
+        },
+        onDidDispose: () => ({ dispose: () => {} }),
+        dispose: () => {},
+        reveal: () => {},
+      } as any);
+
+    MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
+
+    // simulate clicking play/pause (webview -> extension)
+    await MiniplayerPanel.currentPanel?.panel.webview.postMessage({
+      command: "playPause",
+    });
+
+    assert.ok(
+      postMessageStub.calledWithMatch({ command: "playPause" }),
+      "Expected playPause command to be sent"
+    );
+
+    createWebviewPanelStub.restore();
+  });
+
+  test("MiniPlayer updateTrack with valid data", () => {
+    const postMessageStub = sandBox.stub().resolves(true);
+
+    const createWebviewPanelStub = sandBox
+      .stub(vscode.window, "createWebviewPanel")
+      .returns({
+        webview: {
+          html: "",
+          postMessage: postMessageStub,
+          onDidReceiveMessage: () => ({ dispose: () => {} }),
+        },
+        onDidDispose: () => ({ dispose: () => {} }),
+        dispose: () => {},
+        reveal: () => {},
+      } as any);
+
+    MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
+
+    const track = {
+      name: "Focus Track",
+      artists: ["Artist A", "Artist B"],
+      album: "Test Album",
+      durationMs: 200000,
+      progressMs: 50000,
+      isPlaying: true,
+      albumArt: "https://test.img",
+    };
+
+    MiniplayerPanel.currentPanel?.updateTrack(track);
+
+    assert.ok(
+      postMessageStub.calledWithMatch({
+        command: "updateTrack",
+        track,
+      }),
+      "Expected updateTrack message with correct track data"
+    );
+
+    createWebviewPanelStub.restore();
+  });
+
 });
