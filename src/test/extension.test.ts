@@ -2,7 +2,11 @@ import * as assert from "assert";
 import * as vscode from "vscode";
 import * as sinon from "sinon";
 import SpotifyWebApi from "spotify-web-api-node";
-import { setExtensionContext, setSpotifyApi } from "../utils/utils";
+import {
+  ensureActiveDevice,
+  setExtensionContext,
+  setSpotifyApi,
+} from "../utils/utils";
 
 suite("Spotify Extension Test Suite", () => {
   let context: vscode.ExtensionContext;
@@ -60,5 +64,8 @@ suite("Spotify Extension Test Suite", () => {
     const getDevicesStub = sinon
       .stub(spotifyApi, "getMyDevices")
       .resolves({ body: { devices: [] } });
+
+    const showErrorStub = sinon.stub(vscode.window, "showErrorMessage");
+    const result = await ensureActiveDevice(context);
   });
 });
