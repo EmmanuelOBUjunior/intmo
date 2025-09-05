@@ -200,10 +200,19 @@ export class MiniplayerPanel {
   }
 
   public updateTrack(track: any) {
-    this._panel.webview.postMessage({
-      command: "updateTrack",
-      track,
-    });
+    if (!track) {
+      console.error("Cannot update track: No track data provided");
+      return;
+    }
+    
+    try {
+      this._panel.webview.postMessage({
+        command: "updateTrack",
+        track,
+      });
+    } catch (error) {
+      console.error("Error updating track:", error);
+    }
   }
 
   private _getHtmlForWebview(webview: vscode.Webview): string {
