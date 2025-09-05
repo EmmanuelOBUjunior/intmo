@@ -53,4 +53,6 @@ suite("Spotify Extension Test Suite", () => {
         setSpotifyApi(spotifyApi);
         setExtensionContext(context);
     });
+
+	test('ensureActiveDevice - no device available',()=>{});
 });
