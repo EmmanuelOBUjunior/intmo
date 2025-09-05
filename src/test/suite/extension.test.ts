@@ -7,8 +7,8 @@ import {
   MiniplayerPanel,
   setExtensionContext,
   setSpotifyApi,
-} from "../utils/utils";
-import { handleVSCodeCallback } from "../extension";
+} from "../../utils/utils";
+import { handleVSCodeCallback } from "../../extension";
 
 interface QuickPickDevice extends vscode.QuickPickItem {
   id: string;
