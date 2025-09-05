@@ -511,7 +511,8 @@ export async function updateTrackInfo() {
           artists: ["Please open Spotify on any device"],
           albumArt: "",
           album: "",
-          durationMS: 0,
+          
+          durationMs: 0,
           progressMs: 0,
           isPlaying: false,
         });
@@ -526,7 +527,7 @@ export async function updateTrackInfo() {
           artists: [""],
           albumArt: "",
           album: "",
-          durationMS: 0,
+          durationMs: 0,
           progressMs: 0,
           isPlaying: false,
         });
