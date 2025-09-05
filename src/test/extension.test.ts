@@ -12,6 +12,7 @@ import {
 suite("Spotify Extension Test Suite", () => {
   let context: vscode.ExtensionContext;
   let spotifyApi: SpotifyWebApi;
+  let sandBox:sinon.SinonSandbox;
 
   setup(() => {
     // Create a mock extension context
