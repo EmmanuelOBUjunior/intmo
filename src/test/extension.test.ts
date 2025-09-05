@@ -37,22 +37,21 @@ suite("Spotify Extension Test Suite", () => {
 		sandBox.restore();
 	});
 
-  test("ensureActiveDevice - no device available", async () => {
-    //Mock getMyDevices to return empty list
-    const getDevicesStub = sinon
-      .stub(spotifyApi, "getMyDevices")
-      .resolves({ body: { devices: [] } });
-
-    const showErrorStub = sinon.stub(vscode.window, "showErrorMessage");
-    const result = await ensureActiveDevice(context);
-
-    assert.strictEqual(result, false);
-    assert.strictEqual(showErrorStub.calledOnce, true);
-    assert.strictEqual(
-      showErrorStub.firstCall.args[0],
-      "No Spotify devices found. Please open Spotify on any device"
-    );
-  });
+  test('ensureActiveDevice - no devices available', async () => {
+        const getDevicesStub = sandBox.stub(spotifyApi, 'getMyDevices')
+            .resolves({ body: { devices: [] } });
+        
+        const showErrorStub = sandBox.stub(vscode.window, 'showErrorMessage');
+        
+        const result = await ensureActiveDevice(context);
+        
+        assert.strictEqual(result, false);
+        assert.strictEqual(showErrorStub.calledOnce, true);
+        assert.strictEqual(
+            showErrorStub.firstCall.args[0],
+            'No Spotify devices found. Please open Spotify on any device'
+        );
+    });
 
   test("ensureActiveDevice - with active device", async () => {
     // Mock getMyDevices to return a device
