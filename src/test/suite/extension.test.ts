@@ -112,12 +112,34 @@ suite("Spotify Extension Test Suite", () => {
   });
 
   // Test 2
+  // test("MiniPlayer creation and disposal", () => {
+  //   MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
+  //   assert.ok(MiniplayerPanel.currentPanel);
+
+  //   MiniplayerPanel.currentPanel?.dispose();
+  //   assert.strictEqual(MiniplayerPanel.currentPanel, undefined);
+  // });
+
   test("MiniPlayer creation and disposal", () => {
+    const createWebviewPanelStub = sandBox.stub(vscode.window, "createWebviewPanel").returns({
+      webview: {
+        html: "",
+        asWebviewUri: (uri: vscode.Uri) => uri, // ✅ Fix missing asWebviewUri
+        onDidReceiveMessage: () => ({ dispose: () => {} }),
+        postMessage: () => Promise.resolve(true),
+      },
+      onDidDispose: () => ({ dispose: () => {} }),
+      dispose: () => {},
+      reveal: () => {}, // ✅ Fix missing reveal
+    } as any);
+
     MiniplayerPanel.createOrShow(vscode.Uri.file(__dirname));
     assert.ok(MiniplayerPanel.currentPanel);
 
     MiniplayerPanel.currentPanel?.dispose();
     assert.strictEqual(MiniplayerPanel.currentPanel, undefined);
+
+    createWebviewPanelStub.restore();
   });
 
   // Test 3
@@ -235,5 +257,43 @@ suite("Spotify Extension Test Suite", () => {
       postMessageStub.calledWithMatch({ command: "updateTrack", track }),
       "Expected updateTrack message with correct track data"
     );
+  });
+
+  test("Handles no devices found", async () => {
+  process.env.TEST_FORCE_ERROR = "false";
+
+  const consoleErrorStub = sandBox.stub(console, "error");
+  const showErrorStub = sandBox.stub(vscode.window, "showErrorMessage");
+
+  const result = await ensureActiveDevice(context);
+
+  assert.strictEqual(result, false);
+  assert.strictEqual(consoleErrorStub.called, false);
+  assert.ok(consoleErrorStub.calledWithMatch("No Spotify devices detected: ", sinon.match.any));
+  showErrorStub.restore();
+});
+
+test("ensureActiveDevice - with active device", async () => {
+    const getDevicesStub = sandBox
+      .stub(spotifyApi, "getMyDevices")
+      .resolves({
+        body: {
+          devices: [
+            {
+              id: "device1",
+              is_active: true,
+              name: "Test Device",
+              type: "Computer",
+              is_private_session: false,
+              is_restricted: false,
+              volume_percent: 50,
+            },
+          ],
+        },
+      } as any);
+
+    const result = await ensureActiveDevice(context);
+    assert.strictEqual(result, true);
+    getDevicesStub.restore();
   });
 });
