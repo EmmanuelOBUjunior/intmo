@@ -39,7 +39,7 @@ export async function handleVSCodeCallback(
     console.log("Authentication Configuration:", {
       callbackUri,
       // extensionId: context.extension.id,
-      extensionId: "local-dev.intmo",
+      extensionId: "clestdeveloper.intmo",
       uriScheme: vscode.env.uriScheme,
     });
 
