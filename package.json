@@ -10,6 +10,26 @@
   "categories": [
     "Other"
   ],
+  "keywords": [
+    "spotify",
+    "music",
+    "player",
+    "productivity",
+    "devices"
+  ],
+  "galleryBanner": {
+    "color": "#1DB954",
+    "theme": "dark"
+  },
+  "icon": "media/default-albulm-art.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/vscode-spotify-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/vscode-spotify-extension/issues"
+  },
+  "homepage": "https://github.com/your-username/vscode-spotify-extension",
   "activationEvents": [
     "onStartupFinished"
   ],
