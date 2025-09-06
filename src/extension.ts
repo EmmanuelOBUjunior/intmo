@@ -23,7 +23,7 @@ export async function handleVSCodeCallback(
   try {
     // Create a proper VS Code URI using the extension ID
     // const extensionId = context.extension.id; // Gets your extension ID automatically
-    const callbackUri = `${vscode.env.uriScheme}://local-dev.intmo/callback`;
+    const callbackUri = `${vscode.env.uriScheme}://clestdeveloper.intmo/callback`;
 
     const api = new SpotifyWebApi({
       clientId:
