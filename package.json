@@ -24,12 +24,12 @@
   "icon": "media/default-albulm-art.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/vscode-spotify-extension"
+    "url": "https://github.com/EmmanuelOBUjunior/intmo"
   },
   "bugs": {
-    "url": "https://github.com/your-username/vscode-spotify-extension/issues"
+    "url": "https://github.com/EmmanuelOBUjunior/intmo/issues"
   },
-  "homepage": "https://github.com/your-username/vscode-spotify-extension",
+  "homepage": "https://github.com/EmmanuelOBUjunior/intmo",
   "activationEvents": [
     "onStartupFinished"
   ],
