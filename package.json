@@ -3,7 +3,7 @@
   "displayName": "intmo",
   "description": "Control Spotify inside VS Code",
   "version": "0.0.1",
-  "publisher": "local-dev",
+  "publisher": "clestdeveloper",
   "engines": {
     "vscode": "^1.103.0"
   },
