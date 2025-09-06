@@ -21,7 +21,7 @@
     "color": "#1DB954",
     "theme": "dark"
   },
-  "icon": "media/default-albulm-art.png",
+  "icon": "media/default-album-art.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/EmmanuelOBUjunior/intmo"
