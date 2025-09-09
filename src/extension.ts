@@ -287,6 +287,18 @@ export async function activate(context: vscode.ExtensionContext) {
         //   return;
         // }
 
+         const playback = await withTokenRefresh(context, spotifyApi!, () =>
+      spotifyApi!.getMyCurrentPlaybackState()
+    );
+
+    if (!playback?.body?.device) {
+      statusBarPlayPause.text = "$(circle-slash)";
+      statusBarPlayPause.tooltip = "No active device";
+      statusBarTrack.text = "🎵 Spotify idle";
+      statusBarTrack.tooltip = "Open Spotify on any device";
+      return;
+    }
+
         // if (statusBarItem) {
         //   statusBarItem.dispose();
         // }
