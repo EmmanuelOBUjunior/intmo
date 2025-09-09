@@ -626,6 +626,7 @@ export class MiniplayerPanel {
 
 
 let lastTrackId: string | null = null;
+let firstUpdate = true;
 export async function updateTrackInfo() {
   try {
     if (!spotifyApi) {
