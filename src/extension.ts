@@ -278,7 +278,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     async function updateStatusBar() {
       try {
-        const hasDevice = await ensureActiveDevice(context);
+        // const hasDevice = await ensureActiveDevice(context);
         if (!hasDevice) {
           statusBarPlayPause.text = "$(circle-slash)";
           statusBarPlayPause.tooltip = "No active device";
