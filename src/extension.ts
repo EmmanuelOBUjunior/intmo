@@ -299,9 +299,9 @@ export async function activate(context: vscode.ExtensionContext) {
       return;
     }
 
-        // if (statusBarItem) {
-        //   statusBarItem.dispose();
-        // }
+        if (statusBarItem) {
+          statusBarItem.dispose();
+        }
         const track = await withTokenRefresh(context, spotifyApi!, () => {
           return spotifyApi!.getMyCurrentPlayingTrack();
         });
