@@ -51,6 +51,10 @@
       {
         "command": "intmo.openMiniPlayer",
         "title": "Spotify: Open Mini Player"
+      },
+      {
+        "command": "intmo.connectSpotify",
+        "title": "Spotify: Connect Spotify"
       }
     ],
     "authentication": [
