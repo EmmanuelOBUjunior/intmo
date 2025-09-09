@@ -54,7 +54,7 @@ Stay in the flow of coding while keeping your music just a command away.
 
 ## 📸 Screenshots
 
-*(Add screenshots or GIF demos here before publishing for marketplace visibility.)*  
+![](https://github.com/EmmanuelOBUjunior/intmo/blob/master/media/intmo_demo.gif)
 
 ---
 
