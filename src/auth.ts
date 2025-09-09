@@ -228,6 +228,10 @@ export async function withTokenRefresh<T>(
       const refreshed = await refreshTokens(spotifyApi, context);
       if (refreshed) {
         return await operation();
+      }else{
+        console.log('Re-authentication required. Prompting user...');
+        await authenticateSpotify(context);
+        return await operation();
       }
       throw new Error("Token refresh failed");
     }
