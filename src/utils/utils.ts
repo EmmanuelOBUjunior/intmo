@@ -709,6 +709,8 @@ export async function updateTrackInfo() {
     //Force first update, or update if track changed
     if(firstUpdate || currentTrackId !== lastTrackId){
       MiniplayerPanel.currentPanel?.updateTrack(track);
+      lastTrackId = currentTrackId;
+      firstUpdate = false;
     }
 
     if (MiniplayerPanel.currentPanel) {
