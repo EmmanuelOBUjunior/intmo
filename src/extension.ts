@@ -488,17 +488,22 @@ export async function activate(context: vscode.ExtensionContext) {
       }
     );
 
-    const connectSpotify = vscode.commands.registerCommand('intmo.connect', async()=>{
-try {
-  spotifyApi = await authenticateSpotify(context);
-  setSpotifyApi(spotifyApi);
-  setExtensionContext(context);
+    const connectSpotify = vscode.commands.registerCommand(
+      "intmo.connect",
+      async () => {
+        try {
+          spotifyApi = await authenticateSpotify(context);
+          setSpotifyApi(spotifyApi);
+          setExtensionContext(context);
 
-  vscode.window.showInformationMessage('🔗 Connected to Spotify');
-} catch (error:any) {
-  vscode.window.showErrorMessage(`⚠️ Failed to connect to Spotify: ${error.message}`);
-}
-    });
+          vscode.window.showInformationMessage("🔗 Connected to Spotify");
+        } catch (error: any) {
+          vscode.window.showErrorMessage(
+            `⚠️ Failed to connect to Spotify: ${error.message}`
+          );
+        }
+      }
+    );
 
     context.subscriptions.push(
       nowPlaying,
