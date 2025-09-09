@@ -487,13 +487,19 @@ export async function activate(context: vscode.ExtensionContext) {
         MiniplayerPanel.createOrShow(context.extensionUri);
       }
     );
+
+    const connectSpotify = vscode.commands.registerCommand('intmo.connect', async()=>{
+
+    });
+
     context.subscriptions.push(
       nowPlaying,
       playPause,
       nextTrack,
       previousTrack,
       searchOnSpotify,
-      openMiniPlayer
+      openMiniPlayer,
+      connectSpotify
     );
   } catch (error: any) {
     console.error("Extension activation error:", error);
