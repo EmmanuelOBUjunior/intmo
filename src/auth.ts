@@ -41,7 +41,8 @@ export async function refreshTokens(
     console.error("Token refresh failed:", error);
     //Handle revoked refresh token case (invalid_grant)s
     if(error.body?.error === 'invalid_grant' || error.message?.includes('invalid_grant')){
-
+      console.warn('Refresh token revoked. Clearing stored tokens...');
+      await context.secrets.delete('spotifyAccessToken');
     }
     return false;
   }
