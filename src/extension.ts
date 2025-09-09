@@ -490,7 +490,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
     const connectSpotify = vscode.commands.registerCommand('intmo.connect', async()=>{
 try {
-  
+  spotifyApi = await authenticateSpotify(context);
+  setSpotifyApi(spotifyApi);
 } catch (error:any) {
   vscode.window.showErrorMessage(`⚠️ Failed to connect to Spotify: ${error.message}`);
 }
