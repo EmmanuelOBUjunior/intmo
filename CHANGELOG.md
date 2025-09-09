@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented here.
 
-## [0.2.0] - 2025-09-07
+## [0.3.0] - 2025-09-07
 ### 🛠 Minor Update
 - Updated refreshtokens to clear stored tokens and trigger full re-authentication when refresh token is revoked
 - Added a reconnect commands
