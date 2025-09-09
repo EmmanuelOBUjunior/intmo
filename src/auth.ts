@@ -44,6 +44,7 @@ export async function refreshTokens(
       console.warn('Refresh token revoked. Clearing stored tokens...');
       await context.secrets.delete('spotifyAccessToken');
       await context.secrets.delete('spotifyRefreshToken');
+      return false;
     }
     return false;
   }
