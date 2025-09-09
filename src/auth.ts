@@ -17,6 +17,7 @@ export async function refreshTokens(
 
     if (!refreshToken) {
       console.log("No refresh token found, starting new authentication");
+      
       return false;
     }
 
@@ -36,8 +37,12 @@ export async function refreshTokens(
     await context.secrets.store("spotifyAccessToken", data.body.access_token);
     spotifyApi.setAccessToken(data.body.access_token);
     return true;
-  } catch (error) {
+  } catch (error:any) {
     console.error("Token refresh failed:", error);
+    //Handle revoked refresh token case (invalid_grant)s
+    if(error.body?.error === 'invalid_grant' || error.message?.includes('invalid_grant')){
+
+    }
     return false;
   }
 }
