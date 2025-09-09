@@ -15,15 +15,15 @@ export function setExtensionContext(context: vscode.ExtensionContext) {
 // ): Promise<Boolean> {
 //   try {
 //     // Check if we're in a test environment
-//     const isTest = process.env.NODE_ENV === 'test' || 
+//     const isTest = process.env.NODE_ENV === 'test' ||
 //                   (context && context.extensionMode === vscode.ExtensionMode.Test);
-    
+
 //     // For tests with forced errors, return immediately with proper error logging
 //     if (isTest && process.env.TEST_FORCE_ERROR === "true") {
 //       console.error("Device activation error:", new Error("API Error"));
 //       return false;
 //     }
-    
+
 //     const devices = await withTokenRefresh(context, spotifyApi!, () =>
 //       spotifyApi!.getMyDevices()
 //     );
@@ -37,7 +37,7 @@ export function setExtensionContext(context: vscode.ExtensionContext) {
 //       );
 //       return false;
 //     }
-    
+
 //     //Check for active devices
 //     let activeDevice = devices.body.devices.find((d) => d.is_active);
 
@@ -72,12 +72,12 @@ export function setExtensionContext(context: vscode.ExtensionContext) {
 //     // In the ensureActiveDevice function, ensure we return true when there's an active device
 //     // Replace this line:
 //     // return !!activeDevice;
-    
+
 //     // With this implementation that handles test environments properly:
 //     if (isTest && process.env.TEST_ACTIVE_DEVICE === "true") {
 //       return true;
 //     }
-    
+
 //     return !!activeDevice;
 //   } catch (error) {
 //     // Ensure we log with EXACTLY the format the test expects
@@ -91,7 +91,8 @@ export async function ensureActiveDevice(
   context: vscode.ExtensionContext
 ): Promise<boolean> {
   try {
-    const isTest = process.env.NODE_ENV === 'test' ||
+    const isTest =
+      process.env.NODE_ENV === "test" ||
       (context && context.extensionMode === vscode.ExtensionMode.Test);
 
     // Force error for tests
@@ -156,7 +157,6 @@ export async function ensureActiveDevice(
   }
 }
 
-
 export class MiniplayerPanel {
   public static currentPanel: MiniplayerPanel | undefined;
   private readonly _panel: vscode.WebviewPanel;
@@ -164,8 +164,8 @@ export class MiniplayerPanel {
   private _updateInterval: NodeJS.Timeout | undefined;
 
   public get panel(): vscode.WebviewPanel {
-  return this._panel;
-}
+    return this._panel;
+  }
 
   public static createOrShow(extensionUri: vscode.Uri) {
     const column = vscode.ViewColumn.Two;
@@ -234,7 +234,7 @@ export class MiniplayerPanel {
 
         //Check for active devices before any playback command
         const hasDevice = await ensureActiveDevice(extensionContext);
-        if(!hasDevice){
+        if (!hasDevice) {
           return;
         }
 
@@ -303,7 +303,7 @@ export class MiniplayerPanel {
       console.error("Cannot update track: No track data provided");
       return;
     }
-    
+
     try {
       this._panel.webview.postMessage({
         command: "updateTrack",
@@ -318,12 +318,12 @@ export class MiniplayerPanel {
     // Get path to media folder
     const mediaPath = vscode.Uri.joinPath(this._extensionUri, "media");
     console.log("Media Path:", mediaPath);
-  
+
     // Create URIs for resources
     let defaultAlbumArt;
     try {
       // Check if asWebviewUri is a function before calling it
-      if (typeof webview.asWebviewUri === 'function') {
+      if (typeof webview.asWebviewUri === "function") {
         defaultAlbumArt = webview.asWebviewUri(
           vscode.Uri.joinPath(mediaPath, "default-album-art.png")
         );
@@ -623,8 +623,6 @@ export class MiniplayerPanel {
   }
 }
 
-
-
 let lastTrackId: string | null = null;
 let firstUpdate = true;
 export async function updateTrackInfo() {
@@ -634,9 +632,11 @@ export async function updateTrackInfo() {
     }
 
     // Check if we're in a test environment
-    const isTest = process.env.NODE_ENV === 'test' || 
-                  (extensionContext && extensionContext.extensionMode === vscode.ExtensionMode.Test);
-    
+    const isTest =
+      process.env.NODE_ENV === "test" ||
+      (extensionContext &&
+        extensionContext.extensionMode === vscode.ExtensionMode.Test);
+
     // For tests, return mock data immediately to avoid timeouts
     if (isTest && MiniplayerPanel.currentPanel) {
       // Provide mock data for tests
@@ -653,7 +653,9 @@ export async function updateTrackInfo() {
     }
 
     //Only try to get track info if we have an active device
-    const devices = await withTokenRefresh(extensionContext, spotifyApi!, ()=>spotifyApi!.getMyDevices());
+    const devices = await withTokenRefresh(extensionContext, spotifyApi!, () =>
+      spotifyApi!.getMyDevices()
+    );
 
     const state: any = await withTokenRefresh(
       extensionContext,
@@ -661,7 +663,7 @@ export async function updateTrackInfo() {
       () => spotifyApi!.getMyCurrentPlayingTrack()
     );
 
-    if(!devices.body.devices.some(d=>d.is_active)) {
+    if (!devices.body.devices.some((d) => d.is_active)) {
       if (MiniplayerPanel.currentPanel) {
         MiniplayerPanel.currentPanel.updateTrack({
           name: "No active device",
@@ -692,37 +694,31 @@ export async function updateTrackInfo() {
       return;
     }
 
-    //Check if the track has changed
+    //Track details
     const currentTrackId = state.body.item.id;
-    if (currentTrackId !== lastTrackId) {
-      lastTrackId = currentTrackId;
+    const track = {
+      name: state.body.item.name,
+      artists: state.body.item.artists.map((a: any) => a.name),
+      albumArt: state.body.item.album.images[0]?.url || "",
+      durationMs: state.body.item.duration_ms,
+      albumName: state.body.item.album.name,
+      progressMs: state.body.progress_ms,
+      isPlaying: state.body.is_playing,
+    };
 
-      const track = {
-        name: state.body.item.name,
-        artists: state.body.item.artists.map((a: any) => a.name),
-        albumArt: state.body.item.album.images[0]?.url || "",
-        durationMs: state.body.item.duration_ms,
-        albumName: state.body.item.album.name,
-        progressMs: state.body.progress_ms,
-        isPlaying: state.body.is_playing,
-      };
-
-      if (MiniplayerPanel.currentPanel) {
-        MiniplayerPanel.currentPanel.updateTrack(track);
-      }
+    if (MiniplayerPanel.currentPanel) {
+      MiniplayerPanel.currentPanel.updateTrack(track);
     }
   } catch (error: any) {
     console.error("Update track info error:", error);
     //Don't show error message for device checks
-    if(!error.message.includes("N)_ACTIVE_DEVICE")){
+    if (!error.message.includes("N)_ACTIVE_DEVICE")) {
       vscode.window.showErrorMessage(
         `Failed to update track info: ${error.message}`
       );
     }
   }
 }
-
-
 
 //Helper function to store the Spotify API
 export function setSpotifyApi(api: SpotifyWebApi) {
