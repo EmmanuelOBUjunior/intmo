@@ -233,7 +233,6 @@ export async function withTokenRefresh<T>(
         await authenticateSpotify(context);
         return await operation();
       }
-      throw new Error("Token refresh failed");
     }
     throw error;
   }
