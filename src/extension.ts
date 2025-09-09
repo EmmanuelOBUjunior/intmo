@@ -492,6 +492,7 @@ export async function activate(context: vscode.ExtensionContext) {
 try {
   spotifyApi = await authenticateSpotify(context);
   setSpotifyApi(spotifyApi);
+  setExtensionContext(context);
 } catch (error:any) {
   vscode.window.showErrorMessage(`⚠️ Failed to connect to Spotify: ${error.message}`);
 }
