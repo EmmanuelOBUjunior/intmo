@@ -493,6 +493,8 @@ try {
   spotifyApi = await authenticateSpotify(context);
   setSpotifyApi(spotifyApi);
   setExtensionContext(context);
+
+  vscode.window.showInformationMessage('🔗 Connected to Spotify');
 } catch (error:any) {
   vscode.window.showErrorMessage(`⚠️ Failed to connect to Spotify: ${error.message}`);
 }
