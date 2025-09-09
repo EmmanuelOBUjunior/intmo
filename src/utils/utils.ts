@@ -706,6 +706,11 @@ export async function updateTrackInfo() {
       isPlaying: state.body.is_playing,
     };
 
+    //Force first update, or update if track changed
+    if(firstUpdate || currentTrackId !== lastTrackId){
+      MiniplayerPanel.currentPanel?.updateTrack(track);
+    }
+
     if (MiniplayerPanel.currentPanel) {
       MiniplayerPanel.currentPanel.updateTrack(track);
     }
