@@ -4,6 +4,11 @@ All notable changes to this project will be documented here.
 
 ## [0.2.0] - 2025-09-07
 ### 🛠 Minor Update
+- Updated refreshtokens to clear stored tokens and trigger full re-authentication when refresh token is revoked
+- Added a reconnect commands
+
+## [0.2.0] - 2025-09-07
+### 🛠 Minor Update
 - Updated `MiniPlayer` to correctly load track information on first open without requiring user interaction
 - Improved **ensure active device** logic to reliably detect and activate a Spotify device before playback.  
 
